@@ -1,1 +1,1 @@
-# susunan-ibadah-gmahk-sepanjang
+# Susunan Ibadah GMAHK Sepanjang
