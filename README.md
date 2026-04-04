@@ -12,9 +12,8 @@ Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan r
 - **Serverless & Statis:** Aplikasi murni menggunakan standar **HTML, CSS, dan Vanilla JS**. Tidak diperlukan aktivasi alat backend/database (seperti XAMPP, MySQL, Apache), dapat langsung digunakan *offline* di browser. Sangat cocok di-host ke GitHub Pages.
 
 ## Cara Menjalankan Aplikasi
-1. Buka File Explorer Anda pada folder proyek.
-2. Klik ganda (buka) file `index.html` menggunakan browser standar seperti Chrome / Edge / Safari.
-3. Selamat! Formulir bisa langsung digunakan.
+1. Buka Tautan [Susunan Ibadah GMAHK Sepanjang](https://meakhelgunawan.github.io/Susunan-Ibadah-GMAHK-Sepanjang/)
+2. Selamat! Formulir bisa langsung digunakan.
 
 > **Tips:** Isilah form di kolom kiri sesuai petunjuk, dan klik tombol "Salin ke WhatsApp" ketika sudah selesai.
 
