@@ -197,7 +197,7 @@
                             </div>
 
                             <div class="input-group">
-                                <label>Lagu Buka (Dinamis - LSEL)</label>
+                                <label>Lagu Buka (LSEL)</label>
                                 <div class="input-row-song">
                                     <input type="text" id="khLaguBukaNo" placeholder="No.">
                                     <input type="text" id="khLaguBukaJudul" placeholder="Judul Lagu">
@@ -235,8 +235,8 @@
                             <div class="input-group">
                                 <label>Lagu Persembahan (LSEL)</label>
                                 <div class="input-row-song">
-                                    <input type="text" id="khLaguPersDNo" placeholder="No.">
-                                    <input type="text" id="khLaguPersDJudul"
+                                    <input type="text" id="khLaguPersDNo" value="260" placeholder="No.">
+                                    <input type="text" id="khLaguPersDJudul" value="Bawa Persembahanmu (ayat 1)"
                                         placeholder="Judul (contoh: “Bawa Persembahanmu” (ayat1))">
                                 </div>
                             </div>
@@ -307,8 +307,13 @@
                     <h2>Live Preview Teks</h2>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span class="badge badge-success" id="copyBadge">Siap Disalin</span>
-                        <button class="btn btn-icon" style="padding: 6px; font-size: 0;" onclick="copyToClipboard()" id="copyBtnBottom" title="Salin Teks">
-                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <button class="btn btn-icon" style="padding: 6px; font-size: 0;" onclick="copyToClipboard()"
+                            id="copyBtnBottom" title="Salin Teks">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
                         </button>
                     </div>
                 </div>
