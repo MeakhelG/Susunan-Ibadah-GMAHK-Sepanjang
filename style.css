@@ -3,21 +3,21 @@
     --bg-main: #0B1120;
     --bg-gradient-1: rgba(30, 58, 138, 0.3);
     --bg-gradient-2: rgba(16, 185, 129, 0.1);
-    --bg-panel: rgba(30, 41, 59, 0.6); 
+    --bg-panel: rgba(30, 41, 59, 0.6);
     --bg-input: rgba(15, 23, 42, 0.8);
     --border-color: rgba(255, 255, 255, 0.1);
     --border-focus: #3b82f6;
-    
+
     --text-primary: #F8FAFC;
     --text-sec: #94A3B8;
     --text-placeholder: #475569;
     --text-wa: #e2e8f0;
-    
+
     --header-title: #ffffff;
     --section-title: #60A5FA;
-    
+
     --shadow-color: rgba(0, 0, 0, 0.5);
-    
+
     /* Global Variables */
     --accent: #3b82f6;
     --accent-hover: #2563eb;
@@ -35,15 +35,15 @@ body.light-theme {
     --bg-input: #FFFFFF;
     --border-color: rgba(148, 163, 184, 0.3);
     --border-focus: #2563eb;
-    
+
     --text-primary: #0F172A;
     --text-sec: #475569;
     --text-placeholder: #94A3B8;
     --text-wa: #1E293B;
-    
+
     --header-title: #0F172A;
     --section-title: #2563eb;
-    
+
     --shadow-color: rgba(148, 163, 184, 0.15);
 }
 
@@ -55,7 +55,7 @@ body.light-theme {
 
 body {
     background-color: var(--bg-main);
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, var(--bg-gradient-1) 0px, transparent 50%),
         radial-gradient(at 100% 100%, var(--bg-gradient-2) 0px, transparent 50%);
     background-attachment: fixed;
@@ -136,6 +136,7 @@ body {
     padding-bottom: 24px;
     border-bottom: 1px dashed var(--border-color);
 }
+
 .form-section:last-child {
     border-bottom: none;
     margin-bottom: 0;
@@ -174,12 +175,16 @@ body {
     display: flex;
     gap: 12px;
 }
+
 .input-row-song input:first-child {
-    flex: 1; /* Nomor Lagu */
+    flex: 1;
+    /* Nomor Lagu */
     min-width: 80px;
 }
+
 .input-row-song input:last-child {
-    flex: 3; /* Judul Lagu */
+    flex: 3;
+    /* Judul Lagu */
 }
 
 label {
@@ -188,7 +193,8 @@ label {
     color: var(--text-sec);
 }
 
-input, select {
+input,
+select {
     background-color: var(--bg-input);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
@@ -225,25 +231,27 @@ input::placeholder {
     color: var(--text-placeholder);
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: var(--border-focus);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     background-color: var(--bg-input);
 }
 
-body:not(.light-theme) input:focus, body:not(.light-theme) select:focus {
+body:not(.light-theme) input:focus,
+body:not(.light-theme) select:focus {
     background-color: rgba(15, 23, 42, 0.95);
 }
 
 /* Panel Kanan (Preview) */
 .preview-panel {
-    background: rgba(15, 23, 42, 0.7); 
+    background: rgba(15, 23, 42, 0.7);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 30px var(--shadow-color), inset 0 0 20px rgba(0,0,0,0.05);
-    
+    box-shadow: 0 10px 30px var(--shadow-color), inset 0 0 20px rgba(0, 0, 0, 0.05);
+
     /* Sticky position agar menetap di layar saat scroll */
     position: sticky;
     top: 24px;
@@ -280,8 +288,15 @@ body.light-theme .preview-panel {
     scrollbar-width: thin;
     scrollbar-color: var(--accent) transparent;
 }
-.preview-scroll::-webkit-scrollbar { width: 6px; }
-.preview-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+.preview-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.preview-scroll::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+}
 
 /* Font untuk teks WA */
 .whatsapp-text {
@@ -325,6 +340,19 @@ body.light-theme .preview-panel {
     transform: translateY(0);
 }
 
+.btn-secondary {
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+    transform: translateY(-2px);
+}
+
 .btn-icon {
     display: inline-flex;
     align-items: center;
@@ -338,6 +366,7 @@ body.light-theme .preview-panel {
     cursor: pointer;
     transition: all 0.2s ease;
 }
+
 .btn-icon:hover {
     background: var(--border-color);
 }
@@ -352,8 +381,15 @@ body.light-theme .preview-panel {
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
-.badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-body.light-theme .badge-success { color: #059669; }
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+
+body.light-theme .badge-success {
+    color: #059669;
+}
 
 /* Static Notice Box */
 .static-notice {
@@ -363,15 +399,18 @@ body.light-theme .badge-success { color: #059669; }
     padding: 12px 16px;
     margin: 8px 0;
 }
+
 .static-notice .badge {
     margin-bottom: 8px;
     background: rgba(59, 130, 246, 0.2);
     color: #93C5FD;
 }
+
 body.light-theme .static-notice .badge {
     background: rgba(59, 130, 246, 0.15);
     color: #2563eb;
 }
+
 .static-notice p {
     font-size: 13px;
     color: var(--text-sec);
@@ -380,10 +419,19 @@ body.light-theme .static-notice .badge {
 
 /* Animations */
 @keyframes copySuccess {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
+
 .copy-anim {
     animation: copySuccess 0.4s ease;
     background: linear-gradient(135deg, #10b981, #059669) !important;
@@ -395,7 +443,7 @@ body.light-theme .static-notice .badge {
     .main-content {
         grid-template-columns: 1fr;
     }
-    
+
     .preview-panel {
         position: relative;
         top: 0;
@@ -403,20 +451,83 @@ body.light-theme .static-notice .badge {
         margin-top: 24px;
     }
 }
+
 @media (max-width: 600px) {
     .app-header {
         flex-direction: column;
         gap: 16px;
         text-align: center;
     }
+
     .header-actions {
         width: 100%;
     }
-    .header-actions .btn-primary {
+
+    .header-actions .btn {
+        width: 100%;
         flex: 1;
     }
-    .input-row-half, .input-row-song {
+
+    .input-row-half,
+    .input-row-song {
         flex-direction: column;
+    }
+}
+
+/* Tabs Navigation */
+.tabs-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-sec);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Tab Content */
+.tab-pane {
+    display: none;
+    animation: fadeInTab 0.3s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -430,6 +541,7 @@ body.light-theme .static-notice .badge {
     font-size: 13px;
     line-height: 1.8;
 }
+
 .app-footer p:last-child {
     font-weight: 600;
 }

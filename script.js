@@ -2,6 +2,7 @@
 const form = document.getElementById('generatorForm');
 const inputs = form.querySelectorAll('input, select');
 const previewText = document.getElementById('previewText');
+let currentTab = 'sabat';
 
 // Daftar Bulan dalam Bahasa Indonesia
 const namaBulan = [
@@ -31,6 +32,40 @@ function gV(id) {
 
 // Fungsi utama generator teks
 function updatePreview() {
+    if (currentTab === 'pa') {
+        const tglStr = formatTanggalString(document.getElementById('paTanggal').value);
+        const teks = `*Selamat Sabat dan Selamat Malam KUPAS Berikut adalah :* 
+*Susunan Partisipan Ibadah Pemuda Advent Tanggal ${document.getElementById('paTanggal').value ? tglStr : '[Pilih Tanggal]'}*
+
+● *MC & Janji PA* : ${gV('paMc')}
+
+● *Lagu Buka* : AYS ${gV('paLaguBukaNo')} ${gV('paLaguBukaJudul')}
+
+● *Ayat Inti & Doa Buka* : ${gV('paAyatDoa')}
+
+● *BAB* : ${gV('paBabNama')} ${gV('paBabJudul')}
+
+● *Funfact / Tips* : ${gV('paFunfact')}
+
+● *Games* : ${gV('paGames')}
+
+● *Acara Inti* : ${gV('paAcaraInti')}
+
+● *Lagu Tutup* : AYS ${gV('paLaguTutupNo')} ${gV('paLaguTutupJudul')}
+
+● *Doa Tutup* : ${gV('paDoaTutup')}
+
+● *Pengumuman* : ${document.getElementById('paPengumuman').value || "Ketua PA"}
+
+● *Laporan Bendahara* : ${document.getElementById('paBendahara').value || "Bendahara PA"}
+
+*Selamat Melayani~*
+*Tuhan Memberkati😇🙏*`;
+        previewText.textContent = teks;
+        return;
+    }
+
+    // --- LOGIKA TAB SABAT RAYA ---
     // Info Umum
     const tglRaw = document.getElementById('tanggal').value;
     const tglStr = formatTanggalString(tglRaw);
@@ -148,7 +183,7 @@ ${gV('khBacaanPersembahan')}
 
 ● *Lagu Persembahan*
 LSEL No. 260:
-*“Bawa Persembahanmu (ayat 1)”*
+*“Bawa Persembahanmu”*
 
 ● *Lagu Sambutan Persembahan*
 LSEL No. 21
@@ -184,6 +219,22 @@ _Janganlah kita menjauhkan diri dari pertemuan-pertemuan ibadah kita, seperti di
 Ibrani 10 : 25`;
 
     previewText.textContent = hasil;
+}
+
+// Fungsi Tab Switcher
+function switchTab(tabId) {
+    currentTab = tabId;
+    
+    // Matikan semua tombol & pane
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+    
+    // Nyalakan yang diklik
+    document.getElementById('btn-tab-' + tabId).classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
+    
+    // Update text
+    updatePreview();
 }
 
 // Tambahkan event listener untuk memanggil updatePreview tiap ada perubahan ketikan
@@ -265,16 +316,26 @@ function toggleTheme() {
     // Simpan pilihan ke localStorage
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
 
-    // Ubah ikon
-    themeToggleBtn.innerHTML = isLight ? '🌙' : '☀️';
+    // Ubah ikon & Teks
+    const icon = isLight ? '🌙' : '☀️';
+    const textTarget = isLight ? 'Tema Gelap' : 'Tema Terang';
+    const textAnim = isLight ? 'Tema Terang Diterapkan' : 'Tema Gelap Diterapkan';
+
+    themeToggleBtn.innerHTML = `${icon} ${textAnim}`;
+    themeToggleBtn.classList.add('copy-anim');
+
+    setTimeout(() => {
+        themeToggleBtn.innerHTML = `${icon} ${textTarget}`;
+        themeToggleBtn.classList.remove('copy-anim');
+    }, 1500);
 }
 
 // Cek tema yang tersimpan di localStorage saat dibuka
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'light') {
     body.classList.add('light-theme');
-    themeToggleBtn.innerHTML = '🌙';
+    themeToggleBtn.innerHTML = '🌙 Tema Gelap';
 } else {
     // Default system adalah dark
-    themeToggleBtn.innerHTML = '☀️';
+    themeToggleBtn.innerHTML = '☀️ Tema Terang';
 }
