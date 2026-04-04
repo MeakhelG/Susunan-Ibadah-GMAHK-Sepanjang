@@ -34,13 +34,13 @@ function updatePreview() {
     // Info Umum
     const tglRaw = document.getElementById('tanggal').value;
     const tglStr = formatTanggalString(tglRaw);
-    
+
     // Tweak untuk Sabat Ke dan TW supaya pakai titik-titik terpisah dari gV standar
     const sabatKeRaw = document.getElementById('sabatKe').value.trim();
     const sabatKe = sabatKeRaw ? sabatKeRaw : "....";
     const twRaw = document.getElementById('tw').value.trim();
     const tw = twRaw ? twRaw : "....";
-    
+
     const waktuMulai = gV('waktuMulai');
     const waktuSelesai = gV('waktuSelesai');
 
@@ -54,17 +54,12 @@ function updatePreview() {
 *Hari Sabat-Oh! Jadikanlah itu sebagai hari yang paling indah dan yang paling berbahagia dari hari-hari sepanjang minggu.*
 Review and Herald. 14 April 1885. 
 
+*Susunan Ibadah SABAT${typeSabatString}* 
 
-*Susunan Ibadah  SABAT${typeSabatString}* 
-
-
-*Sabat ke - ${sabatKe}   TW  - ${tw}*
+*Sabat ke - ${sabatKe} TW - ${tw}*
 ${tglStr}
 
-*Dimulai  Pukul  : ${waktuMulai} WIB - ${waktuSelesai} WIB*
-
-
-*IBADAH   SEKOLAH SABAT* 
+*Dimulai Pukul : ${waktuMulai} WIB - ${waktuSelesai} WIB*
 
 ● *Operator*
 ${gV('ssOperator')} 
@@ -72,147 +67,118 @@ ${gV('ssOperator')}
 ● *Pianist*
 ${gV('ssPianist')} 
 
-● *MC  +  Yel Yel  SS*
+
+*IBADAH SEKOLAH SABAT* 
+
+● *MC + Yel Yel SS*
 ${gV('ssMc')}
-    
-                            
-● *Lagu   Buka*
-LSEL   No. ${gV('ssLaguBukaNo')}   :                
-*"${gV('ssLaguBukaJudul')}"*                                  
-                                                                                        
-    
-● *Ayat   Inti  SS  dan  Doa Buka*
+
+● *Lagu Buka*
+LSEL No. ${gV('ssLaguBukaNo')}:
+*"${gV('ssLaguBukaJudul')}"*
+
+● *Ayat Inti SS dan Doa Buka*
 ${gV('ssAyatDoa')}
 
-
- ● *Bacaan   Berita Mission*  
+● *Bacaan Berita Mission*
 ${gV('ssMission')}
-    
-                                                                              
-● *Ringkasan   Sekolah Sabat   Dewasa*
+
+● *Ringkasan Sekolah Sabat Dewasa*
 ${gV('ssRingkasan')}
 
-
-● *Promosi   Pelayanan Perorangan*
+● *Promosi Pelayanan Perorangan*
 ${gV('ssPromosi')}
 
-                                       
-● *Lagu   Tutup* 
-LSEL No. ${gV('ssLaguTutupNo')}   :             
-*"${gV('ssLaguTutupJudul')}"*                                                                                  
+● *Lagu Tutup* 
+LSEL No. ${gV('ssLaguTutupNo')}:
+*"${gV('ssLaguTutupJudul')}"*
 
-                                                                         
-● *Doa   Tutup*
+● *Doa Tutup*
 ${gV('ssDoaTutup')}
 
 
 ● *PENGUMUMAN*
 ${document.getElementById('pengumuman').value || "Officers/Tua-Tua Jemaat"}
- 
- 
-                      
-*IBADAH KHOTBAH*
 
-
-
-● *Cerita  Alkitab Anak*
+● *Cerita Alkitab Anak*
 ${gV('khCerita')} 
 
 
- ● *Diakon / nes*                                                    
-1. ${gV('khDiakon1')}                              
-2. ${gV('khDiakon2')} 
+*IBADAH KHOTBAH*
 
+● *Diakon/Diakones*
+1. ${gV('khDiakon1')}
+2. ${gV('khDiakon2')}
 
-● *Pemimpin   Lagu*
+● *Pemimpin Lagu*
 ${gV('khPemimpinLagu')}
 
-
-● *Lagu   Pengiring Partisipan  Masuk Mimbar Atas* 
-LSEL No. 515  :
+● *Lagu Pengiring Partisipan Masuk Mimbar Atas*
+LSEL No. 515:
 *"Tuhan Ada Dalam Bait Allah"*
 
-
-● *Lagu   Pembuka*
-LSEL No. 1 :
+● *Lagu Pembuka*
+LSEL No. 1:
 *"Di Hadapan Hadirat-Mu"*
 
-
-● *Doa   Buka*
+● *Doa Buka*
 ${gV('khDoaBuka')}
 
-
-● *Ayat   Bersahutan*
+● *Ayat Bersahutan*
 ${gV('khAyatBersahutanNama')}
 *${gV('khAyatBersahutanRef')}*
 
-
 ● *Lagu Buka* 
-LSEL No  ${gV('khLaguBukaNo')}  :                                                                                                                                                                          
+LSEL No. ${gV('khLaguBukaNo')}:
 *"${gV('khLaguBukaJudul')}"*
 
+● *Lagu Pengantar Doa Syafaat*
+LSEL No. 520
+*"Sekarang Ya Tuhan"*
 
-● *Lagu  Pengantar  Doa Syafaat* 
-LSEL No. ${gV('khLaguPengantarNo')}
-*"${gV('khLaguPengantarJudul')}"*
-
-
-● *Doa   Syafaat*
+● *Doa Syafaat*
 ${gV('khDoaSyafaat')}
 
+● *Lagu Sambutan Doa Syafaat*
+LSEL No. 516
+*"Dengar Ya Tuhan"*
 
-● *Lagu  Sambutan  Doa Syafaat* 
-LSEL No. ${gV('khLaguSambutanNo')} 
-*"${gV('khLaguSambutanJudul')}"*
-
-
-● *Bacaan  Persembahan &  Persepuluhan*
+● *Bacaan Persembahan & Persepuluhan*
 ${gV('khBacaanPersembahan')}
 
+● *Lagu Persembahan*
+LSEL No. 260:
+*“Bawa Persembahanmu (ayat 1)”*
 
-● *Lagu   Persembahan*
-LSEL No. ${gV('khLaguPersDNo')}      
-*“${gV('khLaguPersDJudul')}”*
+● *Lagu Sambutan Persembahan*
+LSEL No. 21
+*"Pada-Mu Allah Ku Puji"* 
 
-
-● *Lagu   Sambutan Persembahan*       
-LSEL No. ${gV('khLaguSambutanPersNo')} 
-*"${gV('khLaguSambutanPersJudul')}"* 
-
-
-● *Doa   Persembahan*
+● *Doa Persembahan*
 ${gV('khDoaPersembahan')}
 
-
-● *Lagu  Pujian*
+● *Lagu Pujian*
 ${gV('khLaguPujian')}
-      
-                                                              
+
 ● *Ayat Inti*
 ${gV('khAyatIntiNama')} 
 *${gV('khAyatIntiRef')}*
 
-
 ● *Lagu Tema* 
-*"MISI  KITA"*
-
+*"MISI KITA"*
 
 ● *PENGKHOTBAH*
 ${gV('khPengkhotbahNama')}
 *"${gV('khPengkhotbahJudul')}"*
 
-
-● *Lagu  Tutup*
-LSEL  No  ${gV('khLaguTutupNo')}   :                                                                                                                                       
+● *Lagu Tutup*
+LSEL No ${gV('khLaguTutupNo')}:
 *"${gV('khLaguTutupJudul')}"*
 
-
-● *Doa TUTUP   dan Doa BERKAT*
+● *Doa TUTUP dan Doa BERKAT*
 ${gV('khDoaBerkat')}
 
-
 __________________________
-
 
 _Janganlah kita menjauhkan diri dari pertemuan-pertemuan ibadah kita, seperti dibiasakan oleh beberapa orang, tetapi marilah kita saling menasihati, dan semakin giat melakukannya menjelang hari Tuhan yang mendekat._
 Ibrani 10 : 25`;
@@ -236,17 +202,17 @@ function handleSelectExclusivity() {
         document.getElementById('ssPianist'),
         document.getElementById('khPemimpinLagu')
     ].filter(Boolean);
-    
+
     // Ambil list nilai yang sedang terpilih yang tidak kosong
     const selectedValues = selects.map(s => s.value).filter(v => v !== "");
-    
+
     selects.forEach(selectBox => {
         const currentValue = selectBox.value;
         Array.from(selectBox.options).forEach(option => {
-            if(option.value === "") return;
-            
+            if (option.value === "") return;
+
             // disable option ini jika orangnya sudah dipilih di dropdown lain
-            if(selectedValues.includes(option.value) && option.value !== currentValue) {
+            if (selectedValues.includes(option.value) && option.value !== currentValue) {
                 option.disabled = true;
                 option.textContent = option.value + " (Sudah Terpilih)"; // opsional: beri keterangan
             } else {
@@ -270,10 +236,9 @@ function copyToClipboard() {
 
     navigator.clipboard.writeText(teksToCopy).then(() => {
         const btnTop = document.getElementById('copyBtnTop');
-        const btnBot = document.getElementById('copyBtnBottom');
 
         // Animasi Top
-        if(btnTop) {
+        if (btnTop) {
             const defaultText = btnTop.innerHTML;
             btnTop.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Berhasil Disalin!`;
             btnTop.classList.add('copy-anim');
@@ -283,17 +248,6 @@ function copyToClipboard() {
             }, 2000);
         }
 
-        // Animasi Bottom (Icon Only)
-        if(btnBot) {
-            const defaultBot = btnBot.innerHTML;
-            btnBot.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
-            btnBot.classList.add('copy-anim');
-            setTimeout(() => {
-                btnBot.innerHTML = defaultBot;
-                btnBot.classList.remove('copy-anim');
-            }, 2000);
-        }
-        
     }).catch(err => {
         console.error('Gagal menyalin teks:', err);
         alert('Gagal menyalin teks ke clipboard.');
