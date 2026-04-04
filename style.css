@@ -419,3 +419,17 @@ body.light-theme .static-notice .badge {
         flex-direction: column;
     }
 }
+
+/* Footer */
+.app-footer {
+    text-align: center;
+    padding: 24px 0 12px 0;
+    margin-top: auto;
+    border-top: 1px dashed var(--border-color);
+    color: var(--text-sec);
+    font-size: 13px;
+    line-height: 1.8;
+}
+.app-footer p:last-child {
+    font-weight: 600;
+}
