@@ -1,0 +1,421 @@
+:root {
+    /* DEFAULT THEME: DARK */
+    --bg-main: #0B1120;
+    --bg-gradient-1: rgba(30, 58, 138, 0.3);
+    --bg-gradient-2: rgba(16, 185, 129, 0.1);
+    --bg-panel: rgba(30, 41, 59, 0.6); 
+    --bg-input: rgba(15, 23, 42, 0.8);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-focus: #3b82f6;
+    
+    --text-primary: #F8FAFC;
+    --text-sec: #94A3B8;
+    --text-placeholder: #475569;
+    --text-wa: #e2e8f0;
+    
+    --header-title: #ffffff;
+    --section-title: #60A5FA;
+    
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    
+    /* Global Variables */
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --font: 'Plus Jakarta Sans', sans-serif;
+}
+
+body.light-theme {
+    /* LIGHT THEME PALETTE */
+    --bg-main: #F8FAFC;
+    --bg-gradient-1: rgba(219, 234, 254, 0.8);
+    --bg-gradient-2: rgba(209, 250, 229, 0.6);
+    --bg-panel: rgba(255, 255, 255, 0.7);
+    --bg-input: #FFFFFF;
+    --border-color: rgba(148, 163, 184, 0.3);
+    --border-focus: #2563eb;
+    
+    --text-primary: #0F172A;
+    --text-sec: #475569;
+    --text-placeholder: #94A3B8;
+    --text-wa: #1E293B;
+    
+    --header-title: #0F172A;
+    --section-title: #2563eb;
+    
+    --shadow-color: rgba(148, 163, 184, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(at 0% 0%, var(--bg-gradient-1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, var(--bg-gradient-2) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: var(--font);
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Container utama */
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 20px 32px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    transition: all 0.4s ease;
+}
+
+.app-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--header-title);
+}
+
+.app-header p {
+    color: var(--text-sec);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Layout 2 Kolom */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Panel Kiri (Form) */
+.form-panel {
+    background: var(--bg-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    padding: 32px;
+    transition: all 0.4s ease;
+}
+
+.form-section {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px dashed var(--border-color);
+}
+.form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.form-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--section-title);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Form Inputs */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-row-half {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.input-row-song {
+    display: flex;
+    gap: 12px;
+}
+.input-row-song input:first-child {
+    flex: 1; /* Nomor Lagu */
+    min-width: 80px;
+}
+.input-row-song input:last-child {
+    flex: 3; /* Judul Lagu */
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-sec);
+}
+
+input, select {
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8FAFC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+body.light-theme select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E293B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+select option {
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+}
+
+input::placeholder {
+    color: var(--text-placeholder);
+}
+
+input:focus, select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background-color: var(--bg-input);
+}
+
+body:not(.light-theme) input:focus, body:not(.light-theme) select:focus {
+    background-color: rgba(15, 23, 42, 0.95);
+}
+
+/* Panel Kanan (Preview) */
+.preview-panel {
+    background: rgba(15, 23, 42, 0.7); 
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px var(--shadow-color), inset 0 0 20px rgba(0,0,0,0.05);
+    
+    /* Sticky position agar menetap di layar saat scroll */
+    position: sticky;
+    top: 24px;
+    height: calc(100vh - 48px);
+    transition: all 0.4s ease;
+}
+
+body.light-theme .preview-panel {
+    background: #FFFFFF;
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+.preview-header {
+    padding: 16px 24px;
+    background: rgba(148, 163, 184, 0.05);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+}
+
+.preview-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.preview-scroll {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+    /* Custom Scrollbar for preview */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+}
+.preview-scroll::-webkit-scrollbar { width: 6px; }
+.preview-scroll::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+/* Font untuk teks WA */
+.whatsapp-text {
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-wa);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), #2563eb);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #60A5FA, var(--accent));
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-icon:hover {
+    background: var(--border-color);
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+body.light-theme .badge-success { color: #059669; }
+
+/* Static Notice Box */
+.static-notice {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    margin: 8px 0;
+}
+.static-notice .badge {
+    margin-bottom: 8px;
+    background: rgba(59, 130, 246, 0.2);
+    color: #93C5FD;
+}
+body.light-theme .static-notice .badge {
+    background: rgba(59, 130, 246, 0.15);
+    color: #2563eb;
+}
+.static-notice p {
+    font-size: 13px;
+    color: var(--text-sec);
+    margin-bottom: 4px;
+}
+
+/* Animations */
+@keyframes copySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+.copy-anim {
+    animation: copySuccess 0.4s ease;
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white !important;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .preview-panel {
+        position: relative;
+        top: 0;
+        height: 600px;
+        margin-top: 24px;
+    }
+}
+@media (max-width: 600px) {
+    .app-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    .header-actions {
+        width: 100%;
+    }
+    .header-actions .btn-primary {
+        flex: 1;
+    }
+    .input-row-half, .input-row-song {
+        flex-direction: column;
+    }
+}
