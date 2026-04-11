@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator Susunan Ibadah</title>
+
+    <!-- ===================== -->
+    <!-- FONTS & STYLESHEET    -->
+    <!-- ===================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
@@ -14,7 +18,10 @@
 
 <body>
     <div class="app-container">
-        <!-- HEADER -->
+
+        <!-- ========================== -->
+        <!-- HEADER: Judul & Tema       -->
+        <!-- ========================== -->
         <header class="app-header">
             <div>
                 <h1>Susunan Ibadah</h1>
@@ -29,11 +36,16 @@
         </header>
 
         <div class="main-content">
-            <!-- PANEL KIRI: FORMULIR -->
+
+            <!-- ====================================== -->
+            <!-- PANEL KIRI: FORMULIR INPUT             -->
+            <!-- ====================================== -->
             <form id="generatorForm" class="form-panel">
                 <div class="form-scroll">
 
-                    <!-- TAB NAVIGATION -->
+                    <!-- ========================== -->
+                    <!-- TAB NAVIGATION             -->
+                    <!-- ========================== -->
                     <div class="tabs-nav">
                         <button type="button" class="tab-btn active" id="btn-tab-sabat"
                             onclick="switchTab('sabat')">Sabat Raya</button>
@@ -43,9 +55,16 @@
                             Malam</button>
                     </div>
 
-                    <!-- TAB KONTEN 1: SABAT RAYA -->
+                    <!-- ============================================================ -->
+                    <!-- TAB 1: SABAT RAYA                                            -->
+                    <!-- Berisi 3 section: Informasi Umum, Sekolah Sabat, Khotbah     -->
+                    <!-- ============================================================ -->
                     <div id="tab-sabat" class="tab-pane active">
-                        <!-- SECTION: INFORMASI UMUM -->
+
+                        <!-- -------------------------------- -->
+                        <!-- SECTION 1.1: INFORMASI UMUM      -->
+                        <!-- Tanggal, Jenis Sabat, Waktu, POS  -->
+                        <!-- -------------------------------- -->
                         <section class="form-section">
                             <h2>Informasi Umum</h2>
                             <div class="form-grid">
@@ -80,6 +99,7 @@
                                         <input type="text" id="waktuSelesai" value="12.00">
                                     </div>
                                 </div>
+                                <!-- Dropdown Operator & Pianist (Eksklusif, saling kunci) -->
                                 <div class="input-row-half">
                                     <div class="input-group">
                                         <label for="ssOperator">Operator</label>
@@ -103,7 +123,10 @@
                             </div>
                         </section>
 
-                        <!-- SECTION: SEKOLAH SABAT -->
+                        <!-- -------------------------------- -->
+                        <!-- SECTION 1.2: IBADAH SEKOLAH SABAT -->
+                        <!-- MC, Lagu, Ayat, Mission, dll      -->
+                        <!-- -------------------------------- -->
                         <section class="form-section">
                             <h2>Ibadah Sekolah Sabat</h2>
                             <div class="form-grid">
@@ -158,10 +181,14 @@
                             </div>
                         </section>
 
-                        <!-- SECTION: IBADAH KHOTBAH -->
+                        <!-- ---------------------------------------- -->
+                        <!-- SECTION 1.3: IBADAH KHOTBAH              -->
+                        <!-- Diakon, Pemimpin Lagu, Doa, Pengkhotbah  -->
+                        <!-- ---------------------------------------- -->
                         <section class="form-section">
                             <h2>Ibadah Khotbah</h2>
                             <div class="form-grid">
+                                <!-- Diakon/Diakones -->
                                 <div class="input-row-half">
                                     <div class="input-group">
                                         <label for="khDiakon1">Diakon/Diakones 1</label>
@@ -172,17 +199,19 @@
                                         <input type="text" id="khDiakon2" placeholder="Nama (contoh: Sdr Hanannia)">
                                     </div>
                                 </div>
+
+                                <!-- Dropdown Pemimpin Lagu (Eksklusif, saling kunci dengan POS) -->
                                 <div class="input-group">
                                     <label for="khPemimpinLagu">Pemimpin Lagu</label>
                                     <select id="khPemimpinLagu" class="exclusive-select">
                                         <option value="">-- Pilih Pemimpin Lagu --</option>
-                                        <option value="Sdr Jimmy">Sdr Jimmy</option>
-                                        <option value="Sdri Tata">Sdri Tata</option>
+                                        <option value="Sdra. Jimmy">Sdra. Jimmy</option>
+                                        <option value="Sdri. Tata">Sdri. Tata</option>
                                         <option value="Ibu Wiwin">Ibu Wiwin</option>
                                     </select>
                                 </div>
 
-                                <!-- Static songs notice -->
+                                <!-- Info Lagu Tetap (Tidak bisa diedit, hanya tampilan) -->
                                 <div class="static-notice">
                                     <span class="badge">Lagu Khotbah Tetap</span>
                                     <p><strong>Lagu Mimbar:</strong> LSEL No. 515 "Tuhan Ada Dalam Bait Allah"</p>
@@ -194,11 +223,13 @@
                                     </p>
                                 </div>
 
+                                <!-- Doa Buka -->
                                 <div class="input-group">
                                     <label for="khDoaBuka">Doa Buka</label>
                                     <input type="text" id="khDoaBuka" placeholder="Nama pendoa (contoh: Sdr Ricky K)">
                                 </div>
 
+                                <!-- Ayat Bersahutan -->
                                 <div class="input-group">
                                     <label>Ayat Bersahutan</label>
                                     <div class="input-row-song">
@@ -209,6 +240,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Lagu Buka Khotbah -->
                                 <div class="input-group">
                                     <label>Lagu Buka (LSEL)</label>
                                     <div class="input-row-song">
@@ -217,21 +249,25 @@
                                     </div>
                                 </div>
 
+                                <!-- Doa Syafaat -->
                                 <div class="input-group">
                                     <label for="khDoaSyafaat">Doa Syafaat</label>
                                     <input type="text" id="khDoaSyafaat" placeholder="Nama pendoa">
                                 </div>
 
+                                <!-- Persembahan -->
                                 <div class="input-group">
                                     <label for="khBacaanPersembahan">Bacaan Persembahan & Persepuluhan</label>
                                     <input type="text" id="khBacaanPersembahan" placeholder="Nama petugas">
                                 </div>
 
+                                <!-- Doa Persembahan -->
                                 <div class="input-group">
                                     <label for="khDoaPersembahan">Doa Persembahan</label>
                                     <input type="text" id="khDoaPersembahan" placeholder="Nama pendoa">
                                 </div>
 
+                                <!-- Lagu Pujian (dengan Toggle tampilkan/sembunyikan) -->
                                 <div class="input-group">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <label for="khLaguPujian">Lagu Pujian</label>
@@ -246,6 +282,7 @@
                                         placeholder="Contoh: SSA Sepanjang / VG Kaum Pria">
                                 </div>
 
+                                <!-- Ayat Inti Khotbah -->
                                 <div class="input-group">
                                     <label>Ayat Inti Khotbah</label>
                                     <div class="input-row-song">
@@ -256,11 +293,13 @@
                                     </div>
                                 </div>
 
+                                <!-- Info Lagu Tema Tetap Per Tahun -->
                                 <div class="static-notice">
                                     <span class="badge">Lagu Khotbah Tetap Per Tahun</span>
                                     <p><strong>Lagu Tema:</strong> "MISI KITA"</p>
                                 </div>
 
+                                <!-- Pengkhotbah -->
                                 <div class="input-group">
                                     <label>PENGKHOTBAH</label>
                                     <div class="input-row-song">
@@ -271,6 +310,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Lagu Tutup Khotbah -->
                                 <div class="input-group">
                                     <label>Lagu Tutup (LSEL)</label>
                                     <div class="input-row-song">
@@ -279,15 +319,20 @@
                                     </div>
                                 </div>
 
+                                <!-- Doa Berkat -->
                                 <div class="input-group">
                                     <label for="khDoaBerkat">Doa TUTUP dan Doa BERKAT</label>
-                                    <input type="text" id="khDoaBerkat" placeholder="Nama Pdt / Pendoa">
+                                    <input type="text" id="khDoaBerkat" placeholder="Nama Pdt / Pendoa"
+                                        value="Pdt. Benny Lumbantobing">
                                 </div>
                             </div>
                         </section>
                     </div> <!-- End tab-sabat -->
 
-                    <!-- TAB KONTEN 2: PEMUDA ADVENT -->
+                    <!-- ============================================================ -->
+                    <!-- TAB 2: PEMUDA ADVENT (PA)                                    -->
+                    <!-- Berisi 1 section: Ibadah Pemuda Advent                       -->
+                    <!-- ============================================================ -->
                     <div id="tab-pa" class="tab-pane">
                         <section class="form-section">
                             <h2>Ibadah Pemuda Advent</h2>
@@ -359,7 +404,10 @@
                         </section>
                     </div> <!-- End tab-pa -->
 
-                    <!-- TAB KONTEN 3: RABU MALAM -->
+                    <!-- ============================================================ -->
+                    <!-- TAB 3: RABU MALAM                                            -->
+                    <!-- Berisi 1 section: Ibadah Rabu Malam (via Zoom)               -->
+                    <!-- ============================================================ -->
                     <div id="tab-rabu" class="tab-pane">
                         <section class="form-section">
                             <h2>Ibadah Rabu Malam</h2>
@@ -381,6 +429,7 @@
                                     <input type="text" id="rmKesaksian"
                                         placeholder="Nama petugas (contoh: Kel Enas Febryanto)">
                                 </div>
+                                <!-- Pujian (dengan Toggle tampilkan/sembunyikan) -->
                                 <div class="input-group">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <label for="rmPujian">Pujian</label>
@@ -413,7 +462,9 @@
                 </div>
             </form>
 
-            <!-- PANEL KANAN: PREVIEW -->
+            <!-- ====================================== -->
+            <!-- PANEL KANAN: LIVE PREVIEW TEKS WA      -->
+            <!-- ====================================== -->
             <div class="preview-panel">
                 <div class="preview-header">
                     <h2>Live Preview Teks</h2>
@@ -432,14 +483,21 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
+        <!-- ========================== -->
+        <!-- FOOTER                     -->
+        <!-- ========================== -->
         <footer class="app-footer">
-            <p>&copy; 2026 - v1.2.0. GMAHK Sepanjang. All rights reserved.</p>
+            <p>&copy; 2026 - v1.3.0. GMAHK Sepanjang. All rights reserved.</p>
             <p>Developed by Meakhel Gunawan</p>
         </footer>
     </div>
 
-    <!-- Script Interaktif -->
+    <!-- ====================================== -->
+    <!-- SCRIPTS                                -->
+    <!-- 1. Supabase CDN (wajib dimuat duluan)  -->
+    <!-- 2. script.js (logika aplikasi)         -->
+    <!-- ====================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>
 
