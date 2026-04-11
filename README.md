@@ -2,14 +2,15 @@
 
 Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
 
-**Versi App:** v1.1.0
+**Versi App:** v1.2.0
 
-## Apa yang baru di v1.1.0 🎉
-- **Integrasi Ekosistem Multi-Tab:** Form Ibadah kini dipecah dalam tab-tab yang sangat mulus layaknya aplikasi modern, tanpa proses memuat halaman ulang.
-- **Generator Ibadah PA:** Penambahan tab khusus berisi susunan form lengkap yang ditujukan untuk pembuatan **Susunan Ibadah Pemuda Advent (PA)**.
-- **Efisiensi Struktur Sabat Raya:** Penyederhanaan form input lagu-lagu Ibadah Sabat menjadi pola statis agar operator tidak perlu lelah mengetik berulang.
+## Apa yang baru di v1.2.0 🎉
+- **Generator Ibadah Rabu Malam:** Penambahan tab dan form interaktif khusus untuk menjadwalkan pelayanan Zoom **Ibadah Rabu Malam**.
+- **Peningkatan Responsivitas (*Mobile-friendly*):** Navigasi tab dan elemen form ganda kini akan otomatis terlipat menjadi satu baris memanjang saat diakses melalui perangkat yang layarnya lebih sempit.
+- **Toggle Dinamis Lagu Pujian:** Opsi *checkbox* "Tampilkan" untuk menghilangkan atau memunculkan rentetan teks "Lagu Pujian / VG" pada Live Preview secara *real-time*.
 
-## Fitur Inti (dari v1.0.0)
+## Fitur Inti (dari rilis sebelumnya)
+- **Integrasi Ekosistem Multi-Tab:** Form Ibadah dipecah dalam tab-tab yang sangat mulus layaknya aplikasi modern (Sabat Raya & Pemuda Advent), tanpa proses memuat halaman ulang.
 - **Live Preview:** Teks akan berubah seketika (*real-time*) di panel sebelah kanan saat Anda mengetik di formulir pengisian.
 - **Copy to Clipboard:** Salin format teks WhatsApp (lengkap dengan struktur spasi ganda, miring, dan cetak tebal) secara presisi dengan animasi yang solid.
 - **Smart Validation Dropdown:** Fitur eksklusivitas di mana sistem mengunci posisi *Operator*, *Pianist*, dan *Pemimpin Lagu* otomatis jika peserta terkait sudah ditugaskan (*anti-double data*).
@@ -32,7 +33,7 @@ Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan r
 ## 🚀 Roadmap (Rencana Fitur Mendatang)
 Aplikasi ini direncanakan akan terus berekspansi ke depannya untuk menampung seluruh alur peribadatan jemaat. Fitur yang sudah dijadwalkan:
 - [x] Susunan Ibadah PA (Pemuda Advent) - *Selesai di v1.1.0*
-- [ ] Susunan Ibadah Rabu Malam
+- [x] Susunan Ibadah Rabu Malam - *Selesai di v1.2.0*
 - [ ] Susunan Vesper Buka Sabat
 
 *Note: Pondasi sistem Multi-Tab sudah berhasil direalisasikan. Kini menambahkan susunan jadwal gereja baru dapat diintegrasikan dengan sangat mudah.*

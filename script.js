@@ -10,6 +10,18 @@ const namaBulan = [
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
 
+function formatTanggalRabu(dateString) {
+    if (!dateString) return "[Pilih Tanggal]";
+    const dateObj = new Date(dateString);
+    if (isNaN(dateObj)) return "[Pilih Tanggal]";
+
+    const tg = String(dateObj.getDate()).padStart(2, '0');
+    const bln = namaBulan[dateObj.getMonth()];
+    const thn = dateObj.getFullYear();
+
+    return `Rabu,  ${tg} ${bln} ${thn}`;
+}
+
 // Helper untuk format Tanggal
 function formatTanggalString(dateString) {
     if (!dateString) return "[Pilih Tanggal]";
@@ -32,6 +44,48 @@ function gV(id) {
 
 // Fungsi utama generator teks
 function updatePreview() {
+
+    // --- LOGIKA TAB RABU MALAM ---
+    if (currentTab === 'rabu') {
+        const tglStr = formatTanggalRabu(document.getElementById('rmTanggal').value);
+
+        const teks = `"JADWAL IBADAH  RABU MALAM" : 
+
+GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
+
+Topik: Ibadah Rabu Malam GMAHK Sepanjang 
+Waktu: ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}; Jam: 19:00 WIB (ontime)
+
+Bergabung ke Rapat Zoom
+https://us06web.zoom.us/j/83615502100?pwd=bmRVcGaCg35OCJWbaD7M7o22SEMqKl.1
+
+ID Rapat: 836 1550 2100
+Kode Sandi: sepanjang
+
+
+🌟 JADWAL PELAYANAN 
+⛪️ Konferens Jawa Kawasan Timur
+🗓️ ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}
+🕕 Pukul 19.00 WIB (Malam)
+
+Pelayan Ibadah:
+* Host: ${gV('rmHost')}
+* MC, Doa: ${gV('rmMcDoa')}
+* Kesaksian: ${gV('rmKesaksian')}
+${document.getElementById('togglePujianRabu').checked ? `* _Pujian: ${document.getElementById('rmPujian').value.trim() ? document.getElementById('rmPujian').value.trim() + '_' : '_'}\n` : ''}* Firman Tuhan: ${gV('rmFirman')}
+* Doa Tutup: ${gV('rmDoaTutup')}
+* Ucapan Terima kasih & Pengumuman: ${document.getElementById('rmPengumuman').value || "Ketua"}
+
+📖 “Dan apa saja yang kamu minta dalam doa dengan penuh kepercayaan, kamu akan menerimanya.”
+— Matius 21:22
+
+✨ Selamat Melayani
+🙏 Tuhan Memberkati`;
+        previewText.textContent = teks;
+        return;
+    }
+
+    // --- LOGIKA TAB PEMUDA ADVENT (PA) ---
     if (currentTab === 'pa') {
         const tglStr = formatTanggalString(document.getElementById('paTanggal').value);
         const teks = `*Selamat Sabat dan Selamat Malam KUPAS Berikut adalah :* 
@@ -39,11 +93,11 @@ function updatePreview() {
 
 ● *MC & Janji PA* : ${gV('paMc')}
 
-● *Lagu Buka* : AYS ${gV('paLaguBukaNo')} ${gV('paLaguBukaJudul')}
+● *Lagu Buka* : AYS ${gV('paLaguBukaNo')}: *"${gV('paLaguBukaJudul')}"* 
 
 ● *Ayat Inti & Doa Buka* : ${gV('paAyatDoa')}
 
-● *BAB* : ${gV('paBabNama')} ${gV('paBabJudul')}
+● *BAB* : ${gV('paBabNama')} (${gV('paBabJudul')})
 
 ● *Funfact / Tips* : ${gV('paFunfact')}
 
@@ -51,7 +105,7 @@ function updatePreview() {
 
 ● *Acara Inti* : ${gV('paAcaraInti')}
 
-● *Lagu Tutup* : AYS ${gV('paLaguTutupNo')} ${gV('paLaguTutupJudul')}
+● *Lagu Tutup* : AYS ${gV('paLaguTutupNo')}: *"${gV('paLaguTutupJudul')}"* 
 
 ● *Doa Tutup* : ${gV('paDoaTutup')}
 
@@ -169,7 +223,7 @@ LSEL No. ${gV('khLaguBukaNo')}:
 
 ● *Lagu Pengantar Doa Syafaat*
 LSEL No. 520
-*"Sekarang Ya Tuhan"*
+*"Kami Datang Dalam Doa"*
 
 ● *Doa Syafaat*
 ${gV('khDoaSyafaat')}
@@ -192,10 +246,7 @@ LSEL No. 21
 ● *Doa Persembahan*
 ${gV('khDoaPersembahan')}
 
-● *Lagu Pujian*
-${gV('khLaguPujian')}
-
-● *Ayat Inti*
+${document.getElementById('togglePujianSabat').checked ? `● *Lagu Pujian*\n${gV('khLaguPujian')}\n\n` : ''}● *Ayat Inti*
 ${gV('khAyatIntiNama')} 
 *${gV('khAyatIntiRef')}*
 
@@ -224,15 +275,15 @@ Ibrani 10 : 25`;
 // Fungsi Tab Switcher
 function switchTab(tabId) {
     currentTab = tabId;
-    
+
     // Matikan semua tombol & pane
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-    
+
     // Nyalakan yang diklik
     document.getElementById('btn-tab-' + tabId).classList.add('active');
     document.getElementById('tab-' + tabId).classList.add('active');
-    
+
     // Update text
     updatePreview();
 }

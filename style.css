@@ -468,9 +468,23 @@ body.light-theme .static-notice .badge {
         flex: 1;
     }
 
-    .input-row-half,
+    .input-row-half {
+        grid-template-columns: 1fr;
+    }
+
     .input-row-song {
         flex-direction: column;
+    }
+
+    .tabs-nav {
+        flex-direction: column;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .tab-btn {
+        width: 100%;
+        white-space: normal;
     }
 }
 

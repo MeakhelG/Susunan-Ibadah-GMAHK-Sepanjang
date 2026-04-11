@@ -39,6 +39,8 @@
                             onclick="switchTab('sabat')">Sabat Raya</button>
                         <button type="button" class="tab-btn" id="btn-tab-pa" onclick="switchTab('pa')">Pemuda Advent
                             (PA)</button>
+                        <button type="button" class="tab-btn" id="btn-tab-rabu" onclick="switchTab('rabu')">Rabu
+                            Malam</button>
                     </div>
 
                     <!-- TAB KONTEN 1: SABAT RAYA -->
@@ -185,7 +187,7 @@
                                     <span class="badge">Lagu Khotbah Tetap</span>
                                     <p><strong>Lagu Mimbar:</strong> LSEL No. 515 "Tuhan Ada Dalam Bait Allah"</p>
                                     <p><strong>Lagu Pembuka:</strong> LSEL No. 1 "Di Hadapan Hadirat-Mu"</p>
-                                    <p><strong>Lagu Pengantar Syafaat:</strong> LSEL No. 520 "Sekarang Ya Tuhan"</p>
+                                    <p><strong>Lagu Pengantar Syafaat:</strong> LSEL No. 520 "Kami Datang Dalam Doa"</p>
                                     <p><strong>Lagu Sambutan Syafaat:</strong> LSEL No. 516 "Dengar Ya Tuhan"</p>
                                     <p><strong>Lagu Persembahan:</strong> LSEL No. 260 "Bawa Persembahanmu"</p>
                                     <p><strong>Lagu Sambutan Persembahan:</strong> LSEL No. 21 "Pada-Mu Allah Ku Puji"
@@ -231,7 +233,15 @@
                                 </div>
 
                                 <div class="input-group">
-                                    <label for="khLaguPujian">Lagu Pujian / VG Bersama</label>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label for="khLaguPujian">Lagu Pujian</label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--accent);">
+                                            <input type="checkbox" id="togglePujianSabat" checked
+                                                style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                            Tampilkan
+                                        </label>
+                                    </div>
                                     <input type="text" id="khLaguPujian"
                                         placeholder="Contoh: SSA Sepanjang / VG Kaum Pria">
                                 </div>
@@ -306,7 +316,8 @@
                                 <div class="input-group">
                                     <label>Belajar Alkitab Bersama (BAB)</label>
                                     <div class="input-row-song">
-                                        <input type="text" id="paBabNama" placeholder="Nama pembawa" style="flex: 1;">
+                                        <input type="text" id="paBabNama" placeholder="Nama pembawa"
+                                            value="Pdt. Benny Lumbantobing" style="flex: 1;">
                                         <input type="text" id="paBabJudul" placeholder="Topik/Ayat (contoh: Wahyu 7)"
                                             style="flex: 1;">
                                     </div>
@@ -348,6 +359,57 @@
                         </section>
                     </div> <!-- End tab-pa -->
 
+                    <!-- TAB KONTEN 3: RABU MALAM -->
+                    <div id="tab-rabu" class="tab-pane">
+                        <section class="form-section">
+                            <h2>Ibadah Rabu Malam</h2>
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label for="rmTanggal">Tanggal</label>
+                                    <input type="date" id="rmTanggal" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmHost">Host</label>
+                                    <input type="text" id="rmHost" placeholder="Nama Host (contoh: Ricky K)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmMcDoa">MC, Doa</label>
+                                    <input type="text" id="rmMcDoa" placeholder="Nama MC/Doa (contoh: Meakhel G)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmKesaksian">Kesaksian</label>
+                                    <input type="text" id="rmKesaksian"
+                                        placeholder="Nama petugas (contoh: Kel Enas Febryanto)">
+                                </div>
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label for="rmPujian">Pujian</label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--accent);">
+                                            <input type="checkbox" id="togglePujianRabu" checked
+                                                style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                            Tampilkan
+                                        </label>
+                                    </div>
+                                    <input type="text" id="rmPujian" placeholder="Contoh: VG Kaum Pria">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmFirman">Firman Tuhan</label>
+                                    <input type="text" id="rmFirman"
+                                        placeholder="Nama Pembicara (contoh: Irfan Haniffa)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmDoaTutup">Doa Tutup</label>
+                                    <input type="text" id="rmDoaTutup" placeholder="Nama Pendoa (contoh: Jimmy T)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmPengumuman">Ucapan Terima kasih & Pengumuman</label>
+                                    <input type="text" id="rmPengumuman" value="Ketua" placeholder="Petugas pengumuman">
+                                </div>
+                            </div>
+                        </section>
+                    </div> <!-- End tab-rabu -->
+
                 </div>
             </form>
 
@@ -372,7 +434,7 @@
 
         <!-- FOOTER -->
         <footer class="app-footer">
-            <p>&copy; 2026 - v1.1.0. GMAHK Sepanjang. All rights reserved.</p>
+            <p>&copy; 2026 - v1.2.0. GMAHK Sepanjang. All rights reserved.</p>
             <p>Developed by Meakhel Gunawan</p>
         </footer>
     </div>
