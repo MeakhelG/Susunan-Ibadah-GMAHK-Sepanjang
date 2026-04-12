@@ -718,3 +718,336 @@ async function fetchAndFillNextSabbathSchedule() {
 
 // Eksekusi Auto-Fill saat halaman selesai dimuat
 window.addEventListener('DOMContentLoaded', fetchAndFillNextSabbathSchedule);
+
+
+/* ============================================================
+   11. ADMIN AUTH & MODAL
+   ============================================================ */
+function openLoginModal() {
+    document.getElementById('loginModal').classList.add('active');
+    document.getElementById('loginErrorMsg').style.display = 'none';
+}
+
+function closeLoginModal() {
+    document.getElementById('loginModal').classList.remove('active');
+}
+
+async function handleLogin() {
+    const email = document.getElementById('adminEmail').value;
+    const password = document.getElementById('adminPassword').value;
+    const btn = document.getElementById('loginSubmitBtn');
+
+    if (!email || !password) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Email dan Password harus diisi!' });
+        return;
+    }
+
+    btn.innerHTML = "Memuat...";
+    btn.disabled = true;
+
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        // Login sukses
+        closeLoginModal();
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Berhasil',
+            text: 'Selamat datang di Dashboard Admin.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Gagal Login', text: 'Email atau password salah.' });
+        console.error("Login Error:", err);
+    } finally {
+        btn.innerHTML = "Login";
+        btn.disabled = false;
+    }
+}
+
+async function handleLogout() {
+    Swal.fire({
+        title: 'Keluar',
+        text: "Anda yakin ingin logout dari panel Admin?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#475569',
+        confirmButtonText: 'Ya, Logout'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) {
+                console.error("Logout Error:", error);
+                Swal.fire('Error', 'Gagal memproses logout.', 'error');
+            } else {
+                Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Anda telah logout.', timer: 1500, showConfirmButton: false });
+            }
+        }
+    });
+}
+
+// ============================================================
+// 12. ADMIN DASHBOARD & CRUD LOGIC (FASE 4)
+// ============================================================
+let currentAdminTable = 'Tabel POS';
+let currentEditId = null;
+
+// Cek status secara realtime (Apakah sedang login atau tidak?)
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    const loginBtn = document.getElementById('adminLoginBtn');
+    const generatorView = document.getElementById('generatorView');
+    const adminDashboardView = document.getElementById('adminDashboardView');
+    
+    if (session) {
+        // Admin sedang login
+        loginBtn.innerHTML = "🔒 Logout Admin";
+        loginBtn.onclick = handleLogout;
+        loginBtn.style.color = "white";
+        loginBtn.style.background = "#ef4444"; 
+        loginBtn.style.borderColor = "#dc2626";
+        
+        // Tampilkan Dashboard, sembunyikan Generator
+        if (generatorView) generatorView.style.display = 'none';
+        if (adminDashboardView) adminDashboardView.style.display = 'flex';
+        
+        // Otomatis muat data tabel
+        switchAdminTab(currentAdminTable);
+    } else {
+        // User biasa (tidak login)
+        loginBtn.innerHTML = "🔑 Admin";
+        loginBtn.onclick = openLoginModal;
+        loginBtn.style.color = ""; 
+        loginBtn.style.background = "";
+        loginBtn.style.borderColor = "";
+        
+        // Tampilkan Generator, sembunyikan Dashboard
+        if (generatorView) generatorView.style.display = 'grid'; // asalnya display grid
+        if (adminDashboardView) adminDashboardView.style.display = 'none';
+        
+        // Jika logout, kita segarkan data public generator
+        fetchAndFillNextSabbathSchedule();
+    }
+});
+
+function switchAdminTab(tableName) {
+    currentAdminTable = tableName;
+    
+    // Update tombol nav (Sidebar)
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    if (tableName === 'Tabel POS') document.getElementById('btn-adm-pos').classList.add('active');
+    if (tableName === 'Tabel SS') document.getElementById('btn-adm-ss').classList.add('active');
+    if (tableName === 'Tabel Khotbah') document.getElementById('btn-adm-khotbah').classList.add('active');
+    
+    document.getElementById('adminTableTitle').innerText = tableName;
+    
+    // Mulai tarik data
+    loadAdminTableData(tableName);
+}
+
+async function loadAdminTableData(tableName) {
+    const tbody = document.getElementById('adminTableBody');
+    const thead = document.getElementById('adminTableHead');
+    
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td></tr>`;
+    thead.innerHTML = ''; 
+
+    try {
+        const { data, error } = await supabaseClient
+            .from(tableName)
+            .select('*')
+            .order('Tanggal', { ascending: false }) // Yang terbaru di atas
+            .limit(100);
+            
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Belum ada data tersedia.</td></tr>`;
+            return;
+        }
+
+        // Buat kolom header (Kita filter kolom sistem yang tersembunyi jika perlu, tapi biarkan saja)
+        const columns = Object.keys(data[0]).filter(col => col.toLowerCase() !== 'created_at');
+        
+        let headerHTML = '';
+        columns.forEach(col => { headerHTML += `<th>${col}</th>`; });
+        headerHTML += `<th>Aksi</th>`;
+        thead.innerHTML = headerHTML;
+        
+        // Buat baris tabel
+        let bodyHTML = '';
+        data.forEach(row => {
+            let rowHTML = `<tr>`;
+            columns.forEach(col => {
+                let cellData = row[col];
+                // Jika teks terlalu kepanjangan, potong visualnya
+                if (typeof cellData === 'string' && cellData.length > 50) {
+                    cellData = cellData.substring(0, 50) + '...';
+                }
+                if (cellData === null || cellData === undefined) cellData = '-';
+                
+                // Warnai baris tanggal dengan badge biar cantik
+                if (col.toLowerCase() === 'tanggal') {
+                     // potong jamnya (ambil YYYY-MM-DD)
+                     let d = cellData.split(' ')[0].split('T')[0];
+                     rowHTML += `<td><span class="badge badge-success">${d}</span></td>`;
+                } else {
+                     rowHTML += `<td>${cellData}</td>`;
+                }
+            });
+            
+            // Format aman json
+            const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+            
+            rowHTML += `
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;" onclick="openFormModal('${safeRowJson}')">Edit</button>
+                    </div>
+                </td>
+            </tr>`;
+            bodyHTML += rowHTML;
+        });
+        tbody.innerHTML = bodyHTML;
+        
+    } catch (err) {
+        console.error("Gagal memuat tabel:", err);
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #ef4444; padding: 20px;">Error: Gagal memuat data dari server. ${err.message}</td></tr>`;
+    }
+}
+
+function openFormModal(rowDataStr = null) {
+    const modal = document.getElementById('dataFormModal');
+    const title = document.getElementById('formModalTitle');
+    const container = document.getElementById('dynamicFormContainer');
+    
+    modal.classList.add('active');
+    
+    let rowData = null;
+    currentEditId = null;
+    
+    if (rowDataStr) {
+        rowData = JSON.parse(rowDataStr);
+        currentEditId = rowData.Id || rowData.id; 
+        title.innerText = "Edit Jadwal - " + currentAdminTable;
+    } else {
+        title.innerText = "Tambah Jadwal Baru - " + currentAdminTable;
+    }
+    
+    // Tentukan kolom dinamis
+    let schema = [];
+    if (currentAdminTable === 'Tabel POS') {
+        schema = ['Tanggal', 'Pianist', 'Operator', 'Soundman'];
+    } else if (currentAdminTable === 'Tabel Khotbah') {
+        schema = ['Tanggal', 'Khotbah', 'DoaSyafaat', 'BacaanPersembahan', 'PemimpinLagu', 'DiakenDiaken'];
+    } else if (currentAdminTable === 'Tabel SS') {
+        schema = ['Tanggal', 'MC', 'AyatIntiDoaBuka', 'BeritaMision', 'RingkasanSS', 'PelayananPerorangan'];
+    }
+
+    let formHTML = '';
+    schema.forEach(col => {
+        let value = (rowData && rowData[col]) ? rowData[col] : '';
+        let inputType = 'text';
+        
+        if (col.toLowerCase().includes('tanggal')) {
+            inputType = 'date';
+            if (value && value.includes('T')) value = value.split('T')[0];
+            else if (value && value.includes(' ')) value = value.split(' ')[0];
+        }
+        
+        formHTML += `
+            <div class="input-group">
+                <label>${col.replace(/([A-Z])/g, ' $1').trim()}</label>
+                <input type="${inputType}" id="dyn_${col}" value="${value}">
+            </div>
+        `;
+    });
+    
+    container.innerHTML = formHTML;
+}
+
+function closeFormModal() {
+    document.getElementById('dataFormModal').classList.remove('active');
+}
+
+async function simpanDataTabel() {
+    const btn = document.getElementById('saveDataBtn');
+    btn.innerHTML = "Menyimpan...";
+    btn.disabled = true;
+
+    // Ambil data dari elemen dinamis
+    let payload = {};
+    let isDateEmpty = false;
+    const inputs = document.querySelectorAll('#dynamicFormContainer input');
+    
+    inputs.forEach(input => {
+        const colName = input.id.replace('dyn_', '');
+        payload[colName] = input.value;
+        if(colName === 'Tanggal' && !input.value) isDateEmpty = true;
+    });
+
+    if (isDateEmpty) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Kolom Tanggal wajib diisi.' });
+        btn.innerHTML = "Simpan Data";
+        btn.disabled = false;
+        return;
+    }
+
+    // Ubah string kosong jadi null
+    Object.keys(payload).forEach(k => {
+        if (payload[k] === "") payload[k] = "-";
+    });
+
+    try {
+        if (currentEditId) {
+            // Mode Update: Kita coba tembak kolom Primary Key 'Id' (huruf besar dulu)
+            let result = await supabaseClient
+                .from(currentAdminTable)
+                .update(payload)
+                .eq('Id', currentEditId);
+                
+            // Jika PostgreSQL mengamuk karena bilang 'Id' huruf besar tidak ada, tes pakai 'id' huruf kecil
+            if (result.error && result.error.message.includes('does not exist')) {
+                result = await supabaseClient
+                    .from(currentAdminTable)
+                    .update(payload)
+                    .eq('id', currentEditId);
+            }
+            
+            if (result.error) throw result.error;
+        } else {
+            // Mode Insert
+            const { error } = await supabaseClient
+                .from(currentAdminTable)
+                .insert([payload]);
+            if (error) throw error;
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Data berhasil disimpan!',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        closeFormModal();
+        loadAdminTableData(currentAdminTable); 
+        
+    } catch (err) {
+        console.error("Gagal simpan:", err);
+        Swal.fire({ icon: 'error', title: 'Gagal', text: err.message || 'Gagal menyimpan ke database' });
+    } finally {
+        btn.innerHTML = "Simpan Data";
+        btn.disabled = false;
+    }
+}

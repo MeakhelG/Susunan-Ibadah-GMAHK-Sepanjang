@@ -14,6 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+
+    <!-- SweetAlert2 untuk Pop-up Elegan -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -28,6 +31,10 @@
                 <p>Generator format pesan WhatsApp untuk GMAHK Jemaat Sepanjang</p>
             </div>
             <div class="header-actions">
+                <button class="btn btn-secondary" id="adminLoginBtn" onclick="openLoginModal()"
+                    title="Login sebagai Admin">
+                    🔑 Admin
+                </button>
                 <button class="btn btn-secondary" id="themeToggleBtn" onclick="toggleTheme()"
                     title="Ubah Tema Tampilan">
                     ☀️ Tema Terang
@@ -35,7 +42,7 @@
             </div>
         </header>
 
-        <div class="main-content">
+        <div class="main-content" id="generatorView">
 
             <!-- ====================================== -->
             <!-- PANEL KIRI: FORMULIR INPUT             -->
@@ -483,13 +490,93 @@
             </div>
         </div>
 
+        <!-- ====================================== -->
+        <!-- ADMIN DASHBOARD VIEW (Disembunyikan)   -->
+        <!-- ====================================== -->
+        <div class="admin-dashboard" id="adminDashboardView" style="display: none;">
+            <div class="admin-sidebar">
+                <h3>Supabase App</h3>
+                <nav class="admin-nav">
+                    <button class="admin-tab-btn active" id="btn-adm-pos" onclick="switchAdminTab('Tabel POS')">🎛️
+                        Tabel POS</button>
+                    <button class="admin-tab-btn" id="btn-adm-ss" onclick="switchAdminTab('Tabel SS')">📖 Tabel
+                        SS</button>
+                    <button class="admin-tab-btn" id="btn-adm-khotbah" onclick="switchAdminTab('Tabel Khotbah')">🎤
+                        Tabel Khotbah</button>
+                </nav>
+            </div>
+            <div class="admin-panel">
+                <div class="admin-panel-header">
+                    <h2 id="adminTableTitle" style="color: var(--header-title);">Tabel POS</h2>
+                    <button class="btn btn-primary" onclick="openFormModal()">+ Tambah Data</button>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-data-table" id="adminDataTable">
+                        <thead>
+                            <tr id="adminTableHead">
+                                <!-- Heading tabel dinamis -->
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <tr>
+                                <td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- ========================== -->
         <!-- FOOTER                     -->
         <!-- ========================== -->
         <footer class="app-footer">
-            <p>&copy; 2026 - v1.3.0. GMAHK Sepanjang. All rights reserved.</p>
+            <p>&copy; 2026 - v1.4.0. GMAHK Sepanjang. All rights reserved.</p>
             <p>Developed by Meakhel Gunawan</p>
         </footer>
+    </div>
+
+    <!-- ========================== -->
+    <!-- LOGIN MODAL                -->
+    <!-- ========================== -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <h2>Admin Area</h2>
+            <p>Silakan login untuk mengatur jadwal ibadah.</p>
+            <div class="form-grid" style="margin-bottom: 24px;">
+                <div class="input-group">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" placeholder="admin@sepanjang.com"
+                        onkeydown="if(event.key === 'Enter') document.getElementById('adminPassword').focus()">
+                </div>
+                <div class="input-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••"
+                        onkeydown="if(event.key === 'Enter') handleLogin()">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="loginSubmitBtn" style="width: 100%;"
+                onclick="handleLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- ADMIN EDIT/ADD MODAL -->
+    <div id="dataFormModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" onclick="closeFormModal()">&times;</button>
+            <h2 id="formModalTitle">Tambah Data</h2>
+            <p id="formModalSubtitle">Formulir dinamis database Supabase</p>
+
+            <div class="form-grid form-scroll" id="dynamicFormContainer"
+                style="max-height: 50vh; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;">
+                <!-- Input dinamis akan di-inject lewat JavaScript -->
+            </div>
+
+            <button class="btn btn-primary" id="saveDataBtn"
+                style="width: 100%; background: #10b981; border:none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);"
+                onclick="simpanDataTabel()">Simpan Data</button>
+        </div>
     </div>
 
     <!-- ====================================== -->

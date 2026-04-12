@@ -580,7 +580,266 @@ body.light-theme .static-notice .badge {
 
 
 /* ============================================================
-   15. RESPONSIVE (Tablet & Mobile)
+   15. MODAL LOGIN
+   ============================================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 20px 40px var(--shadow-color);
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-content h2 {
+    font-size: 20px;
+    color: var(--header-title);
+    margin-bottom: 8px;
+}
+
+.modal-content p {
+    color: var(--text-sec);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-sec);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+
+/* ============================================================
+   16. ADMIN DASHBOARD LAYOUT
+   ============================================================ */
+.admin-dashboard {
+    display: flex;
+    gap: 24px;
+    align-items: start;
+    animation: fadeInTab 0.3s ease;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background: var(--bg-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+.admin-sidebar h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-sec);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-tab-btn {
+    text-align: left;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    color: var(--text-sec);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.admin-tab-btn.active {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+body.light-theme .admin-tab-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.admin-panel {
+    flex: 1;
+    background: var(--bg-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    overflow: hidden;
+}
+
+.admin-panel-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.3);
+}
+
+body.light-theme .admin-panel-header {
+    background: rgba(248, 250, 252, 0.8);
+}
+
+.admin-table-container {
+    overflow-x: auto;
+}
+
+.admin-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.admin-data-table th, .admin-data-table td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.admin-data-table th {
+    background: rgba(148, 163, 184, 0.05);
+    color: var(--text-sec);
+    font-weight: 600;
+}
+
+.admin-data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-data-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.admin-data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+body.light-theme .admin-data-table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+
+/* ============================================================
+   17. KUSTOMISASI SWEETALERT2 (TEMA SENADA)
+   ============================================================ */
+div:where(.swal2-container) div:where(.swal2-popup) {
+    background: var(--bg-panel) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-lg) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 20px 50px var(--shadow-color) !important;
+    font-family: var(--font) !important;
+}
+
+div:where(.swal2-container) h2:where(.swal2-title) {
+    color: var(--text-primary) !important;
+    font-size: 22px !important;
+    letter-spacing: -0.5px !important;
+}
+
+div:where(.swal2-container) div:where(.swal2-html-container) {
+    color: var(--text-sec) !important;
+    font-size: 14px !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-confirm) {
+    background: linear-gradient(135deg, var(--accent), #2563eb) !important;
+    color: white !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+    padding: 10px 24px !important;
+    font-weight: 600 !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-cancel) {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 10px 24px !important;
+    font-weight: 600 !important;
+}
+
+div:where(.swal2-icon).swal2-success {
+    border-color: #10b981 !important;
+}
+div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
+    background-color: #10b981 !important;
+}
+div:where(.swal2-icon).swal2-success .swal2-success-ring {
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line],
+div:where(.swal2-icon).swal2-success .swal2-success-fix {
+    background-color: transparent !important;
+}
+
+
+/* ============================================================
+   18. RESPONSIVE (Tablet & Mobile)
    ============================================================ */
 
 /* Tablet: <= 1024px */
