@@ -800,6 +800,8 @@ async function handleLogout() {
 // ============================================================
 let currentAdminTable = 'Tabel POS';
 let currentEditId = null;
+let currentAdminTableData = [];
+let currentSort = { col: 'Tanggal', asc: false };
 
 // Cek status secara realtime (Apakah sedang login atau tidak?)
 supabaseClient.auth.onAuthStateChange((event, session) => {
@@ -870,59 +872,136 @@ async function loadAdminTableData(tableName) {
             
         if (error) throw error;
         
-        if (!data || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Belum ada data tersedia.</td></tr>`;
-            return;
-        }
-
-        // Buat kolom header (Kita filter kolom sistem yang tersembunyi jika perlu, tapi biarkan saja)
-        const columns = Object.keys(data[0]).filter(col => col.toLowerCase() !== 'created_at');
+        currentAdminTableData = data || [];
+        currentSort = { col: 'Tanggal', asc: false }; // Kembalikan sorter awal tiap ganti tab
         
-        let headerHTML = '';
-        columns.forEach(col => { headerHTML += `<th>${col}</th>`; });
-        headerHTML += `<th>Aksi</th>`;
-        thead.innerHTML = headerHTML;
-        
-        // Buat baris tabel
-        let bodyHTML = '';
-        data.forEach(row => {
-            let rowHTML = `<tr>`;
-            columns.forEach(col => {
-                let cellData = row[col];
-                // Jika teks terlalu kepanjangan, potong visualnya
-                if (typeof cellData === 'string' && cellData.length > 50) {
-                    cellData = cellData.substring(0, 50) + '...';
-                }
-                if (cellData === null || cellData === undefined) cellData = '-';
-                
-                // Warnai baris tanggal dengan badge biar cantik
-                if (col.toLowerCase() === 'tanggal') {
-                     // potong jamnya (ambil YYYY-MM-DD)
-                     let d = cellData.split(' ')[0].split('T')[0];
-                     rowHTML += `<td><span class="badge badge-success">${d}</span></td>`;
-                } else {
-                     rowHTML += `<td>${cellData}</td>`;
-                }
-            });
-            
-            // Format aman json
-            const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-            
-            rowHTML += `
-                <td>
-                    <div class="action-btns">
-                        <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;" onclick="openFormModal('${safeRowJson}')">Edit</button>
-                    </div>
-                </td>
-            </tr>`;
-            bodyHTML += rowHTML;
-        });
-        tbody.innerHTML = bodyHTML;
+        renderAdminTable();
         
     } catch (err) {
         console.error("Gagal memuat tabel:", err);
         tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #ef4444; padding: 20px;">Error: Gagal memuat data dari server. ${err.message}</td></tr>`;
     }
+}
+
+function sortAdminTable(colName) {
+    // Jika klik kolom yang sama, balik arahnya (Asc <-> Desc)
+    if (currentSort.col === colName) {
+        currentSort.asc = !currentSort.asc;
+    } else {
+        // Jika klik kolom baru, jadikan sorting baru secara ascending
+        currentSort.col = colName;
+        currentSort.asc = true;
+    }
+    
+    // Proses sorting lokal untuk efisiensi hit API Supabase
+    currentAdminTableData.sort((a, b) => {
+        let valA = a[colName];
+        let valB = b[colName];
+        
+        // Handle nil values
+        if (valA === null || valA === undefined) valA = '';
+        if (valB === null || valB === undefined) valB = '';
+        
+        // Jika murni angka, ubah tipe untuk sorting numerik yang benar
+        if (!isNaN(valA) && !isNaN(valB) && valA !== '' && valB !== '') {
+            valA = Number(valA);
+            valB = Number(valB);
+        } else {
+            // Untuk string, kapitalisasi disamakan agar case-insensitive
+            valA = valA.toString().toLowerCase();
+            valB = valB.toString().toLowerCase();
+        }
+        
+        if (valA < valB) return currentSort.asc ? -1 : 1;
+        if (valA > valB) return currentSort.asc ? 1 : -1;
+        return 0;
+    });
+    
+    // Cetak ulang tabel
+    renderAdminTable();
+}
+
+function renderAdminTable() {
+    const tbody = document.getElementById('adminTableBody');
+    const thead = document.getElementById('adminTableHead');
+    
+    if (currentAdminTableData.length === 0) {
+         tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Belum ada data tersedia.</td></tr>`;
+         thead.innerHTML = '';
+         return;
+    }
+
+    // Buat kolom header
+    const columns = Object.keys(currentAdminTableData[0]).filter(col => col.toLowerCase() !== 'created_at');
+    
+    let headerHTML = '';
+    columns.forEach(col => {
+        let cUp = 'currentColor';
+        let opUp = '0.2';
+        let cDn = 'currentColor';
+        let opDn = '0.2';
+        
+        // Cek jika kolom ini sedang disortir
+        if (currentSort.col === col) {
+            if (currentSort.asc) {
+                cUp = 'var(--accent)'; 
+                opUp = '1';
+            } else {
+                cDn = 'var(--accent)'; 
+                opDn = '1';
+            }
+        }
+        
+        // Ikon panah dua arah ala Data Seluler
+        let sortIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <path d="M9 20V4M5 8l4-4 4 4" stroke="${cUp}" style="opacity:${opUp}; transition: all 0.2s ease;"></path>
+            <path d="M15 4v16m-4-4 4 4 4-4" stroke="${cDn}" style="opacity:${opDn}; transition: all 0.2s ease;"></path>
+        </svg>`;
+        
+        headerHTML += `<th style="cursor: pointer; user-select: none;" title="Klik untuk mengurutkan" onclick="sortAdminTable('${col}')">
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                                <span>${col}</span>
+                                <span>${sortIcon}</span>
+                            </div>
+                       </th>`; 
+    });
+    headerHTML += `<th>Aksi</th>`;
+    thead.innerHTML = headerHTML;
+    
+    // Buat baris tabel
+    let bodyHTML = '';
+    currentAdminTableData.forEach(row => {
+        let rowHTML = `<tr>`;
+        columns.forEach(col => {
+            let cellData = row[col];
+            // Jika teks terlalu kepanjangan, potong visualnya
+            if (typeof cellData === 'string' && cellData.length > 50) {
+                cellData = cellData.substring(0, 50) + '...';
+            }
+            if (cellData === null || cellData === undefined || cellData === "") cellData = '-';
+            
+            // Warnai baris tanggal dengan badge biar cantik
+            if (col.toLowerCase() === 'tanggal') {
+                 let d = cellData.split(' ')[0].split('T')[0]; // Ambil YYYY-MM-DD
+                 rowHTML += `<td><span class="badge badge-success">${d}</span></td>`;
+            } else {
+                 rowHTML += `<td>${cellData}</td>`;
+            }
+        });
+        
+        // Format aman json
+        const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        
+        rowHTML += `
+            <td>
+                <div class="action-btns">
+                    <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;" onclick="openFormModal('${safeRowJson}')">Edit</button>
+                </div>
+            </td>
+        </tr>`;
+        bodyHTML += rowHTML;
+    });
+    tbody.innerHTML = bodyHTML;
 }
 
 function openFormModal(rowDataStr = null) {
