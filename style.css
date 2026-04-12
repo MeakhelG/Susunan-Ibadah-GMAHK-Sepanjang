@@ -814,6 +814,12 @@ div:where(.swal2-container) button:where(.swal2-confirm) {
     font-weight: 600 !important;
 }
 
+div:where(.swal2-container) button:where(.swal2-confirm-danger) {
+    background: #ef4444 !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+    color: white !important;
+}
+
 div:where(.swal2-container) button:where(.swal2-cancel) {
     background: rgba(15, 23, 42, 0.5) !important;
     border: 1px solid var(--border-color) !important;
@@ -866,11 +872,13 @@ div:where(.swal2-icon).swal2-success .swal2-success-fix {
 
     .header-actions {
         width: 100%;
+        flex-direction: column;
+        gap: 12px;
     }
 
     .header-actions .btn {
         width: 100%;
-        flex: 1;
+        justify-content: center;
     }
 
     .input-row-half {

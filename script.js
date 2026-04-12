@@ -781,7 +781,10 @@ async function handleLogout() {
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#475569',
-        confirmButtonText: 'Ya, Logout'
+        confirmButtonText: 'Ya, Logout',
+        customClass: {
+            confirmButton: 'swal2-confirm-danger'
+        }
     }).then(async (result) => {
         if (result.isConfirmed) {
             const { error } = await supabaseClient.auth.signOut();
