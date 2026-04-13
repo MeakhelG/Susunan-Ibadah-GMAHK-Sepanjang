@@ -46,6 +46,22 @@
  *       - Logika tanggal: Cari >= hari ini, ambil 1 terdekat
  *       - Mapping kolom DB ke field HTML
  * 
+ *   11. ADMIN AUTH & MODAL
+ *       - openLoginModal()  : Buka modal login admin
+ *       - closeLoginModal() : Tutup modal login admin
+ *       - handleLogin()     : Proses autentikasi Supabase Auth
+ *       - handleLogout()    : Logout admin dengan konfirmasi SweetAlert2
+ * 
+ *   12. ADMIN DASHBOARD & CRUD
+ *       - onAuthStateChange : Listener realtime status login/logout
+ *       - switchAdminTab()  : Ganti tabel aktif di sidebar admin
+ *       - loadAdminTableData(): Tarik data tabel dari Supabase
+ *       - sortAdminTable()  : Sorting lokal per kolom (Asc/Desc)
+ *       - renderAdminTable(): Render tabel HTML dengan header & body
+ *       - openFormModal()   : Buka modal form Tambah/Edit data
+ *       - closeFormModal()  : Tutup modal form
+ *       - simpanDataTabel() : Simpan (Insert/Update) data ke Supabase
+ * 
  * ============================================================
  */
 
@@ -725,7 +741,6 @@ window.addEventListener('DOMContentLoaded', fetchAndFillNextSabbathSchedule);
    ============================================================ */
 function openLoginModal() {
     document.getElementById('loginModal').classList.add('active');
-    document.getElementById('loginErrorMsg').style.display = 'none';
 }
 
 function closeLoginModal() {
