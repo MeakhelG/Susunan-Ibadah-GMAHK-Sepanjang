@@ -2,22 +2,19 @@
 
 Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
 
-**Versi App:** v1.4.0
+**Versi App:** v1.4.1
 
-## Apa yang baru di v1.4.0 🎉
-- **Sistem Autentikasi & Dashboard Admin:** Telah ditambahkan panel khusus Admin yang dilindungi sistem *Login* berbasis Supabase Auth. Memungkinkan petugas gereja untuk mengelola jadwal (Tambah/Edit data) langsung dari dalam aplikasi web tanpa harus mengakses *dashboard* eksternal.
-- **Implementasi Row Level Security (RLS):** Ekosistem database telah diamankan berlapis dengan RLS Supabase. Hanya Admin (*Authenticated*) yang dapat memodifikasi basis data; sementara pengguna umum (*Public*) menerima akses mode baca (*Read-only*).
-- **Interaksi Pop-up Elegan:** Terintegrasi dengan pustaka modern *SweetAlert2* untuk menampilkan interaksi konfirmasi (sukses, peringatan error, atau respon *logout*) secara mulus, premium, dan 100% responsif terhadap adaptasi warna *Dark/Light mode* aplikasi.
+## Apa yang baru di v1.4.1 🎉
+- **Penyempurnaan UI Admin:** Memperhalus tampilan *sidebar* Admin dengan ikon SVG *monochrome* bergaris luar dan fitur *collapsible* (buka-tutup) tab untuk keleluasaan area tabel. Ada juga pemisahan skema label untuk kemudahan *customization* nama.
 
 ## Fitur Inti
+- **Dashboard Admin Aman & Interaktif:** Panel manajemen data di dalam aplikasi untuk mempermudah edit data, dilindungi oleh autentikasi login terenkripsi berbasis ekosistem *Supabase Auth & Row Level Security* (RLS), serta ditenagai interaksi pop-up mulus dari *SweetAlert2*.
 - **Integrasi Ekosistem Multi-Tab:** Form Ibadah dipecah dalam tab-tab fungsional (Sabat Raya, Pemuda Advent, Rabu Malam) tanpa proses *reload* antarklik.
 - **Integrasi Database Serverless (Supabase):** Ditenagai database *real-time* dengan fitur *Auto-Fill* jadwal terdekat, memotong waktu input manual hingga 90%.
 - **Smart Date & Quarter Detection:** Kalkulasi otomatis untuk angka "Sabat Ke" dan rentang "Triwulan" berakurasi tinggi sesuai kalender berjalan.
 - **Fuzzy Name Matching & Auto Sync:** Sinkronisasi cerdas antar-tugas. Mencegah redudansi penulisan nama yang berbeda (contoh: "Sdr" vs "Sdra.") dan mengunci jabatan eksklusif ganda secara transparan.
-- **Live Preview Teks WA:** Teks di *panel* pratinjau seketika terbangun (merakit cetak tebal dan miring ala WhatsApp) bersamaan dengan input ketikan yang mempermudah monitor langsung susunan WA-nya.
-- **Dark/Light Mode:** Preferensi visual disajikan dalam tema estetika UI Modern, yang *state* simpanannya tak akan hilang meski layar ter-tutup/ter-refresh.
-- **Responsivitas Padat Layar:** Tata letak grid otomatis ditransformasi jika jendela diakses menggunakan platform sentuh (*mobile-friendly*).
-- **1-Click Copy Data:** Salin susunan ke *clipboard* perangkat dalam sekejap dibekali notifikasi visual animasi.
+- **Live Preview & 1-Click Copy WA:** Teks *WhatsApp* pratinjau seketika terbangun bersamaan dengan input ketikan, siap disalin dalam sekali klik (dilengkapi notifikasi aksi).
+- **Tema Bebas Distraksi & Responsif:** Hadir dalam estetika UI modern (mendukung *Dark/Light mode* permanen) yang otomatis bertransformasi padat menyesuaikan peranti genggam Anda.
 
 ## Cara Penggunaan
 1. Buka Tautan [Susunan Ibadah GMAHK Sepanjang](https://meakhelg.github.io/Susunan-Ibadah-GMAHK-Sepanjang/)
