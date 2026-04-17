@@ -497,15 +497,46 @@
         <!-- ADMIN DASHBOARD VIEW (Disembunyikan)   -->
         <!-- ====================================== -->
         <div class="admin-dashboard" id="adminDashboardView" style="display: none;">
-            <div class="admin-sidebar">
-                <h3>Sidebar Supabase App</h3>
+            <div class="admin-sidebar" id="adminSidebar">
+                <div class="sidebar-header">
+                    <h3>Sidebar Supabase App</h3>
+                    <button class="sidebar-toggle-btn"
+                        onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"
+                        title="Tutup/Buka Sidebar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-toggle-icon">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
                 <nav class="admin-nav">
-                    <button class="admin-tab-btn active" id="btn-adm-pos" onclick="switchAdminTab('Tabel POS')">🎛️
-                        Tabel POS</button>
-                    <button class="admin-tab-btn" id="btn-adm-ss" onclick="switchAdminTab('Tabel SS')">📖 Tabel
-                        SS</button>
-                    <button class="admin-tab-btn" id="btn-adm-khotbah" onclick="switchAdminTab('Tabel Khotbah')">🎤
-                        Tabel Khotbah</button>
+                    <button class="admin-tab-btn active" id="btn-adm-pos" onclick="switchAdminTab('pos')"
+                        title="Tabel POS">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                        <span>Tabel POS</span>
+                    </button>
+                    <button class="admin-tab-btn" id="btn-adm-ss" onclick="switchAdminTab('ss')"
+                        title="Tabel Sekolah Sabat">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                        <span>Tabel Sekolah Sabat</span>
+                    </button>
+                    <button class="admin-tab-btn" id="btn-adm-khotbah" onclick="switchAdminTab('khotbah')"
+                        title="Tabel Khotbah">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                        </svg>
+                        <span>Tabel Khotbah</span>
+                    </button>
                 </nav>
             </div>
             <div class="admin-panel">
@@ -534,7 +565,7 @@
         <!-- FOOTER                     -->
         <!-- ========================== -->
         <footer class="app-footer">
-            <p>&copy; 2026 - v1.4.0. GMAHK Sepanjang. All rights reserved.</p>
+            <p>&copy; 2026 - v1.4.1. GMAHK Sepanjang. All rights reserved.</p>
             <p>Developed by Meakhel Gunawan</p>
         </footer>
     </div>
