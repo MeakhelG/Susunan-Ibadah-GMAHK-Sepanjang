@@ -75,6 +75,54 @@ const supabaseUrl = 'https://ymvhvaytlfexspvumnnj.supabase.co';
 const supabaseKey = 'sb_publishable_2_acMp4RrGHbmhdIb9JSIw_H5CfIQcn';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+/**
+ * ============================================================
+ * KONFIGURASI TABEL SUPABASE
+ * ============================================================
+ * Anda bisa mengubah:
+ * - title         : Label Tabel pada menu dan modal UI.
+ * - supabaseTable : Nama tabel sebenarnya di database Supabase.
+ * - columns       : Mapping nama kolom di Supabase -> Label yang ingin ditampilkan di UI.
+ * 
+ * *PENTING*: Nama (kiri) HARUS sama persis dengan yang ada di Supabase. 
+ * Nama yang di kanan adalah yang akan tampil di Website.
+ */
+const DB_SCHEMAS = {
+    pos: {
+        title: "Tabel Pianist, Operator, & Soundman",
+        supabaseTable: "Tabel POS",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'Pianist': 'Pianist',
+            'Operator': 'Operator',
+            'Soundman': 'Soundman'
+        }
+    },
+    ss: {
+        title: "Tabel Sekolah Sabat",
+        supabaseTable: "Tabel SS",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'MC': 'MC',
+            'AyatIntiDoaBuka': 'Ayat Inti & Doa Buka',
+            'BeritaMision': 'Berita Mision',
+            'RingkasanSS': 'Ringkasan SS',
+            'PelayananPerorangan': 'Pelayanan Perorangan'
+        }
+    },
+    khotbah: {
+        title: "Tabel Khotbah",
+        supabaseTable: "Tabel Khotbah",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'Khotbah': 'Khotbah',
+            'DoaSyafaat': 'Doa Syafaat',
+            'BacaanPersembahan': 'Bacaan Persembahan',
+            'PemimpinLagu': 'Pemimpin Lagu',
+            'DiakenDiaken': 'Diaken-Diaken'
+        }
+    }
+};
 
 /* ============================================================
    2. VARIABEL GLOBAL & SETUP
@@ -601,7 +649,7 @@ async function fetchAndFillNextSabbathSchedule() {
 
         // 2. Query Tabel POS: cari Sabat terdekat dari hari ini
         const { data: posData, error: posError } = await supabaseClient
-            .from('Tabel POS')
+            .from(DB_SCHEMAS.pos.supabaseTable)
             .select('*')
             .gte('Tanggal', todayStr)
             .order('Tanggal', { ascending: true })
@@ -622,12 +670,12 @@ async function fetchAndFillNextSabbathSchedule() {
 
         // 3. Query Tabel Khotbah dan Tabel SS berdasarkan tanggal yang sama
         const { data: khotbahData, error: khotbahError } = await supabaseClient
-            .from('Tabel Khotbah')
+            .from(DB_SCHEMAS.khotbah.supabaseTable)
             .select('*')
             .eq('Tanggal', nextDateFull);
 
         const { data: ssData, error: ssError } = await supabaseClient
-            .from('Tabel SS')
+            .from(DB_SCHEMAS.ss.supabaseTable)
             .select('*')
             .eq('Tanggal', nextDateFull);
 
@@ -647,19 +695,19 @@ async function fetchAndFillNextSabbathSchedule() {
 
         // Cari Triwulan ke berapa
         const nilaiTriwulan = Math.ceil(sb_month / 3);
-        
+
         // Cari bulan awal Triwulan ini (0: Jan, 3: Apr, 6: Jul, 9: Okt)
         const startMonthOfTW = (nilaiTriwulan - 1) * 3;
-        
+
         // Cari kapan Sabat (Sabtu) pertama di Triwulan ini jatuh
         const firstDayOfTW = new Date(sb_year, startMonthOfTW, 1);
-        const daysToFirstSat = (6 - firstDayOfTW.getDay() + 7) % 7; 
+        const daysToFirstSat = (6 - firstDayOfTW.getDay() + 7) % 7;
         const firstSatOfTW = new Date(sb_year, startMonthOfTW, 1 + daysToFirstSat);
-        
+
         // Hitung selisih hari dari Sabat pertama Triwulan ke Sabat ini
         const diffTime = sabatDateObj.getTime() - firstSatOfTW.getTime();
         const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
-        
+
         // Sabat ke-n dalam triwulan ini
         const nilaiSabatKe = (diffDays / 7) + 1;
 
@@ -816,7 +864,8 @@ async function handleLogout() {
 // ============================================================
 // 12. ADMIN DASHBOARD & CRUD LOGIC (FASE 4)
 // ============================================================
-let currentAdminTable = 'Tabel POS';
+
+let currentAdminTab = 'pos';
 let currentEditId = null;
 let currentAdminTableData = [];
 let currentSort = { col: 'Tanggal', asc: false };
@@ -826,60 +875,60 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     const loginBtn = document.getElementById('adminLoginBtn');
     const generatorView = document.getElementById('generatorView');
     const adminDashboardView = document.getElementById('adminDashboardView');
-    
+
     if (session) {
         // Admin sedang login
         loginBtn.innerHTML = "🔒 Logout Admin";
         loginBtn.onclick = handleLogout;
         loginBtn.style.color = "white";
-        loginBtn.style.background = "#ef4444"; 
+        loginBtn.style.background = "#ef4444";
         loginBtn.style.borderColor = "#dc2626";
-        
+
         // Tampilkan Dashboard, sembunyikan Generator
         if (generatorView) generatorView.style.display = 'none';
         if (adminDashboardView) adminDashboardView.style.display = 'flex';
-        
+
         // Otomatis muat data tabel
-        switchAdminTab(currentAdminTable);
+        switchAdminTab(currentAdminTab);
     } else {
         // User biasa (tidak login)
         loginBtn.innerHTML = "🔑 Admin";
         loginBtn.onclick = openLoginModal;
-        loginBtn.style.color = ""; 
+        loginBtn.style.color = "";
         loginBtn.style.background = "";
         loginBtn.style.borderColor = "";
-        
+
         // Tampilkan Generator, sembunyikan Dashboard
         if (generatorView) generatorView.style.display = 'grid'; // asalnya display grid
         if (adminDashboardView) adminDashboardView.style.display = 'none';
-        
+
         // Jika logout, kita segarkan data public generator
         fetchAndFillNextSabbathSchedule();
     }
 });
 
-function switchAdminTab(tableName) {
-    currentAdminTable = tableName;
-    
+function switchAdminTab(tabKey) {
+    currentAdminTab = tabKey;
+    const config = DB_SCHEMAS[tabKey];
+
     // Update tombol nav (Sidebar)
     document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
-    
-    if (tableName === 'Tabel POS') document.getElementById('btn-adm-pos').classList.add('active');
-    if (tableName === 'Tabel SS') document.getElementById('btn-adm-ss').classList.add('active');
-    if (tableName === 'Tabel Khotbah') document.getElementById('btn-adm-khotbah').classList.add('active');
-    
-    document.getElementById('adminTableTitle').innerText = tableName;
-    
+
+    const btn = document.getElementById('btn-adm-' + tabKey);
+    if (btn) btn.classList.add('active');
+
+    document.getElementById('adminTableTitle').innerText = config.title;
+
     // Mulai tarik data
-    loadAdminTableData(tableName);
+    loadAdminTableData(config.supabaseTable);
 }
 
 async function loadAdminTableData(tableName) {
     const tbody = document.getElementById('adminTableBody');
     const thead = document.getElementById('adminTableHead');
-    
+
     tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td></tr>`;
-    thead.innerHTML = ''; 
+    thead.innerHTML = '';
 
     try {
         const { data, error } = await supabaseClient
@@ -887,14 +936,14 @@ async function loadAdminTableData(tableName) {
             .select('*')
             .order('Tanggal', { ascending: false }) // Yang terbaru di atas
             .limit(100);
-            
+
         if (error) throw error;
-        
+
         currentAdminTableData = data || [];
         currentSort = { col: 'Tanggal', asc: false }; // Kembalikan sorter awal tiap ganti tab
-        
+
         renderAdminTable();
-        
+
     } catch (err) {
         console.error("Gagal memuat tabel:", err);
         tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #ef4444; padding: 20px;">Error: Gagal memuat data dari server. ${err.message}</td></tr>`;
@@ -910,16 +959,16 @@ function sortAdminTable(colName) {
         currentSort.col = colName;
         currentSort.asc = true;
     }
-    
+
     // Proses sorting lokal untuk efisiensi hit API Supabase
     currentAdminTableData.sort((a, b) => {
         let valA = a[colName];
         let valB = b[colName];
-        
+
         // Handle nil values
         if (valA === null || valA === undefined) valA = '';
         if (valB === null || valB === undefined) valB = '';
-        
+
         // Jika murni angka, ubah tipe untuk sorting numerik yang benar
         if (!isNaN(valA) && !isNaN(valB) && valA !== '' && valB !== '') {
             valA = Number(valA);
@@ -929,12 +978,12 @@ function sortAdminTable(colName) {
             valA = valA.toString().toLowerCase();
             valB = valB.toString().toLowerCase();
         }
-        
+
         if (valA < valB) return currentSort.asc ? -1 : 1;
         if (valA > valB) return currentSort.asc ? 1 : -1;
         return 0;
     });
-    
+
     // Cetak ulang tabel
     renderAdminTable();
 }
@@ -942,50 +991,56 @@ function sortAdminTable(colName) {
 function renderAdminTable() {
     const tbody = document.getElementById('adminTableBody');
     const thead = document.getElementById('adminTableHead');
-    
+
     if (currentAdminTableData.length === 0) {
-         tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Belum ada data tersedia.</td></tr>`;
-         thead.innerHTML = '';
-         return;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Belum ada data tersedia.</td></tr>`;
+        thead.innerHTML = '';
+        return;
     }
 
     // Buat kolom header
-    const columns = Object.keys(currentAdminTableData[0]).filter(col => col.toLowerCase() !== 'created_at');
-    
+    // Filter kolom yang tidak perlu ditampilkan seperti id dan created_at, dan pastikan kita ikuti col di Supabase.
+    // Jika user menambahkan kolom baru di Supabase tapi tidak di DB_SCHEMAS, maka kolom tsb tetap tampil.
+    const config = DB_SCHEMAS[currentAdminTab];
+    const columns = Object.keys(currentAdminTableData[0]).filter(col => col.toLowerCase() !== 'created_at' && col.toLowerCase() !== 'id');
+
     let headerHTML = '';
     columns.forEach(col => {
         let cUp = 'currentColor';
         let opUp = '0.2';
         let cDn = 'currentColor';
         let opDn = '0.2';
-        
+
         // Cek jika kolom ini sedang disortir
         if (currentSort.col === col) {
             if (currentSort.asc) {
-                cUp = 'var(--accent)'; 
+                cUp = 'var(--accent)';
                 opUp = '1';
             } else {
-                cDn = 'var(--accent)'; 
+                cDn = 'var(--accent)';
                 opDn = '1';
             }
         }
-        
+
         // Ikon panah dua arah ala Data Seluler
         let sortIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
             <path d="M9 20V4M5 8l4-4 4 4" stroke="${cUp}" style="opacity:${opUp}; transition: all 0.2s ease;"></path>
             <path d="M15 4v16m-4-4 4 4 4-4" stroke="${cDn}" style="opacity:${opDn}; transition: all 0.2s ease;"></path>
         </svg>`;
-        
+
+        // Ambil label dari konfigurasi jika ada, kalau tidak ada pakai aslinya
+        let displayLabel = (config.columns && config.columns[col]) ? config.columns[col] : col;
+
         headerHTML += `<th style="cursor: pointer; user-select: none;" title="Klik untuk mengurutkan" onclick="sortAdminTable('${col}')">
                             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                                <span>${col}</span>
+                                <span>${displayLabel}</span>
                                 <span>${sortIcon}</span>
                             </div>
-                       </th>`; 
+                       </th>`;
     });
     headerHTML += `<th>Aksi</th>`;
     thead.innerHTML = headerHTML;
-    
+
     // Buat baris tabel
     let bodyHTML = '';
     currentAdminTableData.forEach(row => {
@@ -997,19 +1052,19 @@ function renderAdminTable() {
                 cellData = cellData.substring(0, 50) + '...';
             }
             if (cellData === null || cellData === undefined || cellData === "") cellData = '-';
-            
+
             // Warnai baris tanggal dengan badge biar cantik
             if (col.toLowerCase() === 'tanggal') {
-                 let d = cellData.split(' ')[0].split('T')[0]; // Ambil YYYY-MM-DD
-                 rowHTML += `<td><span class="badge badge-success">${d}</span></td>`;
+                let d = cellData.split(' ')[0].split('T')[0]; // Ambil YYYY-MM-DD
+                rowHTML += `<td><span class="badge badge-success">${d}</span></td>`;
             } else {
-                 rowHTML += `<td>${cellData}</td>`;
+                rowHTML += `<td>${cellData}</td>`;
             }
         });
-        
+
         // Format aman json
         const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-        
+
         rowHTML += `
             <td>
                 <div class="action-btns">
@@ -1026,49 +1081,45 @@ function openFormModal(rowDataStr = null) {
     const modal = document.getElementById('dataFormModal');
     const title = document.getElementById('formModalTitle');
     const container = document.getElementById('dynamicFormContainer');
-    
+
     modal.classList.add('active');
-    
+
     let rowData = null;
     currentEditId = null;
-    
+
+    const config = DB_SCHEMAS[currentAdminTab];
+
     if (rowDataStr) {
         rowData = JSON.parse(rowDataStr);
-        currentEditId = rowData.Id || rowData.id; 
-        title.innerText = "Edit Jadwal - " + currentAdminTable;
+        currentEditId = rowData.Id || rowData.id;
+        title.innerText = "Edit Jadwal - " + config.title;
     } else {
-        title.innerText = "Tambah Jadwal Baru - " + currentAdminTable;
-    }
-    
-    // Tentukan kolom dinamis
-    let schema = [];
-    if (currentAdminTable === 'Tabel POS') {
-        schema = ['Tanggal', 'Pianist', 'Operator', 'Soundman'];
-    } else if (currentAdminTable === 'Tabel Khotbah') {
-        schema = ['Tanggal', 'Khotbah', 'DoaSyafaat', 'BacaanPersembahan', 'PemimpinLagu', 'DiakenDiaken'];
-    } else if (currentAdminTable === 'Tabel SS') {
-        schema = ['Tanggal', 'MC', 'AyatIntiDoaBuka', 'BeritaMision', 'RingkasanSS', 'PelayananPerorangan'];
+        title.innerText = "Tambah Jadwal Baru - " + config.title;
     }
 
+    // Tentukan kolom dinamis yang muncul di form (berdasarkan object config.columns)
+    let schemaDbKeys = Object.keys(config.columns);
+
     let formHTML = '';
-    schema.forEach(col => {
-        let value = (rowData && rowData[col]) ? rowData[col] : '';
+    schemaDbKeys.forEach(dbCol => {
+        let label = config.columns[dbCol];
+        let value = (rowData && rowData[dbCol]) ? rowData[dbCol] : '';
         let inputType = 'text';
-        
-        if (col.toLowerCase().includes('tanggal')) {
+
+        if (dbCol.toLowerCase().includes('tanggal')) {
             inputType = 'date';
             if (value && value.includes('T')) value = value.split('T')[0];
             else if (value && value.includes(' ')) value = value.split(' ')[0];
         }
-        
+
         formHTML += `
             <div class="input-group">
-                <label>${col.replace(/([A-Z])/g, ' $1').trim()}</label>
-                <input type="${inputType}" id="dyn_${col}" value="${value}">
+                <label>${label}</label>
+                <input type="${inputType}" id="dyn_${dbCol}" value="${value}">
             </div>
         `;
     });
-    
+
     container.innerHTML = formHTML;
 }
 
@@ -1085,11 +1136,11 @@ async function simpanDataTabel() {
     let payload = {};
     let isDateEmpty = false;
     const inputs = document.querySelectorAll('#dynamicFormContainer input');
-    
+
     inputs.forEach(input => {
         const colName = input.id.replace('dyn_', '');
         payload[colName] = input.value;
-        if(colName === 'Tanggal' && !input.value) isDateEmpty = true;
+        if (colName === 'Tanggal' && !input.value) isDateEmpty = true;
     });
 
     if (isDateEmpty) {
@@ -1105,26 +1156,28 @@ async function simpanDataTabel() {
     });
 
     try {
+        const config = DB_SCHEMAS[currentAdminTab];
+
         if (currentEditId) {
             // Mode Update: Kita coba tembak kolom Primary Key 'Id' (huruf besar dulu)
             let result = await supabaseClient
-                .from(currentAdminTable)
+                .from(config.supabaseTable)
                 .update(payload)
                 .eq('Id', currentEditId);
-                
+
             // Jika PostgreSQL mengamuk karena bilang 'Id' huruf besar tidak ada, tes pakai 'id' huruf kecil
             if (result.error && result.error.message.includes('does not exist')) {
                 result = await supabaseClient
-                    .from(currentAdminTable)
+                    .from(config.supabaseTable)
                     .update(payload)
                     .eq('id', currentEditId);
             }
-            
+
             if (result.error) throw result.error;
         } else {
             // Mode Insert
             const { error } = await supabaseClient
-                .from(currentAdminTable)
+                .from(config.supabaseTable)
                 .insert([payload]);
             if (error) throw error;
         }
@@ -1138,8 +1191,8 @@ async function simpanDataTabel() {
         });
 
         closeFormModal();
-        loadAdminTableData(currentAdminTable); 
-        
+        loadAdminTableData(config.supabaseTable);
+
     } catch (err) {
         console.error("Gagal simpan:", err);
         Swal.fire({ icon: 'error', title: 'Gagal', text: err.message || 'Gagal menyimpan ke database' });
