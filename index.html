@@ -149,7 +149,8 @@
                                     <div class="input-row-song">
                                         <input type="text" id="ssLaguBukaNo" placeholder="No.">
                                         <div class="autocomplete-container">
-                                            <input type="text" id="ssLaguBukaJudul" placeholder="Judul Lagu" autocomplete="off">
+                                            <input type="text" id="ssLaguBukaJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
                                             <div class="autocomplete-list" id="auto_ssLaguBuka"></div>
                                         </div>
                                     </div>
@@ -176,7 +177,8 @@
                                     <div class="input-row-song">
                                         <input type="text" id="ssLaguTutupNo" placeholder="No.">
                                         <div class="autocomplete-container">
-                                            <input type="text" id="ssLaguTutupJudul" placeholder="Judul Lagu" autocomplete="off">
+                                            <input type="text" id="ssLaguTutupJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
                                             <div class="autocomplete-list" id="auto_ssLaguTutup"></div>
                                         </div>
                                     </div>
@@ -262,7 +264,8 @@
                                     <div class="input-row-song">
                                         <input type="text" id="khLaguBukaNo" placeholder="No.">
                                         <div class="autocomplete-container">
-                                            <input type="text" id="khLaguBukaJudul" placeholder="Judul Lagu" autocomplete="off">
+                                            <input type="text" id="khLaguBukaJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
                                             <div class="autocomplete-list" id="auto_khLaguBuka"></div>
                                         </div>
                                     </div>
@@ -335,7 +338,8 @@
                                     <div class="input-row-song">
                                         <input type="text" id="khLaguTutupNo" placeholder="No.">
                                         <div class="autocomplete-container">
-                                            <input type="text" id="khLaguTutupJudul" placeholder="Judul Lagu" autocomplete="off">
+                                            <input type="text" id="khLaguTutupJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
                                             <div class="autocomplete-list" id="auto_khLaguTutup"></div>
                                         </div>
                                     </div>
@@ -373,7 +377,11 @@
                                     <label>Lagu Buka (AYS)</label>
                                     <div class="input-row-song">
                                         <input type="text" id="paLaguBukaNo" placeholder="No. (contoh: 9)">
-                                        <input type="text" id="paLaguBukaJudul" placeholder="Judul Lagu">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="paLaguBukaJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_paLaguBuka"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="input-group">
@@ -405,7 +413,11 @@
                                     <label>Lagu Tutup (AYS)</label>
                                     <div class="input-row-song">
                                         <input type="text" id="paLaguTutupNo" placeholder="No.">
-                                        <input type="text" id="paLaguTutupJudul" placeholder="Judul Lagu">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="paLaguTutupJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_paLaguTutup"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="input-group">
@@ -549,6 +561,16 @@
                         </svg>
                         <span>Tabel Khotbah</span>
                     </button>
+                    <button class="admin-tab-btn" id="btn-adm-pa" onclick="switchAdminTab('pa')" title="Tabel PA">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Tabel PA</span>
+                    </button>
                 </nav>
             </div>
             <div class="admin-panel">
@@ -577,7 +599,7 @@
         <!-- FOOTER                     -->
         <!-- ========================== -->
         <footer class="app-footer">
-            <p>&copy; 2026 - v1.4.1. GMAHK Sepanjang. All rights reserved.</p>
+            <p>&copy; 2026 - v1.5.0. GMAHK Sepanjang. All rights reserved.</p>
             <p>Developed by Meakhel Gunawan</p>
         </footer>
     </div>

@@ -121,6 +121,19 @@ const DB_SCHEMAS = {
             'PemimpinLagu': 'Pemimpin Lagu',
             'DiakenDiaken': 'Diaken-Diaken'
         }
+    },
+    pa: {
+        title: "Tabel Pemuda Advent",
+        supabaseTable: "Tabel PA",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'MC': 'MC & Janji PA',
+            'AyatIntiDoaBuka': 'Ayat Inti & Doa Buka',
+            'BAB': 'Belajar Alkitab Bersama (BAB)',
+            'Games': 'Games',
+            'TipsFunfact': 'Tips / Funfact',
+            'AcaraInti': 'Acara Inti & Doa Tutup'
+        }
     }
 };
 
@@ -780,7 +793,57 @@ async function fetchAndFillNextSabbathSchedule() {
     }
 }
 
+/**
+ * Fungsi utama: Tarik data jadwal Pemuda Advent (PA) terdekat dari Supabase
+ */
+async function fetchAndFillNextPaSchedule() {
+    try {
+        const dateNow = new Date();
+        const year = dateNow.getFullYear();
+        const month = String(dateNow.getMonth() + 1).padStart(2, '0');
+        const day = String(dateNow.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+
+        // Query Tabel PA: cari Sabat terdekat dari hari ini
+        const { data: paData, error: paError } = await supabaseClient
+            .from(DB_SCHEMAS.pa.supabaseTable)
+            .select('*')
+            .gte('Tanggal', todayStr)
+            .order('Tanggal', { ascending: true })
+            .limit(1);
+
+        if (paError) throw paError;
+
+        if (!paData || paData.length === 0) {
+            console.log("⚠️ Tidak ada data jadwal PA mendatang di database.");
+            return;
+        }
+
+        const p = paData[0];
+        console.log("✅ Jadwal PA terdekat ditemukan:", p.Tanggal);
+
+        const ymdFormat = p.Tanggal.split(' ')[0].split('T')[0];
+        document.getElementById('paTanggal').value = ymdFormat;
+
+        if (p.MC && p.MC !== '-') document.getElementById('paMc').value = p.MC;
+        if (p.AyatIntiDoaBuka && p.AyatIntiDoaBuka !== '-') document.getElementById('paAyatDoa').value = p.AyatIntiDoaBuka;
+        if (p.BAB && p.BAB !== '-') document.getElementById('paBabJudul').value = p.BAB;
+        if (p.TipsFunfact && p.TipsFunfact !== '-') document.getElementById('paFunfact').value = p.TipsFunfact;
+        if (p.Games && p.Games !== '-') document.getElementById('paGames').value = p.Games;
+        if (p.AcaraInti && p.AcaraInti !== '-') {
+            document.getElementById('paAcaraInti').value = p.AcaraInti;
+            document.getElementById('paDoaTutup').value = p.AcaraInti;
+        }
+
+        updatePreview();
+
+    } catch (err) {
+        console.error("❌ Gagal menarik data PA dari Supabase:", err);
+    }
+}
+
 let lselData = [];
+let aysData = [];
 
 async function fetchLselData() {
     try {
@@ -799,14 +862,44 @@ async function fetchLselData() {
     }
 }
 
+async function fetchAysData() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('Tabel AYS')
+            .select('number, title')
+            .order('number', { ascending: true });
+
+        if (error) throw error;
+        if (data) {
+            // Petakan struktur kolom Supabase (number, title) menjadi struktur generik (nomor, judul)
+            aysData = data.map(item => ({
+                nomor: item.number,
+                judul: item.title
+            }));
+            console.log("✅ Data Tabel AYS berhasil dimuat:", aysData.length, "lagu");
+        }
+    } catch (err) {
+        console.error("❌ Gagal memuat Tabel AYS:", err);
+    }
+}
+
 // Eksekusi saat halaman selesai dimuat
 window.addEventListener('DOMContentLoaded', () => {
     fetchAndFillNextSabbathSchedule();
+    fetchAndFillNextPaSchedule();
+
+    // Tarik data LSEL
     fetchLselData().then(() => {
-        setupLselAutocomplete('ssLaguBukaNo', 'ssLaguBukaJudul', 'auto_ssLaguBuka');
-        setupLselAutocomplete('ssLaguTutupNo', 'ssLaguTutupJudul', 'auto_ssLaguTutup');
-        setupLselAutocomplete('khLaguBukaNo', 'khLaguBukaJudul', 'auto_khLaguBuka');
-        setupLselAutocomplete('khLaguTutupNo', 'khLaguTutupJudul', 'auto_khLaguTutup');
+        setupSongAutocomplete('ssLaguBukaNo', 'ssLaguBukaJudul', 'auto_ssLaguBuka', lselData);
+        setupSongAutocomplete('ssLaguTutupNo', 'ssLaguTutupJudul', 'auto_ssLaguTutup', lselData);
+        setupSongAutocomplete('khLaguBukaNo', 'khLaguBukaJudul', 'auto_khLaguBuka', lselData);
+        setupSongAutocomplete('khLaguTutupNo', 'khLaguTutupJudul', 'auto_khLaguTutup', lselData);
+    });
+
+    // Tarik data AYS
+    fetchAysData().then(() => {
+        setupSongAutocomplete('paLaguBukaNo', 'paLaguBukaJudul', 'auto_paLaguBuka', aysData);
+        setupSongAutocomplete('paLaguTutupNo', 'paLaguTutupJudul', 'auto_paLaguTutup', aysData);
     });
 });
 
@@ -1230,9 +1323,9 @@ async function simpanDataTabel() {
 }
 
 /* ============================================================
-   13. AUTOCOMPLETE LAGU SION (LSEL)
+   13. AUTOCOMPLETE LAGU
    ============================================================ */
-function setupLselAutocomplete(noId, judulId, listId) {
+function setupSongAutocomplete(noId, judulId, listId, dataset) {
     const noInput = document.getElementById(noId);
     const judulInput = document.getElementById(judulId);
     const listEl = document.getElementById(listId);
@@ -1242,7 +1335,7 @@ function setupLselAutocomplete(noId, judulId, listId) {
     noInput.addEventListener('input', () => {
         const val = noInput.value.trim();
         if (!val) return;
-        const song = lselData.find(s => String(s.nomor) === val);
+        const song = dataset.find(s => String(s.nomor) === val);
         if (song) {
             judulInput.value = song.judul;
             updatePreview();
@@ -1252,14 +1345,14 @@ function setupLselAutocomplete(noId, judulId, listId) {
     // 2. Saat Judul Lagu diisi (Search Dropdown)
     judulInput.addEventListener('input', () => {
         const val = judulInput.value.toLowerCase();
-        
+
         if (val.length < 3) {
             listEl.classList.remove('active');
             return;
         }
 
-        const matches = lselData.filter(s => s.judul.toLowerCase().includes(val));
-        
+        const matches = dataset.filter(s => s.judul.toLowerCase().includes(val));
+
         if (matches.length > 0) {
             listEl.innerHTML = '';
             matches.forEach(song => {
