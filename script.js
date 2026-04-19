@@ -780,8 +780,35 @@ async function fetchAndFillNextSabbathSchedule() {
     }
 }
 
-// Eksekusi Auto-Fill saat halaman selesai dimuat
-window.addEventListener('DOMContentLoaded', fetchAndFillNextSabbathSchedule);
+let lselData = [];
+
+async function fetchLselData() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('Tabel LSEL')
+            .select('nomor, judul')
+            .order('nomor', { ascending: true });
+
+        if (error) throw error;
+        if (data) {
+            lselData = data;
+            console.log("✅ Data Tabel LSEL berhasil dimuat:", lselData.length, "lagu");
+        }
+    } catch (err) {
+        console.error("❌ Gagal memuat Tabel LSEL:", err);
+    }
+}
+
+// Eksekusi saat halaman selesai dimuat
+window.addEventListener('DOMContentLoaded', () => {
+    fetchAndFillNextSabbathSchedule();
+    fetchLselData().then(() => {
+        setupLselAutocomplete('ssLaguBukaNo', 'ssLaguBukaJudul', 'auto_ssLaguBuka');
+        setupLselAutocomplete('ssLaguTutupNo', 'ssLaguTutupJudul', 'auto_ssLaguTutup');
+        setupLselAutocomplete('khLaguBukaNo', 'khLaguBukaJudul', 'auto_khLaguBuka');
+        setupLselAutocomplete('khLaguTutupNo', 'khLaguTutupJudul', 'auto_khLaguTutup');
+    });
+});
 
 
 /* ============================================================
@@ -1200,4 +1227,63 @@ async function simpanDataTabel() {
         btn.innerHTML = "Simpan Data";
         btn.disabled = false;
     }
+}
+
+/* ============================================================
+   13. AUTOCOMPLETE LAGU SION (LSEL)
+   ============================================================ */
+function setupLselAutocomplete(noId, judulId, listId) {
+    const noInput = document.getElementById(noId);
+    const judulInput = document.getElementById(judulId);
+    const listEl = document.getElementById(listId);
+    if (!noInput || !judulInput || !listEl) return;
+
+    // 1. Saat Nomor Lagu diisi
+    noInput.addEventListener('input', () => {
+        const val = noInput.value.trim();
+        if (!val) return;
+        const song = lselData.find(s => String(s.nomor) === val);
+        if (song) {
+            judulInput.value = song.judul;
+            updatePreview();
+        }
+    });
+
+    // 2. Saat Judul Lagu diisi (Search Dropdown)
+    judulInput.addEventListener('input', () => {
+        const val = judulInput.value.toLowerCase();
+        
+        if (val.length < 3) {
+            listEl.classList.remove('active');
+            return;
+        }
+
+        const matches = lselData.filter(s => s.judul.toLowerCase().includes(val));
+        
+        if (matches.length > 0) {
+            listEl.innerHTML = '';
+            matches.forEach(song => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.textContent = `${song.nomor} - ${song.judul}`;
+                item.addEventListener('click', () => {
+                    noInput.value = song.nomor;
+                    judulInput.value = song.judul;
+                    listEl.classList.remove('active');
+                    updatePreview();
+                });
+                listEl.appendChild(item);
+            });
+            listEl.classList.add('active');
+        } else {
+            listEl.classList.remove('active');
+        }
+    });
+
+    // Sembunyikan dropdown kalau klik di luar
+    document.addEventListener('click', (e) => {
+        if (!judulInput.contains(e.target) && !listEl.contains(e.target)) {
+            listEl.classList.remove('active');
+        }
+    });
 }
