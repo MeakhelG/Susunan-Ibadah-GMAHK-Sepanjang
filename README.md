@@ -2,10 +2,11 @@
 
 Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
 
-**Versi App:** v1.4.1
+**Versi App:** v1.5.0
 
-## Apa yang baru di v1.4.1 🎉
-- **Penyempurnaan UI Admin:** Memperhalus tampilan *sidebar* Admin dengan ikon SVG *monochrome* bergaris luar dan fitur *collapsible* (buka-tutup) tab untuk keleluasaan area tabel. Ada juga pemisahan skema label untuk kemudahan *customization* nama.
+## Apa yang baru di v1.5.0 🎉
+- **Smart Song Autocomplete (LSEL & AYS):** Pencarian judul lagu Sion (LSEL) dan lagu Pemuda Advent (AYS) yang cerdas (hanya mengetik minimal 3 huruf) langsung ditarik dari *database* Supabase, lengkap dengan *dropdown list* rekomendasi interaktif dan otomatisasi silang pengisian ke nomor nyanyian.
+- **PA Smart Automation:** Transformasi *serverless* berupa sistem *auto-fill* (pengisian otomatis) kolom form pada Tab Pemuda Advent, yang disinkronisasi berdasarkan Jadwal PA Terdekat. Tabel Pemuda Advent juga ditambahkan sepenuhnya ke kerangka ekosistem visual *Manager* pada Dasbor *Admin Area*.
 
 ## Fitur Inti
 - **Dashboard Admin Aman & Interaktif:** Panel manajemen data di dalam aplikasi untuk mempermudah edit data, dilindungi oleh autentikasi login terenkripsi berbasis ekosistem *Supabase Auth & Row Level Security* (RLS), serta ditenagai interaksi pop-up mulus dari *SweetAlert2*.
