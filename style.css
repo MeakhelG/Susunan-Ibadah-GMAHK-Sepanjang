@@ -28,52 +28,58 @@
    1. CSS VARIABLES — TEMA GELAP (Default) & TEMA TERANG
    ============================================================ */
 :root {
-    /* DEFAULT THEME: DARK */
-    --bg-main: #0B1120;
-    --bg-gradient-1: rgba(30, 58, 138, 0.3);
-    --bg-gradient-2: rgba(16, 185, 129, 0.1);
-    --bg-panel: rgba(30, 41, 59, 0.6);
-    --bg-input: rgba(15, 23, 42, 0.8);
-    --border-color: rgba(255, 255, 255, 0.1);
-    --border-focus: #3b82f6;
+    /* DEFAULT THEME: DARK MUTED MAROON */
+    --bg-main: #140d0d;
+    --bg-gradient-1: rgba(120, 50, 50, 0.15);
+    --bg-gradient-2: rgba(180, 100, 100, 0.05);
+    --bg-panel: rgba(35, 20, 20, 0.65);
+    --bg-input: rgba(25, 15, 15, 0.8);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-focus: #b96a6a;
 
-    --text-primary: #F8FAFC;
-    --text-sec: #94A3B8;
-    --text-placeholder: #475569;
-    --text-wa: #e2e8f0;
+    --text-primary: #F5EBEB;
+    --text-sec: #BCAAAA;
+    --text-placeholder: #7A6666;
+    --text-wa: #EAE0E0;
 
     --header-title: #ffffff;
-    --section-title: #60A5FA;
+    --section-title: #D98888;
 
-    --shadow-color: rgba(0, 0, 0, 0.5);
+    --shadow-color: rgba(0, 0, 0, 0.6);
 
     /* Global Variables */
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
+    --accent: #A64B4B;
+    --accent-hover: #8C3B3B;
+    --accent-gradient: #8C3B3B;
+    --shadow-accent: rgba(166, 75, 75, 0.3);
+    --shadow-accent-hover: rgba(166, 75, 75, 0.4);
     --radius-lg: 16px;
     --radius-md: 8px;
     --font: 'Plus Jakarta Sans', sans-serif;
 }
 
 body.light-theme {
-    /* LIGHT THEME PALETTE */
-    --bg-main: #F8FAFC;
-    --bg-gradient-1: rgba(219, 234, 254, 0.8);
-    --bg-gradient-2: rgba(209, 250, 229, 0.6);
-    --bg-panel: rgba(255, 255, 255, 0.7);
+    /* LIGHT THEME PALETTE: PASTEL MAROON */
+    --bg-main: #FFF0F0;
+    --bg-gradient-1: rgba(254, 202, 202, 0.8);
+    --bg-gradient-2: rgba(252, 165, 165, 0.6);
+    --bg-panel: rgba(255, 255, 255, 0.8);
     --bg-input: #FFFFFF;
-    --border-color: rgba(148, 163, 184, 0.3);
-    --border-focus: #2563eb;
+    --border-color: rgba(185, 28, 28, 0.2);
+    --border-focus: #DC2626;
 
-    --text-primary: #0F172A;
-    --text-sec: #475569;
-    --text-placeholder: #94A3B8;
-    --text-wa: #1E293B;
+    --text-primary: #450A0A;
+    --text-sec: #7F1D1D;
+    --text-placeholder: #FCA5A5;
+    --text-wa: #450A0A;
 
-    --header-title: #0F172A;
-    --section-title: #2563eb;
+    --header-title: #450A0A;
+    --section-title: #B91C1C;
 
-    --shadow-color: rgba(148, 163, 184, 0.15);
+    --shadow-color: rgba(185, 28, 28, 0.15);
+    --accent-gradient: #DC2626;
+    --shadow-accent: rgba(220, 38, 38, 0.3);
+    --shadow-accent-hover: rgba(220, 38, 38, 0.4);
 }
 
 
@@ -336,13 +342,13 @@ input::placeholder {
 input:focus,
 select:focus {
     border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 3px rgba(166, 75, 75, 0.25);
     background-color: var(--bg-input);
 }
 
 body:not(.light-theme) input:focus,
 body:not(.light-theme) select:focus {
-    background-color: rgba(15, 23, 42, 0.95);
+    background-color: rgba(20, 12, 12, 0.95);
 }
 
 
@@ -350,7 +356,7 @@ body:not(.light-theme) select:focus {
    8. PREVIEW PANEL (Live Preview Teks WhatsApp)
    ============================================================ */
 .preview-panel {
-    background: rgba(15, 23, 42, 0.7);
+    background: var(--bg-panel);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
     display: flex;
@@ -371,7 +377,7 @@ body.light-theme .preview-panel {
 
 .preview-header {
     padding: 16px 24px;
-    background: rgba(148, 163, 184, 0.05);
+    background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -433,14 +439,14 @@ body.light-theme .preview-panel {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent), #2563eb);
+    background: linear-gradient(135deg, var(--accent), var(--accent-gradient));
     color: white;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px var(--shadow-accent);
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #60A5FA, var(--accent));
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, var(--accent-gradient), var(--accent));
+    box-shadow: 0 6px 16px var(--shadow-accent-hover);
     transform: translateY(-2px);
 }
 
@@ -453,7 +459,7 @@ body.light-theme .preview-panel {
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px var(--shadow-accent);
 }
 
 .btn-secondary:hover {
@@ -507,8 +513,8 @@ body.light-theme .badge-success {
    11. STATIC NOTICE BOX (Info Lagu Tetap)
    ============================================================ */
 .static-notice {
-    background: rgba(59, 130, 246, 0.05);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    background: rgba(166, 75, 75, 0.05);
+    border: 1px solid rgba(166, 75, 75, 0.2);
     border-radius: var(--radius-md);
     padding: 12px 16px;
     margin: 8px 0;
@@ -516,13 +522,13 @@ body.light-theme .badge-success {
 
 .static-notice .badge {
     margin-bottom: 8px;
-    background: rgba(59, 130, 246, 0.2);
-    color: #93C5FD;
+    background: rgba(166, 75, 75, 0.2);
+    color: #D98888;
 }
 
 body.light-theme .static-notice .badge {
-    background: rgba(59, 130, 246, 0.15);
-    color: #2563eb;
+    background: rgba(220, 38, 38, 0.15);
+    color: #DC2626;
 }
 
 .static-notice p {
@@ -590,7 +596,7 @@ body.light-theme .static-notice .badge {
     background: var(--accent);
     color: white;
     border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px var(--shadow-accent);
 }
 
 /* Tab Content: Tampil/Sembunyikan */

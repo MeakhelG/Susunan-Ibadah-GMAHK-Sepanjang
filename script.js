@@ -317,11 +317,14 @@ ${tglStr}
 
 *Dimulai Pukul : ${waktuMulai} WIB - ${waktuSelesai} WIB*
 
+● *Pianist*
+${gV('ssPianist')} 
+
 ● *Operator*
 ${gV('ssOperator')} 
 
-● *Pianist*
-${gV('ssPianist')} 
+● *Soundman*
+${gV('ssSoundman')} 
 
 
 *IBADAH SEKOLAH SABAT* 
@@ -499,6 +502,7 @@ function handleSelectExclusivity() {
     const selects = [
         document.getElementById('ssOperator'),
         document.getElementById('ssPianist'),
+        document.getElementById('ssSoundman'),
         document.getElementById('khPemimpinLagu')
     ].filter(Boolean);
 
@@ -727,9 +731,10 @@ async function fetchAndFillNextSabbathSchedule() {
         document.getElementById('sabatKe').value = nilaiSabatKe;
         document.getElementById('tw').value = nilaiTriwulan;
 
-        // --- Dari Tabel POS: Operator & Pianist ---
-        setSelectValueSafely('ssOperator', nextSchedule.Operator);
+        // --- Dari Tabel POS: Pianist, Operator, & Soundman ---
         setSelectValueSafely('ssPianist', nextSchedule.Pianist);
+        setSelectValueSafely('ssOperator', nextSchedule.Operator);
+        setSelectValueSafely('ssSoundman', nextSchedule.Soundman);
 
         // --- Dari Tabel Khotbah ---
         if (khotbahData && khotbahData.length > 0) {
