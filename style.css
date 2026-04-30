@@ -9,17 +9,18 @@
    5. Layout: 2 Kolom (Form + Preview)
    6. Form Panel & Section
    7. Form Inputs (Text, Date, Select)
-   8. Preview Panel (Live Preview Teks WA)
-   9. Buttons (Primary, Secondary, Icon)
-   10. Badges
-   11. Static Notice Box (Info Lagu Tetap)
-   12. Animations (Copy Success / Theme Toggle)
-   13. Tabs Navigation & Content
-   14. Footer
-   15. Modal Login
-   16. Admin Dashboard Layout
-   17. Kustomisasi SweetAlert2 (Tema Senada)
-   18. Responsive (Tablet & Mobile)
+   8. Autocomplete Styles
+   9. Preview Panel (Live Preview Teks WA)
+   10. Buttons (Primary, Secondary, Icon)
+   11. Badges
+   12. Static Notice Box (Info Lagu Tetap)
+   13. Animations (Copy Success / Theme Toggle)
+   14. Tabs Navigation & Content
+   15. Footer
+   16. Modal Login
+   17. Admin Dashboard Layout
+   18. Kustomisasi SweetAlert2 (Tema Senada)
+   19. Responsive (Tablet & Mobile)
    ============================================================ */
 
 
@@ -243,7 +244,7 @@ body {
 }
 
 /* ============================================================
-   19. AUTOCOMPLETE STYLES
+   8. AUTOCOMPLETE STYLES
    ============================================================ */
 .autocomplete-container {
     position: relative;
@@ -353,7 +354,7 @@ body:not(.light-theme) select:focus {
 
 
 /* ============================================================
-   8. PREVIEW PANEL (Live Preview Teks WhatsApp)
+   9. PREVIEW PANEL (Live Preview Teks WhatsApp)
    ============================================================ */
 .preview-panel {
     background: var(--bg-panel);
@@ -421,7 +422,7 @@ body.light-theme .preview-panel {
 
 
 /* ============================================================
-   9. BUTTONS (Primary, Secondary, Icon)
+   10. BUTTONS (Primary, Secondary, Icon)
    ============================================================ */
 .btn {
     display: inline-flex;
@@ -467,6 +468,23 @@ body.light-theme .preview-panel {
     transform: translateY(-2px);
 }
 
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-success:active {
+    transform: translateY(0);
+}
+
 .btn-icon {
     display: inline-flex;
     align-items: center;
@@ -487,7 +505,7 @@ body.light-theme .preview-panel {
 
 
 /* ============================================================
-   10. BADGES
+   11. BADGES
    ============================================================ */
 .badge {
     display: inline-block;
@@ -510,7 +528,7 @@ body.light-theme .badge-success {
 
 
 /* ============================================================
-   11. STATIC NOTICE BOX (Info Lagu Tetap)
+   12. STATIC NOTICE BOX (Info Lagu Tetap)
    ============================================================ */
 .static-notice {
     background: rgba(166, 75, 75, 0.05);
@@ -539,7 +557,7 @@ body.light-theme .static-notice .badge {
 
 
 /* ============================================================
-   12. ANIMATIONS (Copy Success / Theme Toggle)
+   13. ANIMATIONS (Copy Success / Theme Toggle)
    ============================================================ */
 @keyframes copySuccess {
     0% {
@@ -563,7 +581,7 @@ body.light-theme .static-notice .badge {
 
 
 /* ============================================================
-   13. TABS NAVIGATION & CONTENT
+   14. TABS NAVIGATION & CONTENT
    ============================================================ */
 .tabs-nav {
     display: flex;
@@ -623,7 +641,7 @@ body.light-theme .static-notice .badge {
 
 
 /* ============================================================
-   14. FOOTER
+   15. FOOTER
    ============================================================ */
 .app-footer {
     text-align: center;
@@ -641,7 +659,7 @@ body.light-theme .static-notice .badge {
 
 
 /* ============================================================
-   15. MODAL LOGIN
+   16. MODAL LOGIN
    ============================================================ */
 .modal-overlay {
     position: fixed;
@@ -713,7 +731,7 @@ body.light-theme .static-notice .badge {
 
 
 /* ============================================================
-   16. ADMIN DASHBOARD LAYOUT
+   17. ADMIN DASHBOARD LAYOUT
    ============================================================ */
 .admin-dashboard {
     display: flex;
@@ -912,7 +930,7 @@ body.light-theme .admin-data-table tbody tr:hover {
 
 
 /* ============================================================
-   17. KUSTOMISASI SWEETALERT2 (TEMA SENADA)
+   18. KUSTOMISASI SWEETALERT2 (TEMA SENADA)
    ============================================================ */
 div:where(.swal2-container) div:where(.swal2-popup) {
     background: var(--bg-panel) !important;
@@ -976,7 +994,7 @@ div:where(.swal2-icon).swal2-success .swal2-success-fix {
 
 
 /* ============================================================
-   18. RESPONSIVE (Tablet & Mobile)
+   19. RESPONSIVE (Tablet & Mobile)
    ============================================================ */
 
 /* Tablet: <= 1024px */

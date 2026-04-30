@@ -7,60 +7,63 @@
  * 
  *   1. KONEKSI SUPABASE
  *      - Inisialisasi client Supabase (URL + Publishable Key)
+ *      - Konfigurasi schema tabel (DB_SCHEMAS)
  * 
  *   2. VARIABEL GLOBAL & SETUP
  *      - Referensi elemen DOM (form, inputs, preview)
- *      - State tab aktif
+ *      - State tab aktif saat ini
  * 
  *   3. FUNGSI HELPER
- *      - namaBulan[]         : Array nama bulan Indonesia
- *      - formatTanggalRabu() : Format tanggal khusus Rabu Malam
- *      - formatTanggalString(): Format tanggal umum (DD - Bulan - YYYY)
- *      - gV()                : Ambil value input, kembalikan "...." jika kosong
+ *      - namaBulan[]          : Array konstanta nama bulan bahasa Indonesia
+ *      - formatTanggalRabu()  : Format output tanggal spesifik Rabu Malam
+ *      - formatTanggalString(): Format output tanggal umum (DD - Bulan - YYYY)
+ *      - gV()                 : Fungsi aman ambil value input (berikan "...." jika kosong)
  * 
  *   4. GENERATOR TEKS WHATSAPP (updatePreview)
- *      - Template Rabu Malam
- *      - Template Pemuda Advent (PA)
- *      - Template Sabat Raya (SS + Khotbah)
+ *      - Menyatukan semua input menjadi teks pesan final
+ *      - Template 4a: Rabu Malam
+ *      - Template 4b: Pemuda Advent (PA)
+ *      - Template 4c: Sabat Raya (Sekolah Sabat + Khotbah)
  * 
  *   5. TAB SWITCHER
- *      - switchTab(): Ganti tab aktif & update preview
+ *      - switchTab() : Navigasi pergantian tab form & update preview
  * 
  *   6. EVENT LISTENERS
- *      - Auto-update preview setiap input berubah
+ *      - Listener realtime pada semua elemen input untuk auto-update preview
  * 
  *   7. EKSKLUSIVITAS DROPDOWN (Operator / Pianist / Pemimpin Lagu)
- *      - normalizeName()        : Samakan format nama (Sdr/Sdra./Sdri.)
- *      - handleSelectExclusivity(): Kunci opsi yang sudah dipilih di dropdown lain
+ *      - normalizeName()           : Standardisasi format nama untuk komparasi (Sdr/Sdra./Sdri.)
+ *      - handleSelectExclusivity() : Mencegah jabatan ganda dengan me-nonaktifkan opsi yang sudah dipilih
  * 
  *   8. COPY TO CLIPBOARD
- *      - copyToClipboard(): Salin teks preview ke clipboard + animasi feedback
+ *      - copyToClipboard() : Menyalin format final ke clipboard dengan indikator UI
  * 
  *   9. TEMA GELAP / TERANG
- *      - toggleTheme()    : Toggle class 'light-theme' + simpan ke localStorage
- *      - Inisialisasi tema: Baca localStorage saat halaman dimuat
+ *      - toggleTheme()     : Transisi dinamis light/dark theme dengan LocalStorage state persistence
  * 
- *   10. SUPABASE AUTO-FILL
- *       - setSelectValueSafely()             : Set dropdown dengan fuzzy matching
- *       - fetchAndFillNextSabbathSchedule()   : Tarik data Sabat terdekat & isi form
- *       - Logika tanggal: Cari >= hari ini, ambil 1 terdekat
- *       - Mapping kolom DB ke field HTML
+ *   10. SUPABASE AUTO-FILL & DATA FETCHING
+ *       - setSelectValueSafely()            : Mengatur nilai select dropdown secara dinamis dengan fuzzy match
+ *       - fetchAndFillNextSabbathSchedule() : Mengambil & auto-fill jadwal Sabat terdekat
+ *       - fetchAndFillNextPaSchedule()      : Mengambil & auto-fill jadwal PA terdekat
+ *       - fetchLselData() / fetchAysData()  : Mengambil database daftar lagu untuk fitur Autocomplete
+ *       - DOMContentLoaded event            : Trigger inisialisasi semua fungsi penarikan data
  * 
  *   11. ADMIN AUTH & MODAL
- *       - openLoginModal()  : Buka modal login admin
- *       - closeLoginModal() : Tutup modal login admin
- *       - handleLogin()     : Proses autentikasi Supabase Auth
- *       - handleLogout()    : Logout admin dengan konfirmasi SweetAlert2
+ *       - openLoginModal() / closeLoginModal() : Kendali UI popup login
+ *       - handleLogin()     : Autentikasi Admin ke Supabase
+ *       - handleLogout()    : Proses keluar sesi Admin
  * 
  *   12. ADMIN DASHBOARD & CRUD
- *       - onAuthStateChange : Listener realtime status login/logout
- *       - switchAdminTab()  : Ganti tabel aktif di sidebar admin
- *       - loadAdminTableData(): Tarik data tabel dari Supabase
- *       - sortAdminTable()  : Sorting lokal per kolom (Asc/Desc)
- *       - renderAdminTable(): Render tabel HTML dengan header & body
- *       - openFormModal()   : Buka modal form Tambah/Edit data
- *       - closeFormModal()  : Tutup modal form
- *       - simpanDataTabel() : Simpan (Insert/Update) data ke Supabase
+ *       - onAuthStateChange : Listener realtime auth state untuk toggle UI Dasbor / Generator
+ *       - switchAdminTab()  : Navigasi tabel dalam dasbor admin
+ *       - loadAdminTableData(): Mengambil dataset lengkap dari tabel tertentu
+ *       - sortAdminTable()  : Fungsi pengurutan (Sorting) data lokal per kolom
+ *       - renderAdminTable(): Merender baris dan kolom tabel ke dalam HTML
+ *       - openFormModal() / closeFormModal() : Kendali UI popup form tambah/edit data
+ *       - simpanDataTabel() : Proses penyimpanan (Insert/Update) data admin ke Supabase
+ * 
+ *   13. AUTOCOMPLETE LAGU
+ *       - setupSongAutocomplete() : Algoritma pencarian dan dropdown rekomendasi lagu pintar
  * 
  * ============================================================
  */
@@ -169,7 +172,7 @@ function formatTanggalRabu(dateString) {
     const bln = namaBulan[dateObj.getMonth()];
     const thn = dateObj.getFullYear();
 
-    return `Rabu,  ${tg} ${bln} ${thn}`;
+    return `Rabu, ${tg} ${bln} ${thn}`;
 }
 
 /**
@@ -211,35 +214,33 @@ function updatePreview() {
     if (currentTab === 'rabu') {
         const tglStr = formatTanggalRabu(document.getElementById('rmTanggal').value);
 
-        const teks = `"JADWAL IBADAH  RABU MALAM" : 
-
-GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
+        const teks = `GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
 
 Topik: Ibadah Rabu Malam GMAHK Sepanjang 
-Waktu: ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}; Jam: 19:00 WIB (ontime)
+*Waktu: ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}; Jam: 19:00 WIB (ontime)*
 
-Bergabung ke Rapat Zoom
-https://us06web.zoom.us/j/83615502100?pwd=bmRVcGaCg35OCJWbaD7M7o22SEMqKl.1
+*Bergabung ke Rapat Zoom*
+https://us06web.zoom.us/j/88285119108?pwd=tKeuUS59IcRakq24tXsnr15FerBW2U.1
 
-ID Rapat: 836 1550 2100
+ID Rapat: 882 8511 9108
 Kode Sandi: sepanjang
 
 
-🌟 JADWAL PELAYANAN 
+🌟 *JADWAL PELAYANAN* 
 ⛪️ Konferens Jawa Kawasan Timur
 🗓️ ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}
 🕕 Pukul 19.00 WIB (Malam)
 
-Pelayan Ibadah:
-* Host: ${gV('rmHost')}
-* MC, Doa: ${gV('rmMcDoa')}
-* Kesaksian: ${gV('rmKesaksian')}
+*Pelayan Ibadah:*
+* _Host: ${gV('rmHost')}_
+* _MC, Doa: ${gV('rmMcDoa')}_
+* _Kesaksian: ${gV('rmKesaksian')}_
 ${document.getElementById('togglePujianRabu').checked ? `* _Pujian: ${document.getElementById('rmPujian').value.trim() ? document.getElementById('rmPujian').value.trim() + '_' : '_'}\n` : ''}* Firman Tuhan: ${gV('rmFirman')}
-* Doa Tutup: ${gV('rmDoaTutup')}
-* Ucapan Terima kasih & Pengumuman: ${document.getElementById('rmPengumuman').value || "Ketua"}
+* _Doa Tutup: ${gV('rmDoaTutup')}_
+* _Ucapan Terima kasih & Pengumuman: ${document.getElementById('rmPengumuman').value || "Ketua"}_
 
 📖 "Dan apa saja yang kamu minta dalam doa dengan penuh kepercayaan, kamu akan menerimanya."
-— Matius 21:22
+*— Matius 21:22*
 
 ✨ Selamat Melayani
 🙏 Tuhan Memberkati`;
@@ -607,10 +608,10 @@ if (savedTheme === 'light') {
 
 
 /* ============================================================
-   10. SUPABASE AUTO-FILL
+   10. SUPABASE AUTO-FILL & DATA FETCHING
    - Menarik data jadwal dari Supabase berdasarkan tanggal terdekat
    - Mengisi form secara otomatis (Auto-Fill)
-   - Tabel yang digunakan: "Tabel POS", "Tabel Khotbah", "Tabel SS"
+   - Mengambil database daftar lagu untuk fitur Autocomplete
    ============================================================ */
 
 /**
