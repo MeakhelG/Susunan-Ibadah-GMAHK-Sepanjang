@@ -593,6 +593,8 @@ body.light-theme .static-notice .badge {
 }
 
 .tab-btn {
+    flex: 1;
+    text-align: center;
     padding: 10px 16px;
     background: transparent;
     border: 1px solid var(--border-color);

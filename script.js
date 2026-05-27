@@ -220,9 +220,9 @@ Topik: Ibadah Rabu Malam GMAHK Sepanjang
 *Waktu: ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}; Jam: 19:00 WIB (ontime)*
 
 *Bergabung ke Rapat Zoom*
-https://us06web.zoom.us/j/88285119108?pwd=tKeuUS59IcRakq24tXsnr15FerBW2U.1
+https://us06web.zoom.us/j/84588598170?pwd=nzxPJwxKwwdToEwMAGuX5SuOyLREXN.1
 
-ID Rapat: 882 8511 9108
+ID Rapat: 845 8859 8170
 Kode Sandi: sepanjang
 
 
@@ -434,6 +434,10 @@ LSEL No ${gV('khLaguTutupNo')}:
 
 ● *Doa TUTUP dan Doa BERKAT*
 ${gV('khDoaBerkat')}
+
+● *Lagu Sambutan Doa Tutup dan Doa Berkat*
+LSEL No. 523:
+*"Tuhan Dengar Doa Kami"*
 
 __________________________
 
