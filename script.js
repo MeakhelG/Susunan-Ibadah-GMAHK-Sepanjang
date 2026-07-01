@@ -219,14 +219,14 @@ function updatePreview() {
 
         const teks = `GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
 
-Topik: Ibadah Rabu Malam GMAHK Sepanjang 
+Topic: Ibadah Rabu Malam - GMAHK Sepanjang
 *Waktu: ${document.getElementById('rmTanggal').value ? tglStr : 'Rabu, [Pilih Tanggal]'}; Jam: 19:00 WIB (ontime)*
 
-*Bergabung ke Rapat Zoom*
-https://us06web.zoom.us/j/84588598170?pwd=nzxPJwxKwwdToEwMAGuX5SuOyLREXN.1
+Join Zoom Meeting
+https://us06web.zoom.us/j/84580474203?pwd=pfIdV8blFAQkxcb3g18YAHmd016e2X.1
 
-ID Rapat: 845 8859 8170
-Kode Sandi: sepanjang
+Meeting ID: 845 8047 4203
+Passcode: sepanjang
 
 
 🌟 *JADWAL PELAYANAN* 

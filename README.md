@@ -2,24 +2,19 @@
 
 Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
 
-**Versi App:** v1.6.0
+**Versi App:** v1.6.1
 
-## Apa yang baru di v1.6.0 🎉
-- **Aksi Hapus Data Admin:** Penambahan tombol **Hapus** pada baris tabel admin dengan konfirmasi *SweetAlert2* untuk menghapus data langsung dari database Supabase secara aman.
-- **Majukan & Mundurkan Jadwal:** Tombol baru **"Majukan 1 Minggu"** dan **"Mundurkan 1 Minggu"** untuk menggeser tanggal seluruh jadwal di tabel aktif secara massal (paralel) dengan sekali klik.
-- **Tampilan Tabel Full-Screen & Responsif:** Halaman dashboard admin kini otomatis melebar hingga **95%** layar dan sel tabel diatur melipat teks secara rapi (*word-wrap*) untuk mengeliminasi scrollbar horizontal pada desktop.
-- **Refactoring Komentar Kode:** Pembersihan dan pembaruan seluruh komentar di dalam kode sumber (`index.html`, `style.css`, `script.js`) agar lebih akurat menerangkan alur logika, penanganan zona waktu, dan integrasi kolom database Supabase.
+## Apa yang baru di v1.6.1 🎉
+- **Pembaruan Link & ID Zoom:** Memperbarui tautan, Meeting ID, dan Passcode untuk Ibadah Rabu Malam menggunakan kredensial Zoom terbaru.
 
 ## Fitur Inti
-- **Dashboard Admin Aman & Interaktif:** Panel manajemen data di dalam aplikasi untuk mempermudah edit data, dilindungi oleh autentikasi login terenkripsi berbasis ekosistem *Supabase Auth & Row Level Security* (RLS), serta ditenagai interaksi pop-up mulus dari *SweetAlert2*. Tabel PA dan Sabat Raya terintegrasi penuh ke dalam *Manager* Dasbor.
-- **Integrasi Ekosistem Multi-Tab & Rapat Virtual:** Form Ibadah dipecah dalam tab-tab fungsional (Sabat Raya, Pemuda Advent, dan Rabu Malam) tanpa proses *reload* antarklik, lengkap dengan template undangan rapat Zoom otomatis yang ditenagai tautan & ID Zoom terbaru.
-- **Integrasi Database Serverless (Supabase):** Ditenagai database *real-time* dengan fitur *Auto-Fill* cerdas. Jadwal Sabat (termasuk kelengkapan petugas *Soundman*) dan Jadwal PA terdekat akan terisi secara otomatis, memotong waktu input manual hingga 90%.
-- **Smart Song Autocomplete & Nyanyian Sambutan:** Pencarian judul lagu Sion (LSEL) dan lagu Pemuda Advent (AYS) yang cerdas dan cepat dari *database* (cukup ketik 3 huruf) dengan *dropdown list* rekomendasi, serta penempatan otomatis lagu sambutan tetap (LSEL No. 523) setelah Doa Tutup dan Doa Berkat Sabat Raya.
-- **Logika Validasi & Deteksi Otomatis Pintar:** Kalkulasi otomatis untuk penentuan angka "Sabat Ke" dan rentang "Triwulan" sesuai kalender berjalan, serta normalisasi penulisan nama petugas (fuzzy match untuk "Sdr" vs "Sdra.") untuk mencegah jabatan eksklusif ganda secara transparan.
-- **Otomatisasi Doa Syafaat Rabu Malam:** Pengisian otomatis kolom Doa Syafaat untuk ibadah Rabu Malam dengan nama default ("Pdt. Benny Lumbantobing") yang ditempatkan secara tepat sebelum bagian Pujian.
-- **Live Preview & 1-Click Copy WA:** Teks *WhatsApp* pratinjau seketika terbangun bersamaan dengan input ketikan (bebas spasi ganda untuk kenyamanan visual), siap disalin dalam sekali klik (dilengkapi notifikasi aksi).
-- **Desain Responsif, Fleksibel, & Estetis:** Estetika UI modern berwarna *Maroon* elegan (mendukung *Dark/Light mode* permanen) yang otomatis menyesuaikan visual peranti ponsel, tablet, atau laptop. Navigasi tab didesain menggunakan tata letak flex agar meregang secara proporsional.
-- **Refactoring & Struktur Bersih:** Kode HTML, CSS, dan JavaScript telah di-refactor secara rapi dengan pengelompokan yang jelas, penggunaan kelas utilitas CSS (seperti `.btn-success`), serta dokumentasi logika aplikasi yang sangat mendetail.
+- **Dashboard Admin & Manajemen Jadwal:** Panel aman berbasis *Supabase Auth & RLS* untuk mengelola jadwal Sabat Raya dan PA. Dilengkapi fitur hapus data (konfirmasi *SweetAlert2*) serta tombol penggeser tanggal ("Majukan/Mundurkan 1 Minggu").
+- **Auto-Fill & Integrasi Database:** Pengisian otomatis (*Auto-Fill*) jadwal terdekat dari database *real-time* Supabase (termasuk petugas *Soundman*) serta fitur autocomplete pencarian judul lagu Sion (LSEL) dan lagu PA (AYS).
+- **Multi-Tab & Rapat Virtual:** Pemisahan form ibadah (Sabat Raya, Pemuda Advent, dan Rabu Malam) secara mulus tanpa *reload*, serta pembuatan otomatis undangan rapat Zoom dengan tautan, ID, dan passcode terbaru.
+- **Logika Validasi & Deteksi Otomatis Pintar:** Kalkulasi otomatis untuk penentuan angka "Sabat Ke" dan "Triwulan", penempatan otomatis lagu sambutan tetap setelah Doa Tutup, serta pengisian otomatis nama pendeta default pada doa syafaat Rabu Malam.
+- **Pratinjau Langsung & 1-Click Copy WA:** Teks WhatsApp pratinjau diperbarui secara langsung (*real-time*) saat mengetik dan dapat disalin ke *clipboard* dalam sekali klik.
+- **Desain Modern, Responsif, & Estetis:** Antarmuka berwarna *Maroon* elegan dengan dukungan *Dark/Light mode*, serta tampilan tabel full-screen yang responsif menyesuaikan visual laptop, tablet, maupun ponsel.
+- **Kode Sumber Bersih & Rapi:** Struktur HTML, CSS, dan JavaScript yang terorganisir dengan kelas utilitas terstandarisasi, dokumentasi logika yang mendetail, serta komentar kode yang rapi.
 
 ## Cara Penggunaan
 1. Buka Tautan [Susunan Ibadah GMAHK Sepanjang](https://meakhelg.github.io/Susunan-Ibadah-GMAHK-Sepanjang/)
@@ -29,8 +24,7 @@ Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan r
 
 ---
 
-## 🛠 Dikembangkan Oleh
-**Meakhel Gunawan**  
+## 🛠 Hak Cipta
 &copy; 2026 - Semua Hak Cipta Dilindungi (All rights reserved).
 
 
