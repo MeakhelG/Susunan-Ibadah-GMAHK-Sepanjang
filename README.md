@@ -2,10 +2,13 @@
 
 Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
 
-**Versi App:** v1.6.2
+**Versi App:** v1.7.0
 
-## Apa yang baru di v1.6.2 🎉
-- **Pembaruan Teks:** Memperbarui kata-kata sambutan untuk Ibadah PA.
+## Apa yang baru di v1.7.0 🎉
+- **Penyimpanan Draf Lokal (State Persistence):** Draf isian formulir di semua tab (Sabat Raya, PA, dan Rabu Malam) beserta tab terakhir yang dibuka kini tersimpan otomatis di browser, aman jika halaman tidak sengaja di-refresh.
+- **Pembersihan Draf Otomatis (Auto-Reset Dinamis):** Sistem mendeteksi tanggal secara pintar dan otomatis menghapus draf lama begitu melewati hari pelaksanaannya (hari Minggu untuk Sabat Raya & PA, dan hari Kamis untuk Rabu Malam) agar siap menyambut jadwal minggu berikutnya dari database.
+- **Tanggal Rabu Malam Otomatis:** Input tanggal Rabu Malam secara otomatis terisi hari Rabu terdekat dari waktu sistem saat ini.
+- **Reset Jadwal Terpadu (SweetAlert2):** Tombol reset tunggal di header yang memicu dialog SweetAlert2 proporsional untuk memulihkan jadwal semula secara sebagian atau menyeluruh (bebas istilah IT).
 
 ## Fitur Inti
 - **Dashboard Admin & Manajemen Jadwal:** Panel aman berbasis *Supabase Auth & RLS* untuk mengelola jadwal Sabat Raya dan PA. Dilengkapi fitur hapus data (konfirmasi *SweetAlert2*) serta tombol penggeser tanggal ("Majukan/Mundurkan 1 Minggu").

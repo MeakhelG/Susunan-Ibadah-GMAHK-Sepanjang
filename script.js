@@ -203,6 +203,193 @@ function gV(id) {
     return val ? val : "......................";
 }
 
+/**
+ * Mem-parsing string YYYY-MM-DD menjadi objek Date dalam timezone lokal.
+ */
+function parseLocalDate(dateStr) {
+    if (!dateStr) return new Date(NaN);
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return new Date(dateStr);
+    return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+}
+
+/**
+ * Mengecek apakah draf Sabat atau PA sudah kedaluwarsa (memasuki hari Minggu berikutnya).
+ * Draf dianggap kedaluwarsa jika tanggal draf berada di sebelum hari Minggu pada minggu berjalan.
+ */
+function isSabbatOrPaExpired(dateStr) {
+    if (!dateStr) return true;
+    const draftDate = parseLocalDate(dateStr);
+    if (isNaN(draftDate.getTime())) return true;
+    
+    const now = new Date();
+    const todayDay = now.getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+    const lastSunday = new Date(now);
+    lastSunday.setDate(now.getDate() - todayDay);
+    lastSunday.setHours(0, 0, 0, 0);
+    
+    return draftDate < lastSunday;
+}
+
+/**
+ * Mengecek apakah draf Rabu Malam sudah kedaluwarsa (memasuki hari Kamis berikutnya).
+ * Draf dianggap kedaluwarsa jika tanggal draf berada di sebelum hari Kamis pada minggu berjalan.
+ */
+function isRabuExpired(dateStr) {
+    if (!dateStr) return true;
+    const draftDate = parseLocalDate(dateStr);
+    if (isNaN(draftDate.getTime())) return true;
+    
+    const now = new Date();
+    const todayDay = now.getDay(); // 0: Sun, ..., 4: Thu, ...
+    let daysToSubtract = todayDay - 4;
+    if (daysToSubtract < 0) daysToSubtract += 7;
+    
+    const lastThursday = new Date(now);
+    lastThursday.setDate(now.getDate() - daysToSubtract);
+    lastThursday.setHours(0, 0, 0, 0);
+    
+    return draftDate < lastThursday;
+}
+
+/**
+ * Mendapatkan tanggal hari Rabu terdekat (YYYY-MM-DD).
+ * Jika hari ini adalah Kamis s.d. Sabtu, akan mengambil hari Rabu minggu depan.
+ * Jika hari ini adalah Minggu s.d. Rabu, akan mengambil hari Rabu minggu ini.
+ */
+function getNearestWednesday(fromDate = new Date()) {
+    const d = new Date(fromDate);
+    const day = d.getDay();
+    let diff = 3 - day;
+    if (diff < 0) diff += 7;
+    d.setDate(d.getDate() + diff);
+    
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dayStr}`;
+}
+
+/**
+ * Menghapus seluruh draf di localStorage untuk tab tertentu.
+ */
+function clearTabDraft(tabId) {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(`draft_${tabId}_`)) {
+            localStorage.removeItem(key);
+        }
+    }
+}
+
+/**
+ * Mengidentifikasi tab asal dari suatu input element.
+ */
+function getTabOfInput(input) {
+    const tabPane = input.closest('.tab-pane');
+    if (tabPane) {
+        return tabPane.id.replace('tab-', '');
+    }
+    return null;
+}
+
+/**
+ * Menyimpan nilai input ke localStorage.
+ */
+function saveInputState(input) {
+    const tabId = getTabOfInput(input);
+    if (tabId && input.id) {
+        if (input.type === 'checkbox') {
+            localStorage.setItem(`draft_${tabId}_${input.id}`, input.checked);
+        } else {
+            localStorage.setItem(`draft_${tabId}_${input.id}`, input.value);
+        }
+    }
+}
+
+/**
+ * Memuat semua nilai input untuk tab tertentu dari localStorage.
+ */
+function loadTabInputsFromStorage(tabId) {
+    const tabPane = document.getElementById(`tab-${tabId}`);
+    if (!tabPane) return;
+    const tabInputs = tabPane.querySelectorAll('input, select, textarea');
+    tabInputs.forEach(input => {
+        if (!input.id) return;
+        const savedVal = localStorage.getItem(`draft_${tabId}_${input.id}`);
+        if (savedVal !== null) {
+            if (input.type === 'checkbox') {
+                input.checked = savedVal === 'true';
+            } else {
+                input.value = savedVal;
+            }
+        }
+    });
+}
+
+/**
+ * Menyimpan seluruh input pada tab tertentu ke localStorage.
+ */
+function saveTabInputsToStorage(tabId) {
+    const tabPane = document.getElementById(`tab-${tabId}`);
+    if (!tabPane) return;
+    const tabInputs = tabPane.querySelectorAll('input, select, textarea');
+    tabInputs.forEach(input => {
+        saveInputState(input);
+    });
+}
+
+/**
+ * Mengembalikan input DOM di tab tertentu ke nilai awal (default HTML).
+ */
+function clearTabDomInputs(tabId) {
+    const tabPane = document.getElementById(`tab-${tabId}`);
+    if (!tabPane) return;
+    const tabInputs = tabPane.querySelectorAll('input, select, textarea');
+    tabInputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            input.checked = input.defaultChecked;
+        } else if (input.tagName === 'SELECT') {
+            input.selectedIndex = 0;
+        } else {
+            // Restore default HTML value if defined, otherwise empty
+            input.value = input.defaultValue !== undefined ? input.defaultValue : '';
+        }
+    });
+}
+
+/**
+ * Menginisialisasi input Rabu Malam dengan nilai default.
+ */
+function initRabuMalamDefault() {
+    const rmDateInput = document.getElementById('rmTanggal');
+    if (rmDateInput) {
+        rmDateInput.value = getNearestWednesday();
+    }
+    const defaults = {
+        'rmHost': '',
+        'rmMcDoa': '',
+        'rmKesaksian': '',
+        'rmDoaSyafaat': 'Pdt. Benny Lumbantobing',
+        'rmPujian': '',
+        'rmFirman': '',
+        'rmDoaTutup': '',
+        'rmPengumuman': 'Ketua'
+    };
+    Object.keys(defaults).forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.value = defaults[id];
+        }
+    });
+    
+    const togglePujian = document.getElementById('togglePujianRabu');
+    if (togglePujian) {
+        togglePujian.checked = true;
+    }
+    saveTabInputsToStorage('rabu');
+}
+
 
 /* ============================================================
    4. GENERATOR TEKS WHATSAPP (updatePreview)
@@ -467,6 +654,9 @@ function switchTab(tabId) {
     document.getElementById('btn-tab-' + tabId).classList.add('active');
     document.getElementById('tab-' + tabId).classList.add('active');
 
+    // Simpan tab aktif ke localStorage
+    localStorage.setItem('lastTab', tabId);
+
     // Update text
     updatePreview();
 }
@@ -477,8 +667,14 @@ function switchTab(tabId) {
    - Auto-update preview setiap kali user mengetik atau memilih
    ============================================================ */
 inputs.forEach(input => {
-    input.addEventListener('input', updatePreview);
-    input.addEventListener('change', updatePreview); // khusus untuk date picker / select
+    input.addEventListener('input', () => {
+        saveInputState(input);
+        updatePreview();
+    });
+    input.addEventListener('change', () => {
+        saveInputState(input);
+        updatePreview();
+    }); // khusus untuk date picker / select
 });
 
 // Panggil sekali saat dimuat untuk inisiasi preview awal
@@ -801,6 +997,7 @@ async function fetchAndFillNextSabbathSchedule() {
         // Update UI: refresh preview teks WA & kunci dropdown eksklusif
         handleSelectExclusivity();
         updatePreview();
+        saveTabInputsToStorage('sabat');
 
     } catch (err) {
         console.error("❌ Gagal menarik data dari Supabase:", err);
@@ -850,6 +1047,7 @@ async function fetchAndFillNextPaSchedule() {
         }
 
         updatePreview();
+        saveTabInputsToStorage('pa');
 
     } catch (err) {
         console.error("❌ Gagal menarik data PA dari Supabase:", err);
@@ -905,10 +1103,143 @@ async function fetchAysData() {
     }
 }
 
+/**
+ * Memuat state yang tersimpan di localStorage.
+ * Jika draf kedaluwarsa atau tidak ada, akan menarik data dari Supabase / nilai default.
+ */
+async function loadSavedState() {
+    // 1. Memuat tab aktif terakhir
+    const lastTab = localStorage.getItem('lastTab');
+    if (lastTab && ['sabat', 'pa', 'rabu'].includes(lastTab)) {
+        switchTab(lastTab);
+    } else {
+        switchTab('sabat'); // Default
+    }
+
+    // 2. Tab Sabat Raya
+    const savedSabatDate = localStorage.getItem('draft_sabat_tanggal');
+    if (savedSabatDate && !isSabbatOrPaExpired(savedSabatDate)) {
+        console.log("ℹ️ Memuat draf Sabat Raya dari localStorage");
+        loadTabInputsFromStorage('sabat');
+    } else {
+        console.log("ℹ️ Draf Sabat Raya tidak ada atau kedaluwarsa. Mengambil dari database...");
+        clearTabDraft('sabat');
+        await fetchAndFillNextSabbathSchedule();
+    }
+
+    // 3. Tab Pemuda Advent (PA)
+    const savedPaDate = localStorage.getItem('draft_pa_paTanggal');
+    if (savedPaDate && !isSabbatOrPaExpired(savedPaDate)) {
+        console.log("ℹ️ Memuat draf PA dari localStorage");
+        loadTabInputsFromStorage('pa');
+    } else {
+        console.log("ℹ️ Draf PA tidak ada atau kedaluwarsa. Mengambil dari database...");
+        clearTabDraft('pa');
+        await fetchAndFillNextPaSchedule();
+    }
+
+    // 4. Tab Rabu Malam
+    const savedRabuDate = localStorage.getItem('draft_rabu_rmTanggal');
+    if (savedRabuDate && !isRabuExpired(savedRabuDate)) {
+        console.log("ℹ️ Memuat draf Rabu Malam dari localStorage");
+        loadTabInputsFromStorage('rabu');
+    } else {
+        console.log("ℹ️ Draf Rabu Malam tidak ada atau kedaluwarsa. Menginisialisasi default...");
+        clearTabDraft('rabu');
+        initRabuMalamDefault();
+    }
+    
+    // Sinkronkan eksklusivitas dropdown & live preview
+    handleSelectExclusivity();
+    updatePreview();
+}
+
+/**
+ * Memicu pop-up pilihan reset menggunakan SweetAlert2.
+ */
+function triggerResetForm() {
+    Swal.fire({
+        title: '🧹 Reset Jadwal',
+        text: 'Pilih bagian jadwal yang ingin dikembalikan ke jadwal semula:',
+        icon: 'question',
+        input: 'select',
+        inputOptions: {
+            'all': 'Semua Bagian (Sabat, PA & Rabu)',
+            'sabat': 'Ibadah Sabat Raya (Sekolah Sabat & Khotbah)',
+            'pa': 'Ibadah Pemuda Advent (PA)',
+            'rabu': 'Ibadah Rabu Malam'
+        },
+        inputValue: 'all',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#475569',
+        confirmButtonText: 'Reset Jadwal',
+        cancelButtonText: 'Batal',
+        customClass: {
+            confirmButton: 'swal2-confirm-danger'
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const resetType = result.value;
+            
+            // Tampilkan loading spinner selama proses penarikan data dari Supabase
+            Swal.fire({
+                title: 'Mereset Jadwal...',
+                text: 'Harap tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+                await executeReset(resetType);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil di-reset',
+                    text: 'Jadwal berhasil dikembalikan ke jadwal semula.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } catch (err) {
+                console.error("Gagal melakukan reset:", err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan saat memproses reset.'
+                });
+            }
+        }
+    });
+}
+
+/**
+ * Melakukan proses reset aktual berdasarkan jenis reset yang dipilih.
+ */
+async function executeReset(resetType) {
+    if (resetType === 'all' || resetType === 'sabat') {
+        clearTabDraft('sabat');
+        clearTabDomInputs('sabat');
+        await fetchAndFillNextSabbathSchedule();
+    }
+    if (resetType === 'all' || resetType === 'pa') {
+        clearTabDraft('pa');
+        clearTabDomInputs('pa');
+        await fetchAndFillNextPaSchedule();
+    }
+    if (resetType === 'all' || resetType === 'rabu') {
+        clearTabDraft('rabu');
+        clearTabDomInputs('rabu');
+        initRabuMalamDefault();
+    }
+    
+    handleSelectExclusivity();
+    updatePreview();
+}
+
 // Eksekusi saat halaman selesai dimuat
 window.addEventListener('DOMContentLoaded', () => {
-    fetchAndFillNextSabbathSchedule();
-    fetchAndFillNextPaSchedule();
+    loadSavedState();
 
     // Tarik data LSEL
     fetchLselData().then(() => {
@@ -1581,6 +1912,7 @@ function setupSongAutocomplete(noId, judulId, listId, dataset) {
         const song = dataset.find(s => String(s.nomor) === val);
         if (song) {
             judulInput.value = song.judul;
+            saveInputState(judulInput);
             updatePreview();
         }
     });
@@ -1605,6 +1937,8 @@ function setupSongAutocomplete(noId, judulId, listId, dataset) {
                 item.addEventListener('click', () => {
                     noInput.value = song.nomor;
                     judulInput.value = song.judul;
+                    saveInputState(noInput);
+                    saveInputState(judulInput);
                     listEl.classList.remove('active');
                     updatePreview();
                 });
