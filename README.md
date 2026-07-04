@@ -2,10 +2,10 @@
 
 Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
 
-**Versi App:** v1.6.1
+**Versi App:** v1.6.2
 
-## Apa yang baru di v1.6.1 🎉
-- **Pembaruan Link & ID Zoom:** Memperbarui tautan, Meeting ID, dan Passcode untuk Ibadah Rabu Malam menggunakan kredensial Zoom terbaru.
+## Apa yang baru di v1.6.2 🎉
+- **Pembaruan Teks:** Memperbarui kata-kata sambutan untuk Ibadah PA.
 
 ## Fitur Inti
 - **Dashboard Admin & Manajemen Jadwal:** Panel aman berbasis *Supabase Auth & RLS* untuk mengelola jadwal Sabat Raya dan PA. Dilengkapi fitur hapus data (konfirmasi *SweetAlert2*) serta tombol penggeser tanggal ("Majukan/Mundurkan 1 Minggu").

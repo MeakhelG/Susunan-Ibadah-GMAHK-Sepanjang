@@ -257,7 +257,7 @@ ${document.getElementById('togglePujianRabu').checked ? `* _Pujian: ${document.g
     // -------------------------------------------
     if (currentTab === 'pa') {
         const tglStr = formatTanggalString(document.getElementById('paTanggal').value);
-        const teks = `*Selamat Sabat dan Selamat Malam KUPAS Berikut adalah :* 
+        const teks = `*Shalom KUPAS, berikut adalah :* 
 *Susunan Partisipan Ibadah Pemuda Advent Tanggal ${document.getElementById('paTanggal').value ? tglStr : '[Pilih Tanggal]'}*
 
 ● *MC & Janji PA* : ${gV('paMc')}
