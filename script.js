@@ -39,11 +39,17 @@ const scheduleData = {
             dateDisplay: "Sabtu, 18 Juli 2026",
             title: "Ibadah Sabat Raya",
             timeline: [
-                { time: "09:00", title: "Sekolah Sabat Dimulai", desc: "Pemimpin Lagu: Sdr. Kevin A." },
-                { time: "09:30", title: "Diskusi Pelajaran Sekolah Sabat", desc: "Di kelas masing-masing (Sabat ke-3)" },
-                { time: "10:45", title: "Ibadah Khotbah (Divine Service)", desc: "Pembicara: Pdt. Nelson Manuhutu", highlight: true, note: "Tema: 'Misi Terakhir untuk Dunia'" }
+                { isHeader: true, title: "I. Informasi Umum" },
+                { time: "", title: "Pianist Jemaat", desc: "Sdr. Bayu Satria", highlight: true },
+                { time: "", title: "Operator Slide/Zoom", desc: "Sdr. Operator", highlight: true },
+                { time: "", title: "Soundman Bertugas", desc: "Sdr. Soundman", highlight: true },
+                { isHeader: true, title: "II. Ibadah Sekolah Sabat (09:00 - 10:30)" },
+                { time: "09:00", title: "MC & Yel Yel Sekolah Sabat", desc: "MC: Sdr. Kevin A.", highlight: false },
+                { time: "09:30", title: "Ringkasan Sekolah Sabat Dewasa", desc: "Di kelas masing-masing (Sabat ke-3)", highlight: true },
+                { isHeader: true, title: "III. Ibadah Khotbah (10:35 - 12:00)" },
+                { time: "10:45", title: "Ibadah Khotbah (Divine Service)", desc: "Pembicara: Pdt. Benny Lumbantobing", highlight: true, note: "Tema: 'Misi Terakhir untuk Dunia'" }
             ],
-            waFormat: `*SUSUNAN ACARA SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 18 Juli 2026\n\n09:00 - Sekolah Sabat (P.L: Sdr. Kevin A.)\n09:30 - Pelajaran Sekolah Sabat (Kelas masing-masing)\n10:45 - Ibadah Khotbah\n- Pembicara: Pdt. Nelson Manuhutu\n- Tema: "Misi Terakhir untuk Dunia"\n\n_Diharapkan hadir tepat waktu._`
+            waFormat: `*SUSUNAN ACARA SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 18 Juli 2026\n\n09:00 - Sekolah Sabat (P.L: Sdr. Kevin A.)\n09:30 - Pelajaran Sekolah Sabat (Kelas masing-masing)\n10:45 - Ibadah Khotbah\n- Pembicara: Pdt. Benny Lumbantobing\n- Tema: "Misi Terakhir untuk Dunia"\n\n_Diharapkan hadir tepat waktu._`
         }
     ],
     pa: [
@@ -119,18 +125,26 @@ const rosterData = {
             programTag: "IBADAH SABAT RAYA",
             departments: [
                 {
-                    name: "SEKOLAH SABAT",
+                    name: "INFORMASI UMUM",
+                    time: "",
+                    roles: [
+                        { role: "Pianist", name: "Sdri. Grace T." },
+                        { role: "Operator Slide", name: "-" },
+                        { role: "Soundman", name: "-" }
+                    ]
+                },
+                {
+                    name: "IBADAH SEKOLAH SABAT",
                     time: "09:00 - 10:30 WIB",
                     roles: [
-                        { role: "Pianis", name: "Sdri. Grace T." },
                         { role: "Pemimpin Lagu", name: "Sdri. Linda K." },
                         { role: "Ayat Inti & Doa Buka", name: "Sdr. Bryan S." },
                         { role: "Berita Misi", name: "Sdri. Martha L." }
                     ]
                 },
                 {
-                    name: "KHOTBAH / UMUM",
-                    time: "10:30 - 12:00 WIB",
+                    name: "IBADAH KHOTBAH",
+                    time: "10:35 - 12:00 WIB",
                     roles: [
                         { role: "Khotbah", name: "Pnt. R. Hutabarat" },
                         { role: "Pendamping 1", name: "Pnt. J. Silitonga" },
@@ -138,53 +152,60 @@ const rosterData = {
                     ]
                 }
             ],
-            waFormat: `*JADWAL PETUGAS SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 11 Juli 2026\n\n*SEKOLAH SABAT*\n- Pemimpin Lagu: Sdri. Linda K.\n- Pianis: Sdri. Grace T.\n\n*KHOTBAH / UMUM*\n- Pembicara: Pnt. R. Hutabarat\n- Pendamping 1: Pnt. J. Silitonga\n- Cerita Anak: Ibu Julia P.`
+            waFormat: `*JADWAL PETUGAS SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 11 Juli 2026\n\n*INFORMASI UMUM*\n- Pianist: Sdri. Grace T.\n\n*IBADAH SEKOLAH SABAT*\n- Pemimpin Lagu: Sdri. Linda K.\n- Ayat & Doa: Sdr. Bryan S.\n- Berita Misi: Sdri. Martha L.\n\n*IBADAH KHOTBAH*\n- Pembicara: Pnt. R. Hutabarat\n- Pendamping 1: Pnt. J. Silitonga\n- Cerita Anak: Ibu Julia P.`
         },
         {
             dateDisplay: "Sabtu, 18 Juli 2026",
             programTag: "IBADAH SABAT RAYA",
             departments: [
                 {
-                    name: "SEKOLAH SABAT",
-                    time: "09:00 - 10:30 WIB",
+                    name: "INFORMASI UMUM",
+                    time: "",
                     roles: [
                         { role: "Pianis", name: "Sdri. Grace T." },
+                        { role: "Operator Slide", name: "-" },
+                        { role: "Soundman", name: "-" }
+                    ]
+                },
+                {
+                    name: "IBADAH SEKOLAH SABAT",
+                    time: "09:00 - 10:30 WIB",
+                    roles: [
                         { role: "Pemimpin Lagu", name: "Sdr. Kevin A." },
                         { role: "Ayat Inti & Doa Buka", name: "Sdr. Bryan S." },
                         { role: "Berita Misi", name: "Sdri. Martha L." }
                     ]
                 },
                 {
-                    name: "DIAKON & DIAKONES",
-                    time: "09:00 - Selesai",
+                    name: "IBADAH KHOTBAH",
+                    time: "10:35 - 12:00 WIB",
                     roles: [
-                        { role: "Diakon Utama", name: "Bp. H. Sianipar" },
-                        { role: "Diakon Pendamping", name: "Bp. T. Sihotang" },
-                        { role: "Diakones", name: "Ibu Merry O." }
-                    ]
-                },
-                {
-                    name: "KHOTBAH / UMUM",
-                    time: "10:30 - 12:00 WIB",
-                    roles: [
-                        { role: "Khotbah", name: "Pdt. Nelson Manuhutu" },
+                        { role: "Khotbah", name: "Pdt. Benny Lumbantobing" },
                         { role: "Pendamping 1", name: "Pnt. R. Hutabarat" },
                         { role: "Pendamping 2", name: "Pnt. J. Silitonga" },
                         { role: "Cerita Anak-anak", name: "Ibu Julia P." }
                     ]
                 }
             ],
-            waFormat: `*JADWAL PETUGAS SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 18 Juli 2026\n\n*SEKOLAH SABAT*\n- Pemimpin Lagu: Sdr. Kevin A.\n- Pianis: Sdri. Grace T.\n\n*DIAKON & DIAKONES*\n- Diakon Utama: Bp. H. Sianipar\n- Diakon Pendamping: Bp. T. Sihotang\n- Diakones: Ibu Merry O.\n\n*KHOTBAH / UMUM*\n- Khotbah: Pdt. Nelson Manuhutu\n- Pendamping: Pnt. R. Hutabarat & Pnt. J. Silitonga`
+            waFormat: `*JADWAL PETUGAS SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 18 Juli 2026\n\n*INFORMASI UMUM*\n- Pianist: Sdri. Grace T.\n\n*IBADAH SEKOLAH SABAT*\n- Pemimpin Lagu: Sdr. Kevin A.\n\n*IBADAH KHOTBAH*\n- Khotbah: Pdt. Benny Lumbantobing\n- Pendamping: Pnt. R. Hutabarat & Pnt. J. Silitonga`
         },
         {
             dateDisplay: "Sabtu, 25 Juli 2026",
             programTag: "IBADAH SABAT RAYA",
             departments: [
                 {
-                    name: "SEKOLAH SABAT",
+                    name: "INFORMASI UMUM",
+                    time: "",
+                    roles: [
+                        { role: "Pianist", name: "Jose G." },
+                        { role: "Operator Slide", name: "-" },
+                        { role: "Soundman", name: "-" }
+                    ]
+                },
+                {
+                    name: "IBADAH SEKOLAH SABAT",
                     time: "09:00 - 10:30 WIB",
                     roles: [
-                        { role: "Pianis", name: "Jose G." },
                         { role: "Pembawa Acara", name: "Sdri. Priska R." },
                         { role: "Ayat Inti & Doa Buka", name: "Sdri. Netta" },
                         { role: "Berita Misi", name: "Sdr. Julian" },
@@ -192,17 +213,8 @@ const rosterData = {
                     ]
                 },
                 {
-                    name: "DIAKON & DIAKONES",
-                    time: "09:00 - Selesai",
-                    roles: [
-                        { role: "Diakon 1", name: "Sdr. Mardiono" },
-                        { role: "Diakon 2", name: "Sdr. Sion G." },
-                        { role: "Diakones 1", name: "Ibu Kasfia Naibaho" }
-                    ]
-                },
-                {
-                    name: "KHOTBAH / UMUM",
-                    time: "10:30 - 12:00 WIB",
+                    name: "IBADAH KHOTBAH",
+                    time: "10:35 - 12:00 WIB",
                     roles: [
                         { role: "Khotbah", name: "Ibu Yvonne Dompas - Dir. Pendidikan KJKT" },
                         { role: "Pendamping 1", name: "Sdri. Septha" },
@@ -210,17 +222,9 @@ const rosterData = {
                         { role: "Cerita Anak-anak", name: "Sdri. Kristiningtyas" },
                         { role: "Song Leader", name: "Ribka" }
                     ]
-                },
-                {
-                    name: "PELAYANAN MUSIK",
-                    time: "Selama Kebaktian",
-                    roles: [
-                        { role: "Pianis", name: "Arfan W." },
-                        { role: "Keyboardis", name: "Arfan W." }
-                    ]
                 }
             ],
-            waFormat: `*JADWAL PETUGAS SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 25 Juli 2026\n\n*SEKOLAH SABAT*\n- Pembawa Acara: Sdri. Priska R.\n- Pianis: Jose G.\n\n*DIAKON & DIAKONES*\n- Diakon: Sdr. Mardiono & Sdr. Sion G.\n\n*KHOTBAH / UMUM*\n- Pembicara: Ibu Yvonne Dompas\n- Cerita Anak: Sdri. Kristiningtyas`
+            waFormat: `*JADWAL PETUGAS SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 25 Juli 2026\n\n*INFORMASI UMUM*\n- Pianist: Jose G.\n\n*IBADAH SEKOLAH SABAT*\n- Pembawa Acara: Sdri. Priska R.\n\n*IBADAH KHOTBAH*\n- Pembicara: Ibu Yvonne Dompas\n- Cerita Anak: Sdri. Kristiningtyas`
         }
     ],
     pa: [
@@ -535,13 +539,37 @@ function renderActiveAcara() {
             if (timelineContainer) {
                 timelineContainer.innerHTML = ""; // Bersihkan timeline lama
 
+                let currentGroupContainer = null;
+
                 data.timeline.forEach(item => {
+                    if (item.isHeader) {
+                        const headerEl = document.createElement("div");
+                        headerEl.className = "timeline-group-header";
+                        headerEl.textContent = item.title;
+                        timelineContainer.appendChild(headerEl);
+
+                        currentGroupContainer = document.createElement("div");
+                        currentGroupContainer.className = "schedule-timeline-group";
+                        timelineContainer.appendChild(currentGroupContainer);
+                        return;
+                    }
+
+                    if (!currentGroupContainer) {
+                        currentGroupContainer = document.createElement("div");
+                        currentGroupContainer.className = "schedule-timeline-group";
+                        timelineContainer.appendChild(currentGroupContainer);
+                    }
+
                     const itemEl = document.createElement("div");
                     itemEl.className = `timeline-item ${item.highlight ? "highlight" : ""}`;
 
-                    let timelineContent = `
-                        <span class="time">${item.time}</span>
-                        <div class="timeline-content">
+                    let timelineContent = "";
+                    if (item.time) {
+                        timelineContent += `<span class="time">${item.time}</span>`;
+                    }
+                    
+                    timelineContent += `
+                        <div class="timeline-content" ${!item.time ? 'style="margin-left: 0;"' : ''}>
                             <h6>${item.title}</h6>
                             <p>${item.desc}</p>
                     `;
@@ -552,7 +580,7 @@ function renderActiveAcara() {
 
                     timelineContent += `</div>`;
                     itemEl.innerHTML = timelineContent;
-                    timelineContainer.appendChild(itemEl);
+                    currentGroupContainer.appendChild(itemEl);
                 });
             }
 
@@ -967,38 +995,43 @@ async function fetchDataFromSupabase() {
 
             // Timeline acara lengkap Sabat Raya (High-Fidelity)
             const timeline = [
-                { time: "09:00", title: "Pianist, Operator & Soundman", desc: `Pianist: ${pos.Pianist || '-'} | Operator: ${pos.Operator || '-'} | Soundman: ${pos.Soundman || '-'}` },
-                { time: "09:00", title: "MC + Yel Yel SS", desc: `MC: ${ss.MC || '-'}` },
-                { time: "09:10", title: "Lagu Buka Sekolah Sabat", desc: "LSEL No. [Kosong]" },
-                { time: "09:15", title: "Ayat Inti SS dan Doa Buka", desc: `Petugas: ${ss.AyatIntiDoaBuka || '-'}` },
-                { time: "09:20", title: "Bacaan Berita Mission", desc: `Petugas: ${ss.BeritaMision || '-'}` },
-                { time: "09:30", title: "Ringkasan Sekolah Sabat Dewasa", desc: `Pemateri: ${ss.RingkasanSS || '-'}` },
-                { time: "10:15", title: "Promosi Pelayanan Perorangan", desc: `Petugas: ${ss.PelayananPerorangan || '-'}` },
-                { time: "10:20", title: "Lagu Tutup Sekolah Sabat", desc: "LSEL No. [Kosong]" },
-                { time: "10:25", title: "Doa Tutup Sekolah Sabat", desc: `Pendoa: ${ss.PelayananPerorangan || '-'}` },
-                { time: "10:25", title: "Pengumuman Jemaat", desc: "Tua-Tua / Officers Jemaat" },
-                { time: "10:30", title: "Cerita Alkitab Anak-Anak", desc: "Pencerita: [Kosong]" },
-                { time: "10:35", title: "Ibadah Khotbah: Diakon & Diakones", desc: `Diakon 1: ${khDiakon1} | Diakon 2: ${khDiakon2}` },
-                { time: "10:35", title: "Pemimpin Lagu Ibadah Khotbah", desc: `Song Leader: ${kh.PemimpinLagu || '-'}` },
-                { time: "10:37", title: "Lagu Pengiring Partisipan Mimbar", desc: 'LSEL No. 515 "Tuhan Ada Dalam Bait Allah"' },
-                { time: "10:40", title: "Lagu Pembuka Ibadah", desc: 'LSEL No. 1 "Di Hadapan Hadirat-Mu"' },
-                { time: "10:45", title: "Doa Buka Ibadah", desc: `Pendoa: ${kh.Khotbah || '-'}` },
-                { time: "10:48", title: "Pembacaan Ayat Bersahutan", desc: `Pembaca: ${kh.DoaSyafaat || '-'} (Ref: [Kosong])` },
-                { time: "10:53", title: "Lagu Buka Mimbar", desc: "LSEL No. [Kosong]" },
-                { time: "10:58", title: "Lagu Pengantar Doa Syafaat", desc: 'LSEL No. 520 "Kami Datang Dalam Doa"' },
-                { time: "11:03", title: "Doa Syafaat Bersama", desc: `Pendoa: ${kh.DoaSyafaat || '-'}` },
-                { time: "11:13", title: "Lagu Sambutan Doa Syafaat", desc: 'LSEL No. 516 "Dengar Ya Tuhan"' },
-                { time: "11:15", title: "Bacaan Persembahan & Persepuluhan", desc: `Petugas: ${kh.BacaanPersembahan || '-'}` },
-                { time: "11:20", title: "Lagu Persembahan Jemaat", desc: 'LSEL No. 260 "Bawa Persembahanmu"' },
-                { time: "11:25", title: "Lagu Sambutan Persembahan", desc: 'LSEL No. 21 "Pada-Mu Allah Ku Puji"' },
-                { time: "11:27", title: "Doa Persembahan Mimbar", desc: `Pendoa: ${kh.BacaanPersembahan || '-'}` },
-                { time: "11:32", title: "Lagu Pujian (Koor / Vokal Grup)", desc: "Tampil: [Kosong]" },
-                { time: "11:37", title: "Pembacaan Ayat Inti Khotbah", desc: `Pembaca: ${kh.DoaSyafaat || '-'} (Ref: [Kosong])` },
-                { time: "11:42", title: "Lagu Tema Kebaktian", desc: '"MISI KITA"' },
-                { time: "11:45", title: "Khotbah / Renungan Firman Tuhan", desc: `Pengkhotbah: ${kh.Khotbah || '-'}`, highlight: true, note: "Judul: [Kosong]" },
-                { time: "12:15", title: "Lagu Tutup Kebaktian", desc: "LSEL No. [Kosong]" },
-                { time: "12:20", title: "Doa TUTUP dan Doa BERKAT", desc: "Pendoa: Pdt. Benny Lumbantobing", highlight: true },
-                { time: "12:25", title: "Lagu Sambutan Doa Tutup & Berkat", desc: 'LSEL No. 523 "Tuhan Dengar Doa Kami"' }
+                // Group 1: Informasi Umum
+                { isHeader: true, title: "I. Informasi Umum" },
+                { time: "", title: "Pianist Jemaat", desc: `${pos.Pianist || '-'}`, highlight: true },
+                { time: "", title: "Operator Slide/Zoom", desc: `${pos.Operator || '-'}`, highlight: true },
+                { time: "", title: "Soundman Bertugas", desc: `${pos.Soundman || '-'}`, highlight: true },
+
+                // Group 2: Ibadah Sekolah Sabat (09:00 - 10:30)
+                { isHeader: true, title: "II. Ibadah Sekolah Sabat (09:00 - 10:30)" },
+                { time: "09:00", title: "MC & Yel Yel Sekolah Sabat", desc: `MC: ${ss.MC || '-'}`, highlight: false },
+                { time: "09:10", title: "Lagu Buka Sekolah Sabat", desc: "LSEL No. [Kosong]", highlight: false },
+                { time: "09:15", title: "Ayat Inti SS & Doa Buka", desc: `Petugas: ${ss.AyatIntiDoaBuka || '-'}`, highlight: false },
+                { time: "09:20", title: "Bacaan Berita Mission", desc: `Petugas: ${ss.BeritaMision || '-'}`, highlight: false },
+                { time: "09:30", title: "Ringkasan Sekolah Sabat Dewasa", desc: `Pemateri: ${ss.RingkasanSS || '-'}`, highlight: true },
+                { time: "10:15", title: "Promosi Pelayanan Perorangan", desc: `Petugas: ${ss.PelayananPerorangan || '-'}`, highlight: false },
+                { time: "10:20", title: "Lagu Tutup Sekolah Sabat", desc: "LSEL No. [Kosong]", highlight: false },
+                { time: "10:25", title: "Doa Tutup Sekolah Sabat", desc: `Pendoa: ${ss.PelayananPerorangan || '-'}`, highlight: false },
+                { time: "10:25", title: "Pengumuman Jemaat", desc: "Tua-Tua / Officers Jemaat", highlight: false },
+                { time: "10:30", title: "Cerita Alkitab Anak-Anak", desc: "Pencerita: [Kosong]", highlight: false },
+
+                // Group 3: Ibadah Khotbah (10:35 - 12:00)
+                { isHeader: true, title: "III. Ibadah Khotbah (10:35 - 12:00)" },
+                { time: "10:35", title: "Diakon & Diakones Bertugas", desc: `Diakon 1: ${khDiakon1} | Diakon 2: ${khDiakon2}`, highlight: false },
+                { time: "10:35", title: "Pemimpin Lagu Ibadah Khotbah", desc: `Song Leader: ${kh.PemimpinLagu || '-'}`, highlight: false },
+                { time: "10:37", title: "Lagu Pengiring Partisipan Mimbar", desc: 'LSEL No. 515 "Tuhan Ada Dalam Bait Allah"', highlight: false },
+                { time: "10:40", title: "Lagu Pembuka Ibadah", desc: 'LSEL No. 1 "Di Hadapan Hadirat-Mu"', highlight: false },
+                { time: "10:43", title: "Doa Buka Ibadah", desc: `Pendoa: ${kh.Khotbah || '-'}`, highlight: false },
+                { time: "10:45", title: "Pembacaan Ayat Bersahutan", desc: `Pembaca: ${kh.DoaSyafaat || '-'} (Ref: [Kosong])`, highlight: false },
+                { time: "10:50", title: "Lagu Pengantar Doa Syafaat", desc: 'LSEL No. 520 "Kami Datang Dalam Doa"', highlight: false },
+                { time: "10:53", title: "Doa Syafaat Bersama", desc: `Pendoa: ${kh.DoaSyafaat || '-'}`, highlight: false },
+                { time: "11:00", title: "Bacaan Persembahan & Persepuluhan", desc: `Petugas: ${kh.BacaanPersembahan || '-'}`, highlight: false },
+                { time: "11:05", title: "Lagu Persembahan & Doa Persembahan", desc: `LSEL No. 260 | Pendoa: ${kh.BacaanPersembahan || '-'}`, highlight: false },
+                { time: "11:10", title: "Lagu Pujian (Koor / Vokal Grup)", desc: "Tampil: [Kosong]", highlight: false },
+                { time: "11:15", title: "Pembacaan Ayat Inti & Lagu Tema", desc: `Lagu Tema: "MISI KITA"`, highlight: false },
+                { time: "11:20", title: "Khotbah / Renungan Firman Tuhan", desc: `Pengkhotbah: ${kh.Khotbah || '-'}`, highlight: true, note: "Judul: [Kosong]" },
+                { time: "11:50", title: "Lagu Tutup Kebaktian", desc: "LSEL No. [Kosong]", highlight: false },
+                { time: "11:55", title: "Doa TUTUP dan Doa BERKAT", desc: "Pendoa: Pdt. Benny Lumbantobing", highlight: false },
+                { time: "12:00", title: "Lagu Sambutan Doa Tutup & Berkat", desc: 'LSEL No. 523 "Tuhan Dengar Doa Kami"', highlight: false }
             ];
 
             // Roster petugas HTML (modal detail)
@@ -1038,10 +1071,18 @@ async function fetchDataFromSupabase() {
             // Roster petugas departemen
             const departments = [
                 {
-                    name: "SEKOLAH SABAT",
-                    time: "09:00 - 10:30 WIB",
+                    name: "INFORMASI UMUM",
+                    time: "",
                     roles: [
                         { role: "Pianist", name: pos.Pianist || '-' },
+                        { role: "Operator Slide", name: pos.Operator || '-' },
+                        { role: "Soundman", name: pos.Soundman || '-' }
+                    ]
+                },
+                {
+                    name: "IBADAH SEKOLAH SABAT",
+                    time: "09:00 - 10:30 WIB",
+                    roles: [
                         { role: "Pemimpin Acara/MC", name: ss.MC || '-' },
                         { role: "Ayat Inti & Doa SS", name: ss.AyatIntiDoaBuka || '-' },
                         { role: "Berita Mision", name: ss.BeritaMision || '-' },
@@ -1049,22 +1090,14 @@ async function fetchDataFromSupabase() {
                     ]
                 },
                 {
-                    name: "IBADAH KHOTBAH & UMUM",
-                    time: "10:30 - Selesai",
+                    name: "IBADAH KHOTBAH",
+                    time: "10:35 - 12:00 WIB",
                     roles: [
                         { role: "Khotbah (Divine)", name: kh.Khotbah || '-' },
                         { role: "Doa Syafaat", name: kh.DoaSyafaat || '-' },
                         { role: "Bacaan Persembahan", name: kh.BacaanPersembahan || '-' },
                         { role: "Song Leader", name: kh.PemimpinLagu || '-' },
                         { role: "Diakon Bertugas", name: kh.DiakenDiaken || '-' }
-                    ]
-                },
-                {
-                    name: "OPERATOR & SOUNDMAN",
-                    time: "09:00 - Selesai",
-                    roles: [
-                        { role: "Operator Slide", name: pos.Operator || '-' },
-                        { role: "Soundman", name: pos.Soundman || '-' }
                     ]
                 }
             ];
