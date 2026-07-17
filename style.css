@@ -1,92 +1,44 @@
-/* ============================================================
-   style.css — Generator Susunan Ibadah GMAHK Sepanjang
-   ============================================================
-   DAFTAR ISI:
-   1. CSS Variables (Tema Gelap & Terang)
-   2. Reset & Base Styles
-   3. Layout: App Container
-   4. Header
-   5. Layout: 2 Kolom (Form + Preview)
-   6. Form Panel & Section
-   7. Form Inputs (Text, Date, Select)
-   8. Autocomplete Styles
-   9. Preview Panel (Live Preview Teks WA)
-   10. Buttons (Primary, Secondary, Icon)
-   11. Badges
-   12. Static Notice Box (Info Lagu Tetap)
-   13. Animations (Copy Success / Theme Toggle)
-   14. Tabs Navigation & Content
-   15. Footer
-   16. Modal Login
-   17. Admin Dashboard Layout
-   18. Kustomisasi SweetAlert2 (Tema Senada)
-   19. Responsive (Tablet & Mobile)
-   ============================================================ */
+/* ==========================================
+   STYLE SYSTEM - GMAHK SEPANJANG
+   ========================================== */
 
-
-
-/* ============================================================
-   1. CSS VARIABLES — TEMA GELAP (Default) & TEMA TERANG
-   ============================================================ */
+/* Design Tokens & Theme Variables */
 :root {
-    /* DEFAULT THEME: DARK MUTED MAROON */
-    --bg-main: #140d0d;
-    --bg-gradient-1: rgba(120, 50, 50, 0.15);
-    --bg-gradient-2: rgba(180, 100, 100, 0.05);
-    --bg-panel: rgba(35, 20, 20, 0.65);
-    --bg-input: rgba(25, 15, 15, 0.8);
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-focus: #b96a6a;
-
-    --text-primary: #F5EBEB;
-    --text-sec: #BCAAAA;
-    --text-placeholder: #7A6666;
-    --text-wa: #EAE0E0;
-
-    --header-title: #ffffff;
-    --section-title: #D98888;
-
-    --shadow-color: rgba(0, 0, 0, 0.6);
-
-    /* Global Variables */
-    --accent: #A64B4B;
-    --accent-hover: #8C3B3B;
-    --accent-gradient: #8C3B3B;
-    --shadow-accent: rgba(166, 75, 75, 0.3);
-    --shadow-accent-hover: rgba(166, 75, 75, 0.4);
-    --radius-lg: 16px;
-    --radius-md: 8px;
-    --font: 'Plus Jakarta Sans', sans-serif;
+    --font-family: 'Plus Jakarta Sans', sans-serif;
+    
+    /* Light Theme (Maroon & Warm Accents) */
+    --primary-color: #6B1D2F;       /* Maroon */
+    --primary-dark: #4A121E;        /* Deep Maroon */
+    --primary-light: #8E2B3F;       /* Soft Maroon */
+    --primary-rose: #FDE8EB;        /* Very light pink/rose tint */
+    --accent-color: #D97706;        /* Warm Gold */
+    --accent-light: #FBBF24;        /* Golden Yellow */
+    --accent-hover: #B45309;        /* Deep Gold */
+    
+    --bg-app: #FAF5F5;              /* Light warm background */
+    --bg-card: #FFFFFF;
+    --text-main: #1F2937;
+    --text-muted: #6B7280;
+    --border-color: #EEDCDC;
+    --shadow: 0 10px 25px -5px rgba(107, 29, 47, 0.08), 0 8px 16px -6px rgba(107, 29, 47, 0.04);
+    --shadow-hover: 0 20px 25px -5px rgba(107, 29, 47, 0.15), 0 10px 10px -5px rgba(107, 29, 47, 0.05);
+    --card-radius: 18px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body.light-theme {
-    /* LIGHT THEME PALETTE: PASTEL MAROON */
-    --bg-main: #FFF0F0;
-    --bg-gradient-1: rgba(254, 202, 202, 0.8);
-    --bg-gradient-2: rgba(252, 165, 165, 0.6);
-    --bg-panel: rgba(255, 255, 255, 0.8);
-    --bg-input: #FFFFFF;
-    --border-color: rgba(185, 28, 28, 0.2);
-    --border-focus: #DC2626;
-
-    --text-primary: #450A0A;
-    --text-sec: #7F1D1D;
-    --text-placeholder: #FCA5A5;
-    --text-wa: #450A0A;
-
-    --header-title: #450A0A;
-    --section-title: #B91C1C;
-
-    --shadow-color: rgba(185, 28, 28, 0.15);
-    --accent-gradient: #DC2626;
-    --shadow-accent: rgba(220, 38, 38, 0.3);
-    --shadow-accent-hover: rgba(220, 38, 38, 0.4);
+/* Dark Theme Variables */
+body.dark-theme {
+    --bg-app: #140507;              /* Deep maroon-black */
+    --bg-card: #20090D;             /* Deep maroon card */
+    --text-main: #F9FAFB;
+    --text-muted: #9CA3AF;
+    --border-color: #3D151B;
+    --primary-rose: #3D1018;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 16px -6px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 15px 15px -5px rgba(0, 0, 0, 0.5);
 }
 
-
-/* ============================================================
-   2. RESET & BASE STYLES
-   ============================================================ */
+/* Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -94,1048 +46,1237 @@ body.light-theme {
 }
 
 body {
-    background-color: var(--bg-main);
-    background-image:
-        radial-gradient(at 0% 0%, var(--bg-gradient-1) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, var(--bg-gradient-2) 0px, transparent 50%);
-    background-attachment: fixed;
-    color: var(--text-primary);
-    font-family: var(--font);
-    line-height: 1.6;
+    font-family: var(--font-family);
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
     min-height: 100vh;
-    transition: background-color 0.4s ease, color 0.4s ease;
+    overflow-x: hidden;
 }
 
-
-/* ============================================================
-   3. LAYOUT: APP CONTAINER
-   ============================================================ */
+/* App Container Layout */
 .app-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px;
+    width: 100%;
+    max-width: 480px; /* Mobile first maximum width */
+    background-color: var(--bg-app);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    min-height: 100vh;
-    transition: max-width 0.4s ease;
+    position: relative;
+    padding-bottom: 85px; /* Spacing for bottom nav */
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
 }
 
-@media (min-width: 1200px) {
-    .app-container.admin-mode {
-        max-width: 95%;
+/* Desktop layout optimization */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 768px; /* Tablet / Small Desktop scale */
     }
 }
 
-
-/* ============================================================
-   4. HEADER
-   ============================================================ */
+/* ==========================================
+   HEADER STYLE
+   ========================================== */
 .app-header {
+    background-color: var(--bg-card);
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--bg-panel);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    padding: 20px 32px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 30px var(--shadow-color);
-    transition: all 0.4s ease;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: var(--transition);
+}
+
+.header-logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: var(--primary-rose);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary-color);
+    overflow: hidden;
+}
+
+.app-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .app-header h1 {
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--header-title);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1.2;
 }
 
-.app-header p {
-    color: var(--text-sec);
-    font-size: 14px;
-    margin-top: 4px;
+body.dark-theme .app-header h1 {
+    color: var(--accent-light);
 }
 
-.header-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+.current-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-
-/* ============================================================
-   5. LAYOUT: 2 KOLOM (Form Kiri + Preview Kanan)
-   ============================================================ */
-.main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: start;
-}
-
-
-/* ============================================================
-   6. FORM PANEL & SECTION
-   ============================================================ */
-.form-panel {
-    background: var(--bg-panel);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 30px var(--shadow-color);
-    padding: 32px;
-    transition: all 0.4s ease;
-}
-
-.form-section {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px dashed var(--border-color);
-}
-
-.form-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.form-section h2 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--section-title);
-    margin-bottom: 20px;
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 8px;
+    border-radius: 50%;
+    background-color: var(--bg-app);
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    transition: var(--transition);
 }
 
-.form-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.action-btn:hover {
+    transform: scale(1.05);
 }
 
-
-/* ============================================================
-   7. FORM INPUTS (Text, Date, Select)
-   ============================================================ */
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.input-row-half {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.input-row-song {
-    display: flex;
-    gap: 12px;
-}
-
-.input-row-song input:first-child {
-    flex: 1;
-    /* Nomor Lagu */
-    min-width: 80px;
-}
-
-.input-row-song input:last-child,
-.input-row-song .autocomplete-container {
-    flex: 3;
-    /* Judul Lagu */
-}
-
-/* ============================================================
-   8. AUTOCOMPLETE STYLES
-   ============================================================ */
-.autocomplete-container {
-    position: relative;
-    width: 100%;
-}
-
-.autocomplete-container input {
-    width: 100%;
-}
-
-.autocomplete-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--bg-input);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 12px var(--shadow-color);
-    z-index: 100;
-    max-height: 200px;
-    overflow-y: auto;
-    border-radius: var(--radius-md);
-    display: none;
-    margin-top: 4px;
-}
-
-.autocomplete-list.active {
+/* Toggle Switcher for Sun/Moon Icons */
+.sun-icon {
     display: block;
 }
-
-.autocomplete-item {
-    padding: 10px 14px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-primary);
-    font-size: 13px;
-    transition: background-color 0.2s;
+.moon-icon {
+    display: none;
 }
 
-.autocomplete-item:last-child {
-    border-bottom: none;
+body.dark-theme .sun-icon {
+    display: none;
+}
+body.dark-theme .moon-icon {
+    display: block;
+    color: var(--accent-light);
 }
 
-.autocomplete-item:hover {
-    background: var(--border-color);
+/* ==========================================
+   MAIN CONTENT & TABS
+   ========================================== */
+.main-content {
+    padding: 20px;
+    flex-grow: 1;
 }
 
-
-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-sec);
-}
-
-input,
-select {
-    background-color: var(--bg-input);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 12px 16px;
-    border-radius: var(--radius-md);
-    font-family: var(--font);
-    font-size: 14px;
-    outline: none;
-    transition: all 0.2s ease;
-    width: 100%;
-}
-
-/* Custom Select Arrow (Dark) */
-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8FAFC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
-    padding-right: 40px;
-}
-
-/* Custom Select Arrow (Light) */
-body.light-theme select {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E293B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-}
-
-select option {
-    background-color: var(--bg-input);
-    color: var(--text-primary);
-}
-
-input::placeholder {
-    color: var(--text-placeholder);
-}
-
-/* Focus States */
-input:focus,
-select:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(166, 75, 75, 0.25);
-    background-color: var(--bg-input);
-}
-
-body:not(.light-theme) input:focus,
-body:not(.light-theme) select:focus {
-    background-color: rgba(20, 12, 12, 0.95);
-}
-
-
-/* ============================================================
-   9. PREVIEW PANEL (Live Preview Teks WhatsApp)
-   ============================================================ */
-.preview-panel {
-    background: var(--bg-panel);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 30px var(--shadow-color), inset 0 0 20px rgba(0, 0, 0, 0.05);
-
-    /* Sticky: menetap di layar saat scroll form kiri */
-    position: sticky;
-    top: 24px;
-    height: calc(100vh - 48px);
-    transition: all 0.4s ease;
-}
-
-body.light-theme .preview-panel {
-    background: #FFFFFF;
-    box-shadow: 0 10px 30px var(--shadow-color);
-}
-
-.preview-header {
-    padding: 16px 24px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top-left-radius: var(--radius-lg);
-    border-top-right-radius: var(--radius-lg);
-}
-
-.preview-header h2 {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-/* Scrollbar area preview */
-.preview-scroll {
-    padding: 24px;
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) transparent;
-}
-
-.preview-scroll::-webkit-scrollbar {
-    width: 6px;
-}
-
-.preview-scroll::-webkit-scrollbar-thumb {
-    background: var(--accent);
-    border-radius: 10px;
-}
-
-/* Font untuk teks WhatsApp */
-.whatsapp-text {
-    font-family: inherit;
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--text-wa);
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-
-/* ============================================================
-   10. BUTTONS (Primary, Secondary, Icon)
-   ============================================================ */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: var(--radius-md);
-    font-size: 14px;
-    font-weight: 600;
-    font-family: var(--font);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent-gradient));
-    color: white;
-    box-shadow: 0 4px 12px var(--shadow-accent);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, var(--accent-gradient), var(--accent));
-    box-shadow: 0 6px 16px var(--shadow-accent-hover);
-    transform: translateY(-2px);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-.btn-secondary {
-    background-color: var(--bg-input);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px var(--shadow-accent);
-}
-
-.btn-secondary:hover {
-    background-color: var(--border-color);
-    transform: translateY(-2px);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-
-.btn-success:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
-    transform: translateY(-2px);
-}
-
-.btn-success:active {
-    transform: translateY(0);
-}
-
-.btn-danger {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-}
-
-.btn-danger:hover {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
-    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
-    transform: translateY(-2px);
-}
-
-.btn-danger:active {
-    transform: translateY(0);
-}
-
-.btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    background-color: var(--bg-input);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    border-radius: var(--radius-md);
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-icon:hover {
-    background: var(--border-color);
-}
-
-
-/* ============================================================
-   11. BADGES
-   ============================================================ */
-.badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.badge-success {
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
-}
-
-body.light-theme .badge-success {
-    color: #059669;
-}
-
-
-/* ============================================================
-   12. STATIC NOTICE BOX (Info Lagu Tetap)
-   ============================================================ */
-.static-notice {
-    background: rgba(166, 75, 75, 0.05);
-    border: 1px solid rgba(166, 75, 75, 0.2);
-    border-radius: var(--radius-md);
-    padding: 12px 16px;
-    margin: 8px 0;
-}
-
-.static-notice .badge {
-    margin-bottom: 8px;
-    background: rgba(166, 75, 75, 0.2);
-    color: #D98888;
-}
-
-body.light-theme .static-notice .badge {
-    background: rgba(220, 38, 38, 0.15);
-    color: #DC2626;
-}
-
-.static-notice p {
-    font-size: 13px;
-    color: var(--text-sec);
-    margin-bottom: 4px;
-}
-
-
-/* ============================================================
-   13. ANIMATIONS (Copy Success / Theme Toggle)
-   ============================================================ */
-@keyframes copySuccess {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.copy-anim {
-    animation: copySuccess 0.4s ease;
-    background: linear-gradient(135deg, #10b981, #059669) !important;
-    color: white !important;
-}
-
-
-/* ============================================================
-   14. TABS NAVIGATION & CONTENT
-   ============================================================ */
-.tabs-nav {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 12px;
-    overflow-x: auto;
-}
-
-.tab-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px 16px;
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-sec);
-    border-radius: var(--radius-md);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
-}
-
-.tab-btn.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-    box-shadow: 0 4px 12px var(--shadow-accent);
-}
-
-/* Tab Content: Tampil/Sembunyikan */
 .tab-pane {
     display: none;
-    animation: fadeInTab 0.3s ease;
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .tab-pane.active {
     display: block;
 }
 
-@keyframes fadeInTab {
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(5px);
+        transform: translateY(12px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-
-/* ============================================================
-   15. FOOTER
-   ============================================================ */
-.app-footer {
-    text-align: center;
-    padding: 24px 0 12px 0;
-    margin-top: auto;
-    border-top: 1px dashed var(--border-color);
-    color: var(--text-sec);
-    font-size: 13px;
-    line-height: 1.8;
+/* Card design system */
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--card-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
 }
 
-.app-footer p:last-child {
-    font-weight: 600;
+.card:hover {
+    box-shadow: var(--shadow-hover);
 }
 
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-/* ============================================================
-   16. MODAL LOGIN
-   ============================================================ */
-.modal-overlay {
-    position: fixed;
+body.dark-theme .section-title {
+    color: var(--accent-light);
+}
+
+/* ==========================================
+   TAB 1: HOME STYLE
+   ========================================== */
+.home-banner {
+    position: relative;
+    border-radius: var(--card-radius);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.banner-overlay {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
+    background: radial-gradient(circle at right bottom, rgba(217, 119, 6, 0.15) 0%, transparent 60%);
     pointer-events: none;
-    transition: opacity 0.3s ease;
 }
 
-.modal-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.modal-content {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 20px 40px var(--shadow-color);
+.banner-content {
     position: relative;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
+    z-index: 2;
 }
 
-.modal-overlay.active .modal-content {
-    transform: translateY(0);
+.banner-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 4px 8px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 12px;
 }
 
-.modal-content h2 {
-    font-size: 20px;
-    color: var(--header-title);
+.home-banner h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.home-banner p {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+/* Greeting Card */
+.greeting-card {
+    border-left: 5px solid var(--accent-color);
+}
+
+.greeting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 8px;
 }
 
-.modal-content p {
-    color: var(--text-sec);
-    font-size: 14px;
+.greeting-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.badge-accent {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background-color: var(--primary-rose);
+    color: var(--primary-color);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .badge-accent {
+    color: var(--accent-light);
+}
+
+.greeting-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+/* Services Grid */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
     margin-bottom: 24px;
 }
 
-.modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: transparent;
-    border: none;
-    color: var(--text-sec);
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.modal-close:hover {
-    color: var(--text-primary);
-}
-
-
-/* ============================================================
-   17. ADMIN DASHBOARD LAYOUT
-   ============================================================ */
-.admin-dashboard {
-    display: flex;
-    gap: 24px;
-    align-items: start;
-    animation: fadeInTab 0.3s ease;
-}
-
-.admin-sidebar {
-    width: 250px;
-    background: var(--bg-panel);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: var(--radius-lg);
+.service-card {
+    background-color: var(--bg-card);
+    border-radius: var(--card-radius);
+    padding: 16px 12px;
+    text-align: center;
     border: 1px solid var(--border-color);
-    padding: 24px;
-    box-shadow: 0 10px 30px var(--shadow-color);
-    transition: width 0.3s ease, padding 0.3s ease;
-    overflow: hidden;
-}
-
-.admin-sidebar.collapsed {
-    width: 72px;
-    padding: 24px 12px;
-}
-
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed var(--border-color);
-}
-
-.admin-sidebar.collapsed .sidebar-header {
-    justify-content: center;
-    border-bottom: none;
-    margin-bottom: 8px;
-    padding-bottom: 0;
-}
-
-.admin-sidebar h3 {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-sec);
-    margin: 0;
-}
-
-.admin-sidebar.collapsed h3 {
-    display: none;
-}
-
-.sidebar-toggle-btn {
-    border: none;
-    background: transparent;
-    color: var(--text-sec);
+    box-shadow: var(--shadow);
     cursor: pointer;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    transition: all 0.2s ease;
-}
-
-.sidebar-toggle-btn:hover {
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-body.light-theme .sidebar-toggle-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.sidebar-toggle-icon {
-    transition: transform 0.3s ease;
-}
-
-.admin-sidebar.collapsed .sidebar-toggle-icon {
-    transform: rotate(180deg);
-}
-
-.admin-nav {
+    transition: var(--transition);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
 }
 
-.admin-tab-btn {
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-light);
+}
+
+.service-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    text-align: left;
-    padding: 12px 14px;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--radius-md);
-    color: var(--text-sec);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.admin-sidebar.collapsed .admin-tab-btn {
     justify-content: center;
-    padding: 12px;
+    margin-bottom: 10px;
+    color: white;
 }
 
-.admin-sidebar.collapsed .admin-tab-btn span {
-    display: none;
+.maroon-bg {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
 }
 
-.admin-tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
+.gold-bg {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-light) 100%);
 }
 
-.admin-tab-btn.active {
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--accent);
-    border-color: rgba(59, 130, 246, 0.2);
+.rose-bg {
+    background: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
 }
 
-body.light-theme .admin-tab-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
+.service-card h5 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
-.admin-panel {
-    flex: 1;
-    background: var(--bg-panel);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 30px var(--shadow-color);
+.service-card p {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+/* Video Card */
+.video-thumbnail-container {
+    position: relative;
+    height: 160px;
+    border-radius: 12px;
     overflow: hidden;
+    margin-bottom: 12px;
 }
 
-.admin-panel-header {
-    padding: 20px 24px;
+.video-placeholder-bg {
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(107, 29, 47, 0.4), rgba(0, 0, 0, 0.6)), url('icon.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4);
+    transition: var(--transition);
+}
+
+.play-btn:hover {
+    background-color: var(--accent-light);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-duration {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.video-info h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.speaker-name {
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+body.dark-theme .speaker-name {
+    color: var(--accent-light);
+}
+
+.video-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* ==========================================
+   TAB 2: SUSUNAN IBADAH STYLE
+   ========================================== */
+.susunan-header, .persembahan-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.susunan-header h2, .persembahan-header h2 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+body.dark-theme .susunan-header h2,
+body.dark-theme .persembahan-header h2 {
+    color: var(--accent-light);
+}
+
+.susunan-header p, .persembahan-header p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* Switcher Button Group */
+.program-switcher {
+    display: flex;
+    background-color: var(--primary-rose);
+    padding: 5px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    gap: 5px;
+}
+
+.switcher-btn {
+    flex: 1;
+    border: none;
+    background: none;
+    font-family: var(--font-family);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 8px 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+body.dark-theme .switcher-btn {
+    color: var(--text-main);
+}
+
+.switcher-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+body.dark-theme .switcher-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+/* Timeline */
+.schedule-main-card {
+    position: relative;
+    border-top: 4px solid var(--primary-color);
+}
+
+body.dark-theme .schedule-main-card {
+    border-top-color: var(--accent-color);
+}
+
+.schedule-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
+    padding-bottom: 14px;
+}
+
+.date-badge {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+body.dark-theme .date-badge {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+}
+
+.date-badge .day {
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.date-badge .month {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.schedule-title-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.schedule-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.schedule-timeline {
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px dashed var(--border-color);
+    margin-left: 10px;
+    margin-bottom: 20px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--border-color);
+    border: 2px solid var(--bg-card);
+    transition: var(--transition);
+}
+
+.timeline-item.highlight::before {
+    background-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--primary-rose);
+}
+
+.timeline-item .time {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 2px;
+}
+
+body.dark-theme .timeline-item .time {
+    color: var(--accent-light);
+}
+
+.timeline-content h6 {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.timeline-content p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.detail-note {
+    font-style: italic;
+    color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
+body.dark-theme .detail-note {
+    color: var(--accent-light) !important;
+}
+
+/* Button UI Components */
+.btn {
+    border: none;
+    font-family: var(--font-family);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+body.dark-theme .btn-primary {
+    background-color: var(--accent-color);
+}
+body.dark-theme .btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary-outline {
+    background: none;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-secondary-outline:hover {
+    background-color: var(--primary-rose);
+}
+
+body.dark-theme .btn-secondary-outline {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+body.dark-theme .btn-secondary-outline:hover {
+    background-color: var(--primary-rose);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    border-radius: 8px;
+}
+
+.schedule-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.schedule-actions button {
+    flex: 1;
+}
+
+/* Info Alert */
+.info-alert-card {
+    background-color: var(--primary-rose);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: var(--primary-color);
+}
+
+body.dark-theme .info-alert-card {
+    color: #F87171;
+}
+
+.info-alert-card p {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.info-alert-card svg {
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   TAB 3: PERSEMBAHAN STYLE
+   ========================================== */
+.donation-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* QRIS UI Card */
+.qris-card {
+    text-align: center;
+    border-top: 4px solid var(--accent-color);
+}
+
+.qris-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    margin-bottom: 20px;
+}
+
+.qris-image-container {
+    background-color: white;
+    padding: 16px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+}
+
+.qris-mockup {
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 14px 12px;
+    width: 210px;
+    position: relative;
+    background-color: white;
+}
+
+/* QRIS Styling Details */
+.qris-logo-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #1E3A8A;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #F3F4F6;
+    padding-bottom: 4px;
+}
+
+.qris-brand {
+    color: #EF4444;
+}
+.gpn-brand {
+    color: #2563EB;
+}
+
+.qris-code-box {
+    width: 150px;
+    height: 150px;
+    margin: 10px auto;
+    color: #111827;
+}
+
+.qris-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.nmID {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.qris-corner {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--accent-color);
+}
+.top-left { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.top-right { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+.bottom-left { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+.bottom-right { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+/* Bank cards styling */
+.bank-card {
+    border-top: 4px solid var(--primary-color);
+}
+
+body.dark-theme .bank-card {
+    border-top-color: var(--accent-color);
+}
+
+.bank-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.account-item {
+    background-color: var(--bg-app);
+    border-radius: 12px;
+    padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(15, 23, 42, 0.3);
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
 }
 
-body.light-theme .admin-panel-header {
-    background: rgba(248, 250, 252, 0.8);
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.admin-table-container {
-    overflow-x: auto;
+.bank-name {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    letter-spacing: 0.5px;
 }
 
-.admin-data-table {
+body.dark-theme .bank-name {
+    color: var(--accent-light);
+}
+
+.account-number {
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.account-holder {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.copy-acc-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    transition: var(--transition);
+}
+
+body.dark-theme .copy-acc-btn {
+    color: var(--accent-color);
+}
+
+.copy-acc-btn:hover {
+    transform: scale(1.05);
+    background-color: var(--primary-rose);
+}
+
+.donation-instructions {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.donation-instructions h5 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.donation-instructions p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.wa-confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #25D366;
+    color: white;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.wa-confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+/* ==========================================
+   BOTTOM NAVIGATION BAR
+   ========================================== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
+    max-width: 480px; /* Aligns with app container maximum width */
+    height: 70px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    padding-bottom: 4px;
+    transition: var(--transition);
 }
 
-.admin-data-table th, .admin-data-table td {
-    padding: 14px 20px;
-    text-align: left;
-    border-bottom: 1px dashed var(--border-color);
-    white-space: normal;
-    word-break: break-word;
+@media (min-width: 768px) {
+    .bottom-nav {
+        max-width: 768px; /* Tablet / Small Desktop scale */
+    }
 }
 
-.admin-data-table th {
-    background: rgba(148, 163, 184, 0.05);
-    color: var(--text-sec);
-    font-weight: 600;
+.nav-item {
+    background: none;
+    border: none;
+    font-family: var(--font-family);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    height: 100%;
+    width: 33.33%;
+    transition: var(--transition);
+    position: relative;
 }
 
-.admin-data-table tr:last-child td {
+.nav-item svg {
+    transition: var(--transition);
+}
+
+.nav-item span {
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+/* Active bottom navigation tab styles */
+.nav-item.active {
+    color: var(--primary-color);
+}
+
+body.dark-theme .nav-item.active {
+    color: var(--accent-light);
+}
+
+.nav-item.active svg {
+    transform: translateY(-2px);
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 0 0 4px 4px;
+}
+
+body.dark-theme .nav-item.active::after {
+    background-color: var(--accent-color);
+}
+
+/* ==========================================
+   INLINE DATE NAVIGATOR & CARD HEADER UTILITIES
+   ========================================== */
+.header-date-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-arrow-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--bg-app);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    flex-shrink: 0;
+}
+
+body.dark-theme .nav-arrow-btn {
+    color: var(--accent-light);
+}
+
+.nav-arrow-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+body.dark-theme .nav-arrow-btn:hover {
+    background-color: var(--accent-color);
+}
+
+/* ==========================================
+   SUB-TABS SWITCHER IN SUSUNAN TAB
+   ========================================== */
+.sub-tab-switcher {
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.sub-tab-btn {
+    border: none;
+    background: none;
+    font-family: var(--font-family);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    bottom: -2px; /* Aligns active border with container border */
+    border-bottom: 2px solid transparent;
+}
+
+.sub-tab-btn:hover {
+    color: var(--primary-color);
+}
+
+body.dark-theme .sub-tab-btn:hover {
+    color: var(--accent-light);
+}
+
+.sub-tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+body.dark-theme .sub-tab-btn.active {
+    color: var(--accent-light);
+    border-bottom-color: var(--accent-color);
+}
+
+.sub-tab-pane {
+    display: none;
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sub-tab-pane.active {
+    display: block;
+}
+
+/* ==========================================
+   GOOGLE DRIVE BANNER
+   ========================================== */
+.drive-banner-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px;
+    background-color: var(--primary-rose);
+    border-left: 5px solid var(--primary-color);
+    margin-bottom: 20px;
+}
+
+body.dark-theme .drive-banner-card {
+    border-left-color: var(--accent-color);
+}
+
+.drive-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+
+body.dark-theme .drive-banner-icon {
+    color: var(--accent-color);
+}
+
+.drive-banner-content {
+    flex-grow: 1;
+}
+
+.drive-banner-content h5 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.drive-banner-content p {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+.drive-btn {
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   DATE NAVIGATOR IN ROSTER
+   ========================================== */
+.date-navigator-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.navigator-date-info {
+    text-align: center;
+}
+
+.navigator-date-info h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.navigator-date-info .badge-accent {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+}
+
+/* ==========================================
+   ROSTER CARD & GRID TABLES
+   ========================================== */
+.roster-card {
+    padding: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.roster-department-section {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.roster-department-section:last-child {
     border-bottom: none;
 }
 
-.admin-data-table tbody tr {
-    transition: background 0.2s ease;
+.roster-dept-header {
+    background-color: var(--primary-rose);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.admin-data-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+.roster-dept-header h5 {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: 0.5px;
 }
 
-body.light-theme .admin-data-table tbody tr:hover {
-    background: rgba(0, 0, 0, 0.02);
+body.dark-theme .roster-dept-header h5 {
+    color: var(--accent-light);
 }
 
-
-/* ============================================================
-   18. KUSTOMISASI SWEETALERT2 (TEMA SENADA)
-   ============================================================ */
-div:where(.swal2-container) div:where(.swal2-popup) {
-    background: var(--bg-panel) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-lg) !important;
-    color: var(--text-primary) !important;
-    box-shadow: 0 20px 50px var(--shadow-color) !important;
-    font-family: var(--font) !important;
+.roster-dept-time {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background-color: var(--bg-card);
+    color: var(--text-muted);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
 }
 
-div:where(.swal2-container) select:where(.swal2-select) {
-    background-color: var(--bg-input) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
-    padding: 10px 16px !important;
-    padding-right: 36px !important;
-    font-size: 14px !important;
-    font-family: var(--font) !important;
-    outline: none !important;
-    width: 85% !important;
-    max-width: 320px !important;
-    margin: 15px auto !important;
-    box-sizing: border-box !important;
-    background-repeat: no-repeat !important;
-    background-position: right 12px center !important;
-    background-size: 12px !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+.roster-rows-list {
+    padding: 10px 20px;
 }
 
-div:where(.swal2-container) select:where(.swal2-select) option {
-    background-color: var(--bg-input) !important;
-    color: var(--text-primary) !important;
+.roster-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.8rem;
 }
 
-body.light-theme div:where(.swal2-container) select:where(.swal2-select) option {
-    background-color: #FFFFFF !important;
-    color: #450A0A !important;
+.roster-row:last-child {
+    border-bottom: none;
+    padding-bottom: 5px;
 }
 
-div:where(.swal2-container) select:where(.swal2-select):focus {
-    border-color: var(--border-focus) !important;
-    box-shadow: 0 0 0 3px rgba(185, 106, 106, 0.25) !important;
+.roster-role {
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-body.light-theme div:where(.swal2-container) select:where(.swal2-select) {
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+.roster-name {
+    font-weight: 700;
+    text-align: right;
 }
 
-/* Kustomisasi Validation Message SweetAlert2 */
-div:where(.swal2-container) div:where(.swal2-validation-message) {
-    background-color: var(--bg-input) !important;
-    color: #ef4444 !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
-    padding: 12px 20px !important;
-    font-family: var(--font) !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    max-width: 85% !important;
-    margin: 10px auto 15px auto !important;
-    box-shadow: 0 4px 12px var(--shadow-color) !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-}
-
-body.light-theme div:where(.swal2-container) div:where(.swal2-validation-message) {
-    background-color: #FFF0F0 !important;
-    border-color: rgba(239, 68, 68, 0.2) !important;
-}
-
-div:where(.swal2-container) h2:where(.swal2-title) {
-    color: var(--text-primary) !important;
-    font-size: 22px !important;
-    letter-spacing: -0.5px !important;
-}
-
-div:where(.swal2-container) div:where(.swal2-html-container) {
-    color: var(--text-sec) !important;
-    font-size: 14px !important;
-}
-
-div:where(.swal2-container) button:where(.swal2-confirm) {
-    background: linear-gradient(135deg, var(--accent), #2563eb) !important;
-    color: white !important;
-    border-radius: var(--radius-md) !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
-    padding: 10px 24px !important;
-    font-weight: 600 !important;
-}
-
-div:where(.swal2-container) button:where(.swal2-confirm-danger) {
-    background: #ef4444 !important;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
-    color: white !important;
-}
-
-div:where(.swal2-container) button:where(.swal2-cancel) {
-    background: rgba(15, 23, 42, 0.5) !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-primary) !important;
-    border-radius: var(--radius-md) !important;
-    padding: 10px 24px !important;
-    font-weight: 600 !important;
-}
-
-div:where(.swal2-icon).swal2-success {
-    border-color: #10b981 !important;
-}
-div:where(.swal2-icon).swal2-success [class^=swal2-success-line] {
-    background-color: #10b981 !important;
-}
-div:where(.swal2-icon).swal2-success .swal2-success-ring {
-    border-color: rgba(16, 185, 129, 0.3) !important;
-}
-div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line],
-div:where(.swal2-icon).swal2-success .swal2-success-fix {
-    background-color: transparent !important;
+.roster-share-section {
+    margin-bottom: 25px;
 }
 
 
-/* ============================================================
-   19. RESPONSIVE (Tablet & Mobile)
-   ============================================================ */
 
-/* Tablet: <= 1024px */
-@media (max-width: 1024px) {
-    .main-content {
-        grid-template-columns: 1fr;
-    }
-
-    .preview-panel {
-        position: relative;
-        top: 0;
-        height: 600px;
-        margin-top: 24px;
-    }
-}
-
-/* Mobile: <= 600px */
-@media (max-width: 600px) {
-    .app-header {
-        flex-direction: column;
-        gap: 16px;
-        text-align: center;
-    }
-
-    .header-actions {
-        width: 100%;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .header-actions .btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .input-row-half {
-        grid-template-columns: 1fr;
-    }
-
-    .input-row-song {
-        flex-direction: column;
-    }
-
-    .tabs-nav {
-        flex-direction: column;
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .tab-btn {
-        width: 100%;
-        white-space: normal;
-    }
-}

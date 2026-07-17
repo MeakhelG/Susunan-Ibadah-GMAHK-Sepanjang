@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Susunan Ibadah</title>
+
+    <!-- Favicon / Ikon Website -->
+    <link rel="icon" type="image/png" href="icon.png">
+
+    <!-- ===================== -->
+    <!-- FONTS & STYLESHEET    -->
+    <!-- ===================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- SweetAlert2 untuk Pop-up Elegan -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- ========================== -->
+        <!-- HEADER: Judul & Tema       -->
+        <!-- ========================== -->
+        <header class="app-header">
+            <div>
+                <h1>Susunan Ibadah</h1>
+                <p>Generator format pesan WhatsApp untuk GMAHK Jemaat Sepanjang</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="resetFormBtn" onclick="triggerResetForm()"
+                    title="Reset Formulir ke Kondisi Default">
+                    🔄 Reset
+                </button>
+                <button class="btn btn-secondary" id="adminLoginBtn" onclick="openLoginModal()"
+                    title="Login sebagai Admin">
+                    🔑 Admin
+                </button>
+                <button class="btn btn-secondary" id="themeToggleBtn" onclick="toggleTheme()"
+                    title="Ubah Tema Tampilan">
+                    ☀️ Tema Terang
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content" id="generatorView">
+
+            <!-- ====================================== -->
+            <!-- PANEL KIRI: FORMULIR INPUT             -->
+            <!-- ====================================== -->
+            <form id="generatorForm" class="form-panel">
+                <div class="form-scroll">
+
+                    <!-- ========================== -->
+                    <!-- TAB NAVIGATION             -->
+                    <!-- ========================== -->
+                    <div class="tabs-nav">
+                        <button type="button" class="tab-btn active" id="btn-tab-sabat"
+                            onclick="switchTab('sabat')">Sabat Raya</button>
+                        <button type="button" class="tab-btn" id="btn-tab-pa" onclick="switchTab('pa')">Pemuda Advent
+                            (PA)</button>
+                        <button type="button" class="tab-btn" id="btn-tab-rabu" onclick="switchTab('rabu')">Rabu
+                            Malam</button>
+                    </div>
+
+                    <!-- ============================================================ -->
+                    <!-- TAB 1: SABAT RAYA                                            -->
+                    <!-- Berisi 3 section: Informasi Umum, Sekolah Sabat, Khotbah     -->
+                    <!-- ============================================================ -->
+                    <div id="tab-sabat" class="tab-pane active">
+
+                        <!-- -------------------------------- -->
+                        <!-- SECTION 1.1: INFORMASI UMUM      -->
+                        <!-- Tanggal, Jenis Sabat, Waktu, POS  -->
+                        <!-- -------------------------------- -->
+                        <section class="form-section">
+                            <h2>Informasi Umum</h2>
+                            <div class="form-grid">
+                                <div class="input-row-half">
+                                    <div class="input-group">
+                                        <label for="tanggal">Tanggal Sabat</label>
+                                        <input type="date" id="tanggal" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="jenisSabat">Jenis Sabat (Opsional)</label>
+                                        <input type="text" id="jenisSabat" placeholder="Contoh: SSAA / PERJAMUAN KUDUS"
+                                            value="">
+                                    </div>
+                                </div>
+                                <div class="input-row-half">
+                                    <div class="input-group">
+                                        <label for="sabatKe">Sabat Ke</label>
+                                        <input type="text" id="sabatKe" placeholder="...." value="">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="tw">Triwulan (TW)</label>
+                                        <input type="text" id="tw" placeholder="...." value="">
+                                    </div>
+                                </div>
+                                <div class="input-row-half">
+                                    <div class="input-group">
+                                        <label for="waktuMulai">Mulai Pukul (WIB)</label>
+                                        <input type="text" id="waktuMulai" value="09.00">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="waktuSelesai">Selesai Pukul (WIB)</label>
+                                        <input type="text" id="waktuSelesai" value="12.00">
+                                    </div>
+                                </div>
+                                <!-- Dropdown Pianist, Operator, Soundman (Eksklusif, saling kunci) -->
+                                <div class="input-group">
+                                    <label for="ssPianist">Pianist</label>
+                                    <select id="ssPianist" class="exclusive-select">
+                                        <option value="">-- Pilih Pianist --</option>
+                                        <option value="Sdra. Meakhel">Sdra. Meakhel</option>
+                                        <option value="Sdra. Fabian">Sdra. Fabian</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssOperator">Operator</label>
+                                    <select id="ssOperator" class="exclusive-select">
+                                        <option value="">-- Pilih Operator --</option>
+                                        <option value="Sdra. Fahrell">Sdra. Fahrell</option>
+                                        <option value="Sdra. Meakhel">Sdra. Meakhel</option>
+                                        <option value="Sdra. Fabian">Sdra. Fabian</option>
+                                        <option value="Sdra. Misaell">Sdra. Misaell</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssSoundman">Soundman</label>
+                                    <select id="ssSoundman" class="exclusive-select">
+                                        <option value="">-- Pilih Soundman --</option>
+                                        <option value="Sdra. Fahrell">Sdra. Fahrell</option>
+                                        <option value="Sdra. Meakhel">Sdra. Meakhel</option>
+                                        <option value="Sdra. Fabian">Sdra. Fabian</option>
+                                        <option value="Sdra. Misaell">Sdra. Misaell</option>
+                                        <option value="Sdra. Jimmy">Sdra. Jimmy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- -------------------------------- -->
+                        <!-- SECTION 1.2: IBADAH SEKOLAH SABAT -->
+                        <!-- MC, Lagu, Ayat, Mission, dll      -->
+                        <!-- -------------------------------- -->
+                        <section class="form-section">
+                            <h2>Ibadah Sekolah Sabat</h2>
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label for="ssMc">MC + Yel Yel SS</label>
+                                    <input type="text" id="ssMc" placeholder="Nama MC (contoh: Sdri Anabel)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Lagu Buka (LSEL)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="ssLaguBukaNo" placeholder="No.">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="ssLaguBukaJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_ssLaguBuka"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssAyatDoa">Ayat Inti SS dan Doa Buka</label>
+                                    <input type="text" id="ssAyatDoa" placeholder="Nama petugas (contoh: Sdri Elvira)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssMission">Bacaan Berita Mission</label>
+                                    <input type="text" id="ssMission" placeholder="Nama petugas (contoh: Sdri Gitta)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssRingkasan">Ringkasan Sekolah Sabat Dewasa</label>
+                                    <input type="text" id="ssRingkasan"
+                                        placeholder="Nama pemateri (contoh: Bpk Daniel)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssPromosi">Promosi Pelayanan Perorangan</label>
+                                    <input type="text" id="ssPromosi" placeholder="Nama petugas (contoh: Bpk Frans K)">
+                                </div>
+                                <div class="input-group">
+                                    <label>Lagu Tutup (LSEL)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="ssLaguTutupNo" placeholder="No.">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="ssLaguTutupJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_ssLaguTutup"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="ssDoaTutup">Doa Tutup</label>
+                                    <input type="text" id="ssDoaTutup" placeholder="Nama pendoa">
+                                </div>
+                                <div class="input-group">
+                                    <label for="pengumuman">Pengumuman</label>
+                                    <input type="text" id="pengumuman" value="Officers/Tua-Tua Jemaat"
+                                        placeholder="Petugas pengumuman">
+                                </div>
+                                <div class="input-group">
+                                    <label for="khCerita">Cerita Alkitab Anak</label>
+                                    <input type="text" id="khCerita" placeholder="Nama pencerita (contoh: Sdr Jimmy)">
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- ---------------------------------------- -->
+                        <!-- SECTION 1.3: IBADAH KHOTBAH              -->
+                        <!-- Diakon, Pemimpin Lagu, Doa, Pengkhotbah  -->
+                        <!-- ---------------------------------------- -->
+                        <section class="form-section">
+                            <h2>Ibadah Khotbah</h2>
+                            <div class="form-grid">
+                                <!-- Diakon/Diakones -->
+                                <div class="input-row-half">
+                                    <div class="input-group">
+                                        <label for="khDiakon1">Diakon/Diakones 1</label>
+                                        <input type="text" id="khDiakon1" placeholder="Nama (contoh: Sdr Avis)">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="khDiakon2">Diakon/Diakones 2</label>
+                                        <input type="text" id="khDiakon2" placeholder="Nama (contoh: Sdr Hanannia)">
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown Pemimpin Lagu (Eksklusif, saling kunci dengan POS) -->
+                                <div class="input-group">
+                                    <label for="khPemimpinLagu">Pemimpin Lagu</label>
+                                    <select id="khPemimpinLagu" class="exclusive-select">
+                                        <option value="">-- Pilih Pemimpin Lagu --</option>
+                                        <option value="Sdra. Jimmy">Sdra. Jimmy</option>
+                                        <option value="Sdri. Tata">Sdri. Tata</option>
+                                        <option value="Ibu Wiwin">Ibu Wiwin</option>
+                                    </select>
+                                </div>
+
+                                <!-- Info Lagu Tetap (Tidak bisa diedit, hanya tampilan) -->
+                                <div class="static-notice">
+                                    <span class="badge">Lagu Khotbah Tetap</span>
+                                    <p><strong>Lagu Mimbar:</strong> LSEL No. 515 "Tuhan Ada Dalam Bait Allah"</p>
+                                    <p><strong>Lagu Pembuka:</strong> LSEL No. 1 "Di Hadapan Hadirat-Mu"</p>
+                                    <p><strong>Lagu Pengantar Syafaat:</strong> LSEL No. 520 "Kami Datang Dalam Doa"</p>
+                                    <p><strong>Lagu Sambutan Syafaat:</strong> LSEL No. 516 "Dengar Ya Tuhan"</p>
+                                    <p><strong>Lagu Persembahan:</strong> LSEL No. 260 "Bawa Persembahanmu"</p>
+                                    <p><strong>Lagu Sambutan Persembahan:</strong> LSEL No. 21 "Pada-Mu Allah Ku Puji"
+                                    </p>
+                                    <p><strong>Lagu Sambutan Doa Tutup dan Doa Berkat:</strong> LSEL No. 523 "Tuhan
+                                        Dengar Doa Kami"</p>
+                                </div>
+
+                                <!-- Doa Buka -->
+                                <div class="input-group">
+                                    <label for="khDoaBuka">Doa Buka</label>
+                                    <input type="text" id="khDoaBuka" placeholder="Nama pendoa (contoh: Sdr Ricky K)">
+                                </div>
+
+                                <!-- Ayat Bersahutan -->
+                                <div class="input-group">
+                                    <label>Ayat Bersahutan</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="khAyatBersahutanNama" placeholder="Nama pembaca"
+                                            style="flex: 1;">
+                                        <input type="text" id="khAyatBersahutanRef"
+                                            placeholder="Referensi Ayat (contoh: Lukas 9:41-43)" style="flex: 2;">
+                                    </div>
+                                </div>
+
+                                <!-- Lagu Buka Khotbah -->
+                                <div class="input-group">
+                                    <label>Lagu Buka (LSEL)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="khLaguBukaNo" placeholder="No.">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="khLaguBukaJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_khLaguBuka"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Doa Syafaat -->
+                                <div class="input-group">
+                                    <label for="khDoaSyafaat">Doa Syafaat</label>
+                                    <input type="text" id="khDoaSyafaat" placeholder="Nama pendoa">
+                                </div>
+
+                                <!-- Persembahan -->
+                                <div class="input-group">
+                                    <label for="khBacaanPersembahan">Bacaan Persembahan & Persepuluhan</label>
+                                    <input type="text" id="khBacaanPersembahan" placeholder="Nama petugas">
+                                </div>
+
+                                <!-- Doa Persembahan -->
+                                <div class="input-group">
+                                    <label for="khDoaPersembahan">Doa Persembahan</label>
+                                    <input type="text" id="khDoaPersembahan" placeholder="Nama pendoa">
+                                </div>
+
+                                <!-- Lagu Pujian (dengan Toggle tampilkan/sembunyikan) -->
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label for="khLaguPujian">Lagu Pujian</label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--accent);">
+                                            <input type="checkbox" id="togglePujianSabat" checked
+                                                style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                            Tampilkan
+                                        </label>
+                                    </div>
+                                    <input type="text" id="khLaguPujian"
+                                        placeholder="Contoh: SSA Sepanjang / VG Kaum Pria">
+                                </div>
+
+                                <!-- Ayat Inti Khotbah -->
+                                <div class="input-group">
+                                    <label>Ayat Inti Khotbah</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="khAyatIntiNama" placeholder="Nama pembaca"
+                                            style="flex: 1;">
+                                        <input type="text" id="khAyatIntiRef"
+                                            placeholder="Referensi (contoh: Markus 9:29)" style="flex: 2;">
+                                    </div>
+                                </div>
+
+                                <!-- Info Lagu Tema Tetap Per Tahun -->
+                                <div class="static-notice">
+                                    <span class="badge">Lagu Khotbah Tetap Per Tahun</span>
+                                    <p><strong>Lagu Tema:</strong> "MISI KITA"</p>
+                                </div>
+
+                                <!-- Pengkhotbah -->
+                                <div class="input-group">
+                                    <label>PENGKHOTBAH</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="khPengkhotbahNama" placeholder="Nama Pengkhotbah"
+                                            style="flex: 1;">
+                                        <input type="text" id="khPengkhotbahJudul" placeholder="Judul Khotbah"
+                                            style="flex: 2;">
+                                    </div>
+                                </div>
+
+                                <!-- Lagu Tutup Khotbah -->
+                                <div class="input-group">
+                                    <label>Lagu Tutup (LSEL)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="khLaguTutupNo" placeholder="No.">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="khLaguTutupJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_khLaguTutup"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Doa Berkat -->
+                                <div class="input-group">
+                                    <label for="khDoaBerkat">Doa TUTUP dan Doa BERKAT</label>
+                                    <input type="text" id="khDoaBerkat" placeholder="Nama Pdt / Pendoa"
+                                        value="Pdt. Benny Lumbantobing">
+                                </div>
+                            </div>
+                        </section>
+                    </div> <!-- End tab-sabat -->
+
+                    <!-- ============================================================ -->
+                    <!-- TAB 2: PEMUDA ADVENT (PA)                                    -->
+                    <!-- Berisi 1 section: Ibadah Pemuda Advent                       -->
+                    <!-- ============================================================ -->
+                    <div id="tab-pa" class="tab-pane">
+                        <section class="form-section">
+                            <h2>Ibadah Pemuda Advent</h2>
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label for="paTanggal">Tanggal Pelaksanaan</label>
+                                    <div class="date-wrapper">
+                                        <input type="date" id="paTanggal" required>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="paMc">MC & Janji PA</label>
+                                    <input type="text" id="paMc" placeholder="Contoh: Sdra Fahrell">
+                                </div>
+                                <div class="input-group">
+                                    <label>Lagu Buka (AYS)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="paLaguBukaNo" placeholder="No. (contoh: 9)">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="paLaguBukaJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_paLaguBuka"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="paAyatDoa">Ayat Inti & Doa Buka</label>
+                                    <input type="text" id="paAyatDoa" placeholder="Nama petugas">
+                                </div>
+                                <div class="input-group">
+                                    <label>Belajar Alkitab Bersama (BAB)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="paBabNama" placeholder="Nama pembawa"
+                                            value="Pdt. Benny Lumbantobing" style="flex: 1;">
+                                        <input type="text" id="paBabJudul" placeholder="Topik/Ayat (contoh: Wahyu 7)"
+                                            style="flex: 1;">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="paFunfact">Funfact / Tips</label>
+                                    <input type="text" id="paFunfact" placeholder="Contoh: Kak Wiwin">
+                                </div>
+                                <div class="input-group">
+                                    <label for="paGames">Games</label>
+                                    <input type="text" id="paGames" placeholder="Contoh: Sdra Misaell">
+                                </div>
+                                <div class="input-group">
+                                    <label for="paAcaraInti">Acara Inti</label>
+                                    <input type="text" id="paAcaraInti" placeholder="Contoh: Sdra Jimmy">
+                                </div>
+                                <div class="input-group">
+                                    <label>Lagu Tutup (AYS)</label>
+                                    <div class="input-row-song">
+                                        <input type="text" id="paLaguTutupNo" placeholder="No.">
+                                        <div class="autocomplete-container">
+                                            <input type="text" id="paLaguTutupJudul" placeholder="Judul Lagu"
+                                                autocomplete="off">
+                                            <div class="autocomplete-list" id="auto_paLaguTutup"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="paDoaTutup">Doa Tutup</label>
+                                    <input type="text" id="paDoaTutup" placeholder="Nama pendoa">
+                                </div>
+                                <div class="input-group">
+                                    <label for="paPengumuman">Pengumuman PA</label>
+                                    <input type="text" id="paPengumuman" value="Ketua PA"
+                                        placeholder="Petugas pengumuman">
+                                </div>
+                                <div class="input-group">
+                                    <label for="paBendahara">Laporan Bendahara</label>
+                                    <input type="text" id="paBendahara" value="Bendahara PA"
+                                        placeholder="Petugas bendahara">
+                                </div>
+                            </div>
+                        </section>
+                    </div> <!-- End tab-pa -->
+
+                    <!-- ============================================================ -->
+                    <!-- TAB 3: RABU MALAM                                            -->
+                    <!-- Berisi 1 section: Ibadah Rabu Malam (via Zoom)               -->
+                    <!-- ============================================================ -->
+                    <div id="tab-rabu" class="tab-pane">
+                        <section class="form-section">
+                            <h2>Ibadah Rabu Malam</h2>
+                            <div class="form-grid">
+                                <div class="input-group">
+                                    <label for="rmTanggal">Tanggal</label>
+                                    <input type="date" id="rmTanggal" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmHost">Host</label>
+                                    <input type="text" id="rmHost" placeholder="Nama Host (contoh: Ricky K)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmMcDoa">MC, Doa</label>
+                                    <input type="text" id="rmMcDoa" placeholder="Nama MC/Doa (contoh: Meakhel G)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmKesaksian">Kesaksian</label>
+                                    <input type="text" id="rmKesaksian"
+                                        placeholder="Nama petugas (contoh: Kel Enas Febryanto)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmDoaSyafaat">Doa Syafaat</label>
+                                    <input type="text" id="rmDoaSyafaat" value="Pdt. Benny Lumbantobing"
+                                        placeholder="Nama pendoa">
+                                </div>
+                                <!-- Pujian (dengan Toggle tampilkan/sembunyikan) -->
+                                <div class="input-group">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label for="rmPujian">Pujian</label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--accent);">
+                                            <input type="checkbox" id="togglePujianRabu" checked
+                                                style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                            Tampilkan
+                                        </label>
+                                    </div>
+                                    <input type="text" id="rmPujian" placeholder="Contoh: VG Kaum Pria">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmFirman">Firman Tuhan</label>
+                                    <input type="text" id="rmFirman"
+                                        placeholder="Nama Pembicara (contoh: Irfan Haniffa)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmDoaTutup">Doa Tutup</label>
+                                    <input type="text" id="rmDoaTutup" placeholder="Nama Pendoa (contoh: Jimmy T)">
+                                </div>
+                                <div class="input-group">
+                                    <label for="rmPengumuman">Ucapan Terima kasih & Pengumuman</label>
+                                    <input type="text" id="rmPengumuman" value="Ketua" placeholder="Petugas pengumuman">
+                                </div>
+                            </div>
+                        </section>
+                    </div> <!-- End tab-rabu -->
+
+                </div>
+            </form>
+
+            <!-- ====================================== -->
+            <!-- PANEL KANAN: LIVE PREVIEW TEKS WA      -->
+            <!-- ====================================== -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <h2>Live Preview Teks</h2>
+                    <button class="btn btn-primary" onclick="copyToClipboard()" id="copyBtnTop">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Salin ke Clipboard
+                    </button>
+                </div>
+                <div class="preview-scroll">
+                    <pre id="previewText" class="whatsapp-text"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- ADMIN DASHBOARD VIEW (Disembunyikan)   -->
+        <!-- ====================================== -->
+        <div class="admin-dashboard" id="adminDashboardView" style="display: none;">
+            <div class="admin-sidebar" id="adminSidebar">
+                <div class="sidebar-header">
+                    <h3>Sidebar Supabase App</h3>
+                    <button class="sidebar-toggle-btn"
+                        onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"
+                        title="Tutup/Buka Sidebar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-toggle-icon">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+                <nav class="admin-nav">
+                    <button class="admin-tab-btn active" id="btn-adm-pos" onclick="switchAdminTab('pos')"
+                        title="Tabel POS">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                        <span>Tabel POS</span>
+                    </button>
+                    <button class="admin-tab-btn" id="btn-adm-ss" onclick="switchAdminTab('ss')"
+                        title="Tabel Sekolah Sabat">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                        <span>Tabel Sekolah Sabat</span>
+                    </button>
+                    <button class="admin-tab-btn" id="btn-adm-khotbah" onclick="switchAdminTab('khotbah')"
+                        title="Tabel Khotbah">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                        </svg>
+                        <span>Tabel Khotbah</span>
+                    </button>
+                    <button class="admin-tab-btn" id="btn-adm-pa" onclick="switchAdminTab('pa')" title="Tabel PA">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Tabel PA</span>
+                    </button>
+                </nav>
+            </div>
+            <div class="admin-panel">
+                <div class="admin-panel-header">
+                    <h2 id="adminTableTitle" style="color: var(--header-title);">Tabel POS</h2>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;"
+                            onclick="shiftActiveTableSchedule(-7)"
+                            title="Majukan semua jadwal 1 minggu (Tanggal - 7 hari)">◀ Majukan 1 Minggu</button>
+                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;"
+                            onclick="shiftActiveTableSchedule(7)"
+                            title="Mundurkan semua jadwal 1 minggu (Tanggal + 7 hari)">Mundurkan 1 Minggu ▶</button>
+                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;"
+                            onclick="openFormModal()">+ Tambah Data</button>
+                    </div>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-data-table" id="adminDataTable">
+                        <thead>
+                            <tr id="adminTableHead">
+                                <!-- Heading tabel dinamis -->
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <tr>
+                                <td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================== -->
+        <!-- FOOTER                     -->
+        <!-- ========================== -->
+        <footer class="app-footer">
+            <p>&copy; 2026 - v1.7.0. GMAHK Sepanjang. All rights reserved.</p>
+            <p>Developed by Meakhel Gunawan</p>
+        </footer>
+    </div>
+
+    <!-- ========================== -->
+    <!-- LOGIN MODAL                -->
+    <!-- ========================== -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <h2>Admin Area</h2>
+            <p>Silakan login untuk mengatur jadwal ibadah.</p>
+            <div class="form-grid" style="margin-bottom: 24px;">
+                <div class="input-group">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" placeholder="admin@sepanjang.com"
+                        onkeydown="if(event.key === 'Enter') document.getElementById('adminPassword').focus()">
+                </div>
+                <div class="input-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••"
+                        onkeydown="if(event.key === 'Enter') handleLogin()">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="loginSubmitBtn" style="width: 100%;"
+                onclick="handleLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- ADMIN EDIT/ADD MODAL -->
+    <div id="dataFormModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" onclick="closeFormModal()">&times;</button>
+            <h2 id="formModalTitle">Tambah Data</h2>
+            <p id="formModalSubtitle">Formulir dinamis database Supabase</p>
+
+            <div class="form-grid form-scroll" id="dynamicFormContainer"
+                style="max-height: 50vh; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;">
+                <!-- Input dinamis akan di-inject lewat JavaScript -->
+            </div>
+
+            <button class="btn btn-success" id="saveDataBtn" style="width: 100%;" onclick="simpanDataTabel()">Simpan
+                Data</button>
+        </div>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- SCRIPTS                                -->
+    <!-- 1. Supabase CDN (wajib dimuat duluan)  -->
+    <!-- 2. script.js (logika aplikasi)         -->
+    <!-- ====================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
