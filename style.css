@@ -844,21 +844,45 @@ body.dark-theme .timeline-item .time {
     color: var(--accent-light);
 }
 
+.timeline-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+
 .timeline-content h6 {
     font-size: 0.85rem;
     font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    flex: 1.1;
+    line-height: 1.35;
 }
 
-.timeline-content p {
-    font-size: 0.75rem;
+.timeline-desc-wrapper {
+    flex: 1.3;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.timeline-desc-wrapper p {
+    font-size: 0.82rem;
     color: var(--text-muted);
-    margin-top: 2px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.35;
 }
 
 .detail-note {
+    font-size: 0.72rem;
     font-style: italic;
     color: var(--primary-color) !important;
     font-weight: 600;
+    margin-top: 2px;
 }
 
 body.dark-theme .detail-note {
@@ -1766,4 +1790,51 @@ body.dark-theme .timeline-group-header {
 
 body.dark-theme .app-footer .developer-credit span {
     color: var(--accent-light);
+}
+
+/* Edit Sementara Button Variants */
+.btn-secondary {
+    background-color: var(--border-color);
+    color: var(--primary-color);
+}
+
+body.dark-theme .btn-secondary {
+    background-color: var(--primary-rose);
+    color: var(--text-main);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-rose);
+    color: var(--text-main);
+}
+
+.btn-danger {
+    background-color: #EF4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #DC2626;
+}
+
+/* Inline Editing Interactive Fields */
+.editable-field {
+    outline: none;
+    border-bottom: 1px dashed var(--accent-color);
+    background-color: rgba(217, 119, 6, 0.06);
+    padding: 1px 4px;
+    border-radius: 4px;
+    transition: var(--transition);
+    cursor: text;
+}
+
+.editable-field:focus {
+    background-color: rgba(217, 119, 6, 0.12);
+    border-bottom-style: solid;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+}
+
+.placeholder-note {
+    opacity: 0.55;
+    color: var(--text-muted) !important;
 }

@@ -27,7 +27,8 @@ const appState = {
     rosterSabatIndex: 1, // Default ke Sabtu, 18 Juli 2026 (indeks 1)
     rosterPaIndex: 1,    // Default ke Sabtu, 18 Juli 2026 (indeks 1)
     rosterRabuIndex: 1,  // Default ke Rabu, 22 Juli 2026 (indeks 1)
-    theme: "light"
+    theme: "light",
+    isEditingSementara: false
 };
 
 // Data Jadwal Ibadah (Liturgy) Terdekat
@@ -44,10 +45,10 @@ const scheduleData = {
                 { time: "", title: "Operator Slide/Zoom", desc: "Sdr. Operator", highlight: true },
                 { time: "", title: "Soundman Bertugas", desc: "Sdr. Soundman", highlight: true },
                 { isHeader: true, title: "II. Ibadah Sekolah Sabat (09:00 - 10:30)" },
-                { time: "09:00", title: "MC & Yel Yel Sekolah Sabat", desc: "MC: Sdr. Kevin A.", highlight: false },
-                { time: "09:30", title: "Ringkasan Sekolah Sabat Dewasa", desc: "Di kelas masing-masing (Sabat ke-3)", highlight: true },
+                { time: "", title: "MC & Yel Yel Sekolah Sabat", desc: "Sdr. Kevin A.", highlight: false },
+                { time: "", title: "Ringkasan Sekolah Sabat Dewasa", desc: "Di kelas masing-masing (Sabat ke-3)", highlight: true },
                 { isHeader: true, title: "III. Ibadah Khotbah (10:35 - 12:00)" },
-                { time: "10:45", title: "Ibadah Khotbah (Divine Service)", desc: "Pembicara: Pdt. Benny Lumbantobing", highlight: true, note: "Tema: 'Misi Terakhir untuk Dunia'" }
+                { time: "", title: "Ibadah Khotbah (Divine Service)", desc: "Pdt. Benny Lumbantobing", highlight: true, note: "Tema: 'Misi Terakhir untuk Dunia'" }
             ],
             waFormat: `*SUSUNAN ACARA SABAT RAYA*\n*GMAHK Jemaat Sepanjang*\nSabtu, 18 Juli 2026\n\n09:00 - Sekolah Sabat (P.L: Sdr. Kevin A.)\n09:30 - Pelajaran Sekolah Sabat (Kelas masing-masing)\n10:45 - Ibadah Khotbah\n- Pembicara: Pdt. Benny Lumbantobing\n- Tema: "Misi Terakhir untuk Dunia"\n\n_Diharapkan hadir tepat waktu._`
         }
@@ -59,9 +60,9 @@ const scheduleData = {
             dateDisplay: "Sabtu, 18 Juli 2026",
             title: "Pemuda Advent (PA)",
             timeline: [
-                { time: "16:00", title: "Pembukaan & Pujian PA", desc: "Pemimpin Acara: Pengurus PA" },
-                { time: "16:30", title: "Aktivitas / Seminar Pemuda", desc: "Pemateri: Sdr. Bryan S.", highlight: true, note: "Tema: 'Pemuda Masa Kini & Tantangan Zaman'" },
-                { time: "17:30", title: "Vesper & Doa Penutup", desc: "Pianis: Sdri. Grace T." }
+                { time: "", title: "Pembukaan & Pujian PA", desc: "Pengurus PA" },
+                { time: "", title: "Aktivitas / Seminar Pemuda", desc: "Sdr. Bryan S.", highlight: true, note: "Tema: 'Pemuda Masa Kini & Tantangan Zaman'" },
+                { time: "", title: "Vesper & Doa Penutup", desc: "Sdri. Grace T." }
             ],
             waFormat: `*SUSUNAN ACARA PEMUDA ADVENT (PA)*\n*GMAHK Jemaat Sepanjang*\nSabtu, 18 Juli 2026\n\n16:00 - Pujian PA (Pengurus PA)\n16:30 - Aktivitas Pemuda\n- Pemateri: Sdr. Bryan S.\n- Tema: "Pemuda Masa Kini & Tantangan Zaman"\n17:30 - Vesper & Doa Penutup\n\n_Mari pemuda-pemudi kita berkumpul memuji Tuhan!_`
         }
@@ -71,16 +72,16 @@ const scheduleData = {
             day: "22",
             month: "Jul",
             dateDisplay: "Rabu, 22 Juli 2026",
-            title: "Ibadah Rabu Malam",
+            title: "Ibadah Rabu Malam (19:00 - Selesai)",
             timeline: [
-                { time: "19:00", title: "Join Zoom & Pemimpin Acara", desc: "Host: Sdri. Linda K." },
-                { time: "19:05", title: "Pembukaan & MC Doa Buka", desc: "MC/Doa: Sdri. Linda K." },
-                { time: "19:10", title: "Kesaksian Jemaat", desc: "Petugas: Sdr. Julian" },
-                { time: "19:20", title: "Lagu-Lagu Pujian Tengah Pekan", desc: "Song Leader: Sdri. Linda K." },
-                { time: "19:30", title: "Doa Syafaat Tengah Pekan", desc: "Pendoa Syafaat: Pdt. Benny Lumbantobing", highlight: true },
-                { time: "19:40", title: "Renungan Firman Tuhan", desc: "Pembicara: Pnt. J. Silitonga", highlight: true, note: "Tema: 'Kekuatan dalam Doa Syafaat'" },
-                { time: "20:00", title: "Doa Tutup & Doa Berkat", desc: "Pendoa: Pnt. J. Silitonga" },
-                { time: "20:05", title: "Ucapan Terima Kasih & Pengumuman", desc: "Ketua Jemaat" }
+                { time: "", title: "Join Zoom & Pemimpin Acara", desc: "Sdri. Linda K." },
+                { time: "", title: "Pembukaan & MC Doa Buka", desc: "Sdri. Linda K." },
+                { time: "", title: "Kesaksian Jemaat", desc: "Sdr. Julian" },
+                { time: "", title: "Lagu-Lagu Pujian Tengah Pekan", desc: "Sdri. Linda K." },
+                { time: "", title: "Doa Syafaat Tengah Pekan", desc: "Pdt. Benny Lumbantobing", highlight: true },
+                { time: "", title: "Renungan Firman Tuhan", desc: "Pnt. J. Silitonga", highlight: true, note: "Tema: 'Kekuatan dalam Doa Syafaat'" },
+                { time: "", title: "Doa Tutup & Doa Berkat", desc: "Pnt. J. Silitonga" },
+                { time: "", title: "Ucapan Terima Kasih & Pengumuman", desc: "Ketua Jemaat" }
             ],
             waFormat: `GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
 
@@ -362,13 +363,13 @@ function initApp() {
 function updateCurrentDate() {
     const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabat"];
     const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    
+
     const today = new Date();
     const dayName = days[today.getDay()];
     const dateNum = today.getDate();
     const monthName = months[today.getMonth()];
     const year = today.getFullYear();
-    
+
     const dateStr = `${dayName}, ${dateNum} ${monthName} ${year}`;
     const dateEl = document.getElementById("currentDateText");
     if (dateEl) {
@@ -521,7 +522,7 @@ function renderActiveAcara() {
     if (cardEl) {
         cardEl.style.opacity = 0.4;
         cardEl.style.transform = "scale(0.99)";
-        
+
         setTimeout(() => {
             // Update Hari, Bulan, Judul & Subtitle
             const dayEl = document.getElementById("acaraDayText");
@@ -539,9 +540,21 @@ function renderActiveAcara() {
             if (timelineContainer) {
                 timelineContainer.innerHTML = ""; // Bersihkan timeline lama
 
+                // Load local overrides if they exist (Tipe 1)
+                const overrides = loadLocalScheduleChanges(program, data.dateDisplay);
+                if (overrides) {
+                    data.timeline = overrides;
+                }
+
+                // Toggle visibility of Reset button
+                const resetBtn = document.getElementById("btn-reset-edit");
+                if (resetBtn) {
+                    resetBtn.style.display = (overrides || appState.isEditingSementara) ? "inline-flex" : "none";
+                }
+
                 let currentGroupContainer = null;
 
-                data.timeline.forEach(item => {
+                data.timeline.forEach((item, itemIndex) => {
                     if (item.isHeader) {
                         const headerEl = document.createElement("div");
                         headerEl.className = "timeline-group-header";
@@ -567,21 +580,27 @@ function renderActiveAcara() {
                     if (item.time) {
                         timelineContent += `<span class="time">${item.time}</span>`;
                     }
-                    
+
+                    const isEditing = appState.isEditingSementara;
+                    const showNoteField = (item.note && item.note !== '-') || isEditing;
+                    const noteText = (item.note && item.note !== '-') ? item.note : (isEditing ? "(tambah catatan)" : "");
+                    const isPlaceholder = isEditing && (!item.note || item.note === '-');
+
                     timelineContent += `
-                        <div class="timeline-content" ${!item.time ? 'style="margin-left: 0;"' : ''}>
-                            <h6>${item.title}</h6>
-                            <p>${item.desc}</p>
+                        <div class="timeline-content">
+                            <h6 ${isEditing ? `contenteditable="true" class="editable-field" data-type="title" data-index="${itemIndex}"` : ''}>${item.title}</h6>
+                            <div class="timeline-desc-wrapper">
+                                <p ${isEditing ? `contenteditable="true" class="editable-field" data-type="desc" data-index="${itemIndex}"` : ''}>${item.desc}</p>
+                                ${showNoteField ? `<p class="detail-note ${isPlaceholder ? 'placeholder-note' : ''}" ${isEditing ? `contenteditable="true" class="editable-field" data-type="note" data-index="${itemIndex}"` : ''}>${noteText}</p>` : ''}
+                            </div>
+                        </div>
                     `;
-
-                    if (item.note) {
-                        timelineContent += `<p class="detail-note">${item.note}</p>`;
-                    }
-
-                    timelineContent += `</div>`;
                     itemEl.innerHTML = timelineContent;
                     currentGroupContainer.appendChild(itemEl);
                 });
+
+                // Attach input event listener for inline editing
+                attachTimelineEditListener(timelineContainer, program, data);
             }
 
             // Kembalikan Opasitas Kartu
@@ -607,7 +626,7 @@ function renderActiveRoster() {
     // Update Detail Tanggal & Tag Program di Navigator
     const dateTitleEl = document.getElementById("rosterDateTitle");
     const programTagEl = document.getElementById("rosterProgramTag");
-    
+
     if (dateTitleEl) dateTitleEl.textContent = currentRoster.dateDisplay;
     if (programTagEl) programTagEl.textContent = currentRoster.programTag;
 
@@ -673,7 +692,7 @@ function navigateRosterDate(direction) {
     if (container) {
         container.style.opacity = 0.3;
         container.style.transform = "scale(0.98)";
-        
+
         setTimeout(() => {
             renderActiveRoster();
             container.style.opacity = 1;
@@ -690,7 +709,7 @@ function copyAccount(elementId, bankName) {
     if (!textEl) return;
 
     const textToCopy = textEl.textContent.trim();
-    
+
     copyToClipboard(textToCopy, () => {
         Swal.fire({
             title: "Tersalin!",
@@ -723,7 +742,20 @@ function copyScheduleText() {
     const data = dataList[activeIndex];
     if (!data) return;
 
-    copyToClipboard(data.waFormat, () => {
+    // Load local overrides to make sure the copied text matches what's visible
+    const overrides = loadLocalScheduleChanges(program, data.dateDisplay);
+    const activeTimeline = overrides || data.timeline;
+
+    let waText = "";
+    if (program === "sabat") {
+        waText = buildSabatWaFormatFromTimeline(activeTimeline, data.dateDisplay);
+    } else if (program === "pa") {
+        waText = buildPaWaFormatFromTimeline(activeTimeline, data.dateDisplay);
+    } else if (program === "rabu") {
+        waText = buildRabuWaFormatFromTimeline(activeTimeline, data.dateDisplay);
+    }
+
+    copyToClipboard(waText, () => {
         Swal.fire({
             title: "Format WA Tersalin!",
             text: "Gunakan paste (Ctrl+V atau tempel) pada obrolan WhatsApp Anda.",
@@ -877,12 +909,12 @@ function getShortMonthName(monthIndex) {
 function formatFullDate(dateObj) {
     const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
     const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    
+
     const dayName = days[dateObj.getDay()];
     const dateNum = dateObj.getDate();
     const monthName = months[dateObj.getMonth()];
     const year = dateObj.getFullYear();
-    
+
     return `${dayName}, ${dateNum} ${monthName} ${year}`;
 }
 
@@ -893,14 +925,14 @@ function parseDateFromDisplay(display) {
         if (parts.length < 2) return null;
         const dateParts = parts[1].trim().split(" ");
         if (dateParts.length < 3) return null;
-        
+
         const day = parseInt(dateParts[0]);
         const monthName = dateParts[1];
         const year = parseInt(dateParts[2]);
-        
+
         const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         const monthIndex = months.indexOf(monthName);
-        
+
         if (monthIndex === -1) return null;
         return new Date(year, monthIndex, day);
     } catch (e) {
@@ -911,17 +943,17 @@ function parseDateFromDisplay(display) {
 // Helper untuk mencari index terdekat dari hari ini
 function findClosestUpcomingIndex(rosterList) {
     if (!rosterList || rosterList.length === 0) return 0;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     let closestIndex = 0;
     let minDiff = Infinity;
-    
+
     for (let i = 0; i < rosterList.length; i++) {
         const dateStr = rosterList[i].dateDisplay;
         const parsedDate = parseDateFromDisplay(dateStr);
-        
+
         if (parsedDate) {
             const diff = parsedDate.getTime() - today.getTime();
             if (diff >= 0 && diff < minDiff) {
@@ -933,7 +965,7 @@ function findClosestUpcomingIndex(rosterList) {
     if (minDiff === Infinity) {
         return rosterList.length - 1;
     }
-    
+
     return closestIndex;
 }
 
@@ -1003,35 +1035,35 @@ async function fetchDataFromSupabase() {
 
                 // Group 2: Ibadah Sekolah Sabat (09:00 - 10:30)
                 { isHeader: true, title: "II. Ibadah Sekolah Sabat (09:00 - 10:30)" },
-                { time: "09:00", title: "MC & Yel Yel Sekolah Sabat", desc: `MC: ${ss.MC || '-'}`, highlight: false },
-                { time: "09:10", title: "Lagu Buka Sekolah Sabat", desc: "LSEL No. [Kosong]", highlight: false },
-                { time: "09:15", title: "Ayat Inti SS & Doa Buka", desc: `Petugas: ${ss.AyatIntiDoaBuka || '-'}`, highlight: false },
-                { time: "09:20", title: "Bacaan Berita Mission", desc: `Petugas: ${ss.BeritaMision || '-'}`, highlight: false },
-                { time: "09:30", title: "Ringkasan Sekolah Sabat Dewasa", desc: `Pemateri: ${ss.RingkasanSS || '-'}`, highlight: true },
-                { time: "10:15", title: "Promosi Pelayanan Perorangan", desc: `Petugas: ${ss.PelayananPerorangan || '-'}`, highlight: false },
-                { time: "10:20", title: "Lagu Tutup Sekolah Sabat", desc: "LSEL No. [Kosong]", highlight: false },
-                { time: "10:25", title: "Doa Tutup Sekolah Sabat", desc: `Pendoa: ${ss.PelayananPerorangan || '-'}`, highlight: false },
-                { time: "10:25", title: "Pengumuman Jemaat", desc: "Tua-Tua / Officers Jemaat", highlight: false },
-                { time: "10:30", title: "Cerita Alkitab Anak-Anak", desc: "Pencerita: [Kosong]", highlight: false },
+                { time: "", title: "MC & Yel Yel Sekolah Sabat", desc: `${ss.MC || '-'}`, highlight: false },
+                { time: "", title: "Lagu Buka Sekolah Sabat", desc: "LSEL No. [Kosong]", highlight: false },
+                { time: "", title: "Ayat Inti SS & Doa Buka", desc: `${ss.AyatIntiDoaBuka || '-'}`, highlight: false },
+                { time: "", title: "Bacaan Berita Mission", desc: `${ss.BeritaMision || '-'}`, highlight: false },
+                { time: "", title: "Ringkasan Sekolah Sabat Dewasa", desc: `${ss.RingkasanSS || '-'}`, highlight: true },
+                { time: "", title: "Promosi Pelayanan Perorangan", desc: `${ss.PelayananPerorangan || '-'}`, highlight: false },
+                { time: "", title: "Lagu Tutup Sekolah Sabat", desc: "LSEL No. [Kosong]", highlight: false },
+                { time: "", title: "Doa Tutup Sekolah Sabat", desc: `${ss.PelayananPerorangan || '-'}`, highlight: false },
+                { time: "", title: "Pengumuman Jemaat", desc: "Tua-Tua / Officers Jemaat", highlight: false },
+                { time: "", title: "Cerita Alkitab Anak-Anak", desc: "-", highlight: false },
 
                 // Group 3: Ibadah Khotbah (10:35 - 12:00)
                 { isHeader: true, title: "III. Ibadah Khotbah (10:35 - 12:00)" },
-                { time: "10:35", title: "Diakon & Diakones Bertugas", desc: `Diakon 1: ${khDiakon1} | Diakon 2: ${khDiakon2}`, highlight: false },
-                { time: "10:35", title: "Pemimpin Lagu Ibadah Khotbah", desc: `Song Leader: ${kh.PemimpinLagu || '-'}`, highlight: false },
-                { time: "10:37", title: "Lagu Pengiring Partisipan Mimbar", desc: 'LSEL No. 515 "Tuhan Ada Dalam Bait Allah"', highlight: false },
-                { time: "10:40", title: "Lagu Pembuka Ibadah", desc: 'LSEL No. 1 "Di Hadapan Hadirat-Mu"', highlight: false },
-                { time: "10:43", title: "Doa Buka Ibadah", desc: `Pendoa: ${kh.Khotbah || '-'}`, highlight: false },
-                { time: "10:45", title: "Pembacaan Ayat Bersahutan", desc: `Pembaca: ${kh.DoaSyafaat || '-'} (Ref: [Kosong])`, highlight: false },
-                { time: "10:50", title: "Lagu Pengantar Doa Syafaat", desc: 'LSEL No. 520 "Kami Datang Dalam Doa"', highlight: false },
-                { time: "10:53", title: "Doa Syafaat Bersama", desc: `Pendoa: ${kh.DoaSyafaat || '-'}`, highlight: false },
-                { time: "11:00", title: "Bacaan Persembahan & Persepuluhan", desc: `Petugas: ${kh.BacaanPersembahan || '-'}`, highlight: false },
-                { time: "11:05", title: "Lagu Persembahan & Doa Persembahan", desc: `LSEL No. 260 | Pendoa: ${kh.BacaanPersembahan || '-'}`, highlight: false },
-                { time: "11:10", title: "Lagu Pujian (Koor / Vokal Grup)", desc: "Tampil: [Kosong]", highlight: false },
-                { time: "11:15", title: "Pembacaan Ayat Inti & Lagu Tema", desc: `Lagu Tema: "MISI KITA"`, highlight: false },
-                { time: "11:20", title: "Khotbah / Renungan Firman Tuhan", desc: `Pengkhotbah: ${kh.Khotbah || '-'}`, highlight: true, note: "Judul: [Kosong]" },
-                { time: "11:50", title: "Lagu Tutup Kebaktian", desc: "LSEL No. [Kosong]", highlight: false },
-                { time: "11:55", title: "Doa TUTUP dan Doa BERKAT", desc: "Pendoa: Pdt. Benny Lumbantobing", highlight: false },
-                { time: "12:00", title: "Lagu Sambutan Doa Tutup & Berkat", desc: 'LSEL No. 523 "Tuhan Dengar Doa Kami"', highlight: false }
+                { time: "", title: "Diakon & Diakones Bertugas", desc: `${kh.DiakenDiaken || '-'}`, highlight: false },
+                { time: "", title: "Pemimpin Lagu Ibadah Khotbah", desc: `${kh.PemimpinLagu || '-'}`, highlight: false },
+                { time: "", title: "Lagu Pengiring Partisipan Mimbar", desc: "LSEL No. 515", highlight: false },
+                { time: "", title: "Lagu Pembuka Ibadah", desc: "LSEL No. 1", highlight: false },
+                { time: "", title: "Doa Buka Ibadah", desc: `${kh.Khotbah || '-'}`, highlight: false },
+                { time: "", title: "Pembacaan Ayat Bersahutan", desc: `${kh.DoaSyafaat || '-'}`, highlight: false },
+                { time: "", title: "Lagu Pengantar Doa Syafaat", desc: "LSEL No. 520", highlight: false },
+                { time: "", title: "Doa Syafaat Bersama", desc: `${kh.DoaSyafaat || '-'}`, highlight: false },
+                { time: "", title: "Bacaan Persembahan & Persepuluhan", desc: `${kh.BacaanPersembahan || '-'}`, highlight: false },
+                { time: "", title: "Lagu Persembahan & Doa Persembahan", desc: `${kh.BacaanPersembahan || '-'}`, highlight: false },
+                { time: "", title: "Lagu Pujian (Koor / Vokal Grup)", desc: "-", highlight: false },
+                { time: "", title: "Pembacaan Ayat Inti & Lagu Tema", desc: "MISI KITA", highlight: false },
+                { time: "", title: "Khotbah / Renungan Firman Tuhan", desc: `${kh.Khotbah || '-'}`, highlight: true, note: "Judul: [Kosong]" },
+                { time: "", title: "Lagu Tutup Kebaktian", desc: "LSEL No. [Kosong]", highlight: false },
+                { time: "", title: "Doa TUTUP dan Doa BERKAT", desc: "Pdt. Benny Lumbantobing", highlight: false },
+                { time: "", title: "Lagu Sambutan Doa Tutup & Berkat", desc: "LSEL No. 523", highlight: false }
             ];
 
             // Roster petugas HTML (modal detail)
@@ -1125,17 +1157,17 @@ async function fetchDataFromSupabase() {
 
             // Timeline lengkap PA (High-Fidelity)
             const timeline = [
-                { time: "16:00", title: "MC & Janji PA", desc: `MC: ${p.MC || '-'}` },
-                { time: "16:05", title: "Lagu Pembuka (AYS)", desc: "AYS No. [Kosong]" },
-                { time: "16:10", title: "Ayat Inti & Doa Buka PA", desc: `Petugas: ${p.AyatIntiDoaBuka || '-'}` },
-                { time: "16:15", title: "Belajar Alkitab Bersama (BAB)", desc: `Petugas: ${p.BAB || '-'}` },
-                { time: "16:45", title: "Funfact / Tips Pemuda", desc: `Petugas: ${p.TipsFunfact || '-'}` },
-                { time: "16:55", title: "Aktivitas / Games Pemuda", desc: `Koordinator: ${p.Games || '-'}` },
-                { time: "17:15", title: "Acara Inti & Diskusi", desc: `Pemateri: ${p.AcaraInti || '-'}` },
-                { time: "17:35", title: "Lagu Penutup (AYS)", desc: "AYS No. [Kosong]" },
-                { time: "17:40", title: "Doa Tutup & Vesper", desc: `Pendoa: ${p.AcaraInti || '-'}` },
-                { time: "17:45", title: "Pengumuman Pemuda", desc: "Pengurus PA" },
-                { time: "17:50", title: "Laporan Bendahara PA", desc: "Bendahara PA" }
+                { time: "", title: "MC & Janji PA", desc: `${p.MC || '-'}` },
+                { time: "", title: "Lagu Pembuka (AYS)", desc: "AYS No. [Kosong]" },
+                { time: "", title: "Ayat Inti & Doa Buka PA", desc: `${p.AyatIntiDoaBuka || '-'}` },
+                { time: "", title: "Belajar Alkitab Bersama (BAB)", desc: `${p.BAB || '-'}` },
+                { time: "", title: "Funfact / Tips Pemuda", desc: `${p.TipsFunfact || '-'}` },
+                { time: "", title: "Aktivitas / Games Pemuda", desc: `${p.Games || '-'}` },
+                { time: "", title: "Acara Inti & Diskusi", desc: `${p.AcaraInti || '-'}` },
+                { time: "", title: "Lagu Penutup (AYS)", desc: "AYS No. [Kosong]" },
+                { time: "", title: "Doa Tutup & Vesper", desc: `${p.AcaraInti || '-'}` },
+                { time: "", title: "Pengumuman Pemuda", desc: "Pengurus PA" },
+                { time: "", title: "Laporan Bendahara PA", desc: "Bendahara PA" }
             ];
 
             const officersHtml = `
@@ -1156,7 +1188,7 @@ async function fetchDataFromSupabase() {
                 day,
                 month,
                 dateDisplay,
-                title: "Pemuda Advent (PA)",
+                title: "Pemuda Advent (PA) (16:00 - Selesai)",
                 timeline,
                 officersHtml,
                 waFormat
@@ -1200,8 +1232,21 @@ async function fetchDataFromSupabase() {
             appState.rosterPaIndex = findClosestUpcomingIndex(tempPaRoster);
         }
 
+        // Clean up old localStorage overrides based on new active dates
+        let currentSabatDateStr = "";
+        let currentPaDateStr = "";
+        if (tempSabatSchedule.length > 0) {
+            const idx = findClosestUpcomingIndex(tempSabatSchedule);
+            if (tempSabatSchedule[idx]) currentSabatDateStr = tempSabatSchedule[idx].dateDisplay;
+        }
+        if (tempPaSchedule.length > 0) {
+            const idx = findClosestUpcomingIndex(tempPaSchedule);
+            if (tempPaSchedule[idx]) currentPaDateStr = tempPaSchedule[idx].dateDisplay;
+        }
+        cleanupObsoleteLocalOverrides(currentSabatDateStr, currentPaDateStr);
+
         console.log("✅ Berhasil memproses data dari Supabase!");
-        
+
         // Render ulang tampilan setelah data ditarik
         renderActiveAcara();
         renderActiveRoster();
@@ -1384,4 +1429,265 @@ function buildPaWaFormat(p, dateDisplay) {
 
 *Selamat Melayani~*
 *Tuhan Memberkati 😇🙏*`;
+}
+
+// Local Persistence Helpers for Edit Sementara (Tipe 1)
+function saveLocalScheduleChanges(program, dateDisplay, timeline) {
+    const key = `schedule_override_${program}_${dateDisplay}`;
+    localStorage.setItem(key, JSON.stringify(timeline));
+}
+
+function loadLocalScheduleChanges(program, dateDisplay) {
+    const key = `schedule_override_${program}_${dateDisplay}`;
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : null;
+}
+
+function cleanupObsoleteLocalOverrides(currentSabatDate, currentPaDate) {
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith("schedule_override_")) {
+                if (!key.includes(currentSabatDate) && !key.includes(currentPaDate)) {
+                    localStorage.removeItem(key);
+                    i--; // adjust index
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Gagal membersihkan cache lokal:", e);
+    }
+}
+
+// Toggle Edit Mode
+function toggleEditSementara() {
+    appState.isEditingSementara = !appState.isEditingSementara;
+
+    const editBtn = document.getElementById("btn-toggle-edit");
+    if (editBtn) {
+        const textSpan = editBtn.querySelector("span");
+        if (appState.isEditingSementara) {
+            editBtn.classList.remove("btn-secondary");
+            editBtn.classList.add("btn-primary");
+            if (textSpan) textSpan.textContent = "Selesai Edit";
+            editBtn.querySelector("svg").innerHTML = `<path d="M20 6 9 17l-5-5"/>`; // checkmark icon
+        } else {
+            editBtn.classList.remove("btn-primary");
+            editBtn.classList.add("btn-secondary");
+            if (textSpan) textSpan.textContent = "Edit Sementara";
+            editBtn.querySelector("svg").innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>`; // edit icon
+        }
+    }
+
+    renderActiveAcara();
+}
+
+// Reset Local Changes
+function resetEditSementara() {
+    const program = appState.currentProgramAcara;
+    const dataList = scheduleData[program];
+    if (!dataList || dataList.length === 0) return;
+
+    let activeIndex = 0;
+    if (program === "sabat" || program === "pa") {
+        activeIndex = findClosestUpcomingIndex(dataList);
+    }
+    const data = dataList[activeIndex];
+    if (!data) return;
+
+    Swal.fire({
+        title: "Reset Edit Sementara?",
+        text: "Semua perubahan sementara yang Anda buat di browser ini akan dihapus dan dikembalikan ke data asli server.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#D97706",
+        cancelButtonColor: "#EF4444",
+        confirmButtonText: "Ya, Reset!",
+        cancelButtonText: "Batal"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const key = `schedule_override_${program}_${data.dateDisplay}`;
+            localStorage.removeItem(key);
+
+            // Re-fetch data from Supabase (or load default fallback) to cleanly restore memory variables
+            fetchDataFromSupabase().then(() => {
+                // If offline or supabase fails, manually reload fallback
+                renderActiveAcara();
+                Swal.fire({
+                    title: "Riset Selesai!",
+                    text: "Jadwal telah dikembalikan ke data default server.",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: "bottom-end",
+                    iconColor: "#D97706"
+                });
+            });
+        }
+    });
+}
+
+// Event Delegation for ContentEditable Changes
+function attachTimelineEditListener(container, program, data) {
+    if (container.dataset.listenerAttached) return;
+    container.dataset.listenerAttached = "true";
+
+    container.addEventListener("input", (e) => {
+        if (e.target.classList.contains("editable-field")) {
+            const type = e.target.dataset.type;
+            const itemIndex = parseInt(e.target.dataset.index);
+            let val = e.target.textContent.trim();
+
+            if (data.timeline[itemIndex]) {
+                const item = data.timeline[itemIndex];
+                if (type === "title") {
+                    item.title = val;
+                } else if (type === "desc") {
+                    item.desc = val;
+                } else if (type === "note") {
+                    if (val === "(tambah catatan)") {
+                        item.note = "";
+                    } else {
+                        item.note = val;
+                    }
+                }
+
+                // If user cleared the placeholder, remove formatting class
+                if (type === "note" && val !== "(tambah catatan)") {
+                    e.target.classList.remove("placeholder-note");
+                }
+
+                saveLocalScheduleChanges(program, data.dateDisplay, data.timeline);
+            }
+        }
+    });
+
+    // Handle Placeholder Blur/Focus for notes
+    container.addEventListener("focusin", (e) => {
+        if (e.target.classList.contains("editable-field") && e.target.dataset.type === "note") {
+            if (e.target.textContent.trim() === "(tambah catatan)") {
+                e.target.textContent = "";
+                e.target.classList.remove("placeholder-note");
+            }
+        }
+    });
+
+    container.addEventListener("focusout", (e) => {
+        if (e.target.classList.contains("editable-field") && e.target.dataset.type === "note") {
+            if (e.target.textContent.trim() === "") {
+                e.target.textContent = "(tambah catatan)";
+                e.target.classList.add("placeholder-note");
+
+                // Save empty note
+                const itemIndex = parseInt(e.target.dataset.index);
+                if (data.timeline[itemIndex]) {
+                    data.timeline[itemIndex].note = "";
+                    saveLocalScheduleChanges(program, data.dateDisplay, data.timeline);
+                }
+            }
+        }
+    });
+}
+
+// WhatsApp sharing text builders directly from Timeline state (enables editing capture)
+function buildSabatWaFormatFromTimeline(timeline, dateDisplay) {
+    let text = `*Sabat Shalom 🌿*
+
+*Hari Sabat-Oh! Jadikanlah itu sebagai hari yang paling indah dan yang paling berbahagia dari hari-hari sepanjang minggu.*
+Review and Herald. 14 April 1885. 
+
+*Susunan Ibadah SABAT* 
+
+*Sabat ke - .... TW - ....*
+\${dateDisplay}
+
+*Dimulai Pukul : 09.00 WIB - 12.00 WIB*\n\n`;
+
+    timeline.forEach(item => {
+        if (item.isHeader) {
+            if (item.title.includes("Informasi")) {
+                text += `*I. INFORMASI UMUM*\n`;
+            } else if (item.title.includes("Sekolah Sabat")) {
+                text += `\n*II. IBADAH SEKOLAH SABAT*\n`;
+            } else if (item.title.includes("Khotbah")) {
+                text += `\n*III. IBADAH KHOTBAH*\n`;
+            }
+        } else {
+            // Omit optional fields if they are blank or '-'
+            if (item.title.toLowerCase().includes("lagu pujian") && (!item.desc || item.desc === '-')) {
+                return; // skip empty special songs
+            }
+            text += `● *\${item.title}*\n\${item.desc || '-'}\n`;
+            if (item.note && item.note !== '-') {
+                text += `_\${item.note}_\n`;
+            }
+            text += `\n`;
+        }
+    });
+
+    text += `__________________________
+
+_Janganlah kita menjauhkan diri dari pertemuan-pertemuan ibadah kita, seperti dibiasakan oleh beberapa orang, tetapi marilah kita saling menasihati, dan semakin giat melakukannya menjelang hari Tuhan yang mendekat._
+Ibrani 10 : 25`;
+
+    return text;
+}
+
+function buildPaWaFormatFromTimeline(timeline, dateDisplay) {
+    let text = `*Shalom KUPAS, berikut adalah :* 
+*Susunan Partisipan Ibadah Pemuda Advent Tanggal \${dateDisplay}*\n\n`;
+
+    timeline.forEach(item => {
+        if (!item.isHeader) {
+            text += `● *\${item.title}* : \n\${item.desc || '-'}\n`;
+            if (item.note && item.note !== '-') {
+                text += `_\${item.note}_\n`;
+            }
+            text += `\n`;
+        }
+    });
+
+    text += `*Selamat Melayani~*
+*Tuhan Memberkati 😇🙏*`;
+
+    return text;
+}
+
+function buildRabuWaFormatFromTimeline(timeline, dateDisplay) {
+    let text = `GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
+
+Topic: Ibadah Rabu Malam - GMAHK Sepanjang
+*Waktu: \${dateDisplay}; Jam: 19:00 WIB (ontime)*
+
+Join Zoom Meeting
+https://us06web.zoom.us/j/84580474203?pwd=pfIdV8blFAQkxcb3g18YAHmd016e2X.1
+
+Meeting ID: 845 8047 4203
+Passcode: sepanjang
+
+
+🌟 *JADWAL PELAYANAN* 
+⛪️ Konferens Jawa Kawasan Timur
+🗓️ \${dateDisplay}
+Pukul 19.00 WIB (Malam)
+
+*Pelayan Ibadah:*\n`;
+
+    timeline.forEach(item => {
+        if (!item.isHeader) {
+            text += `* _\${item.title}: \${item.desc || '-'}_ \n`;
+            if (item.note && item.note !== '-') {
+                text += `  _(\${item.note})_\n`;
+            }
+        }
+    });
+
+    text += `\n📖 "Dan apa saja yang kamu minta dalam doa dengan penuh kepercayaan, kamu akan menerimanya."
+*— Matius 21:22*
+
+✨ Selamat Melayani
+🙏 Tuhan Memberkati`;
+
+    return text;
 }

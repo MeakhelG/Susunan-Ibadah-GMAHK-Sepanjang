@@ -158,7 +158,7 @@
 
                 <!-- FOOTER -->
                 <footer class="app-footer">
-                    <p>&copy; 2026 - v2.0.0. GMAHK Sepanjang. All rights reserved.</p>
+                    <p>&copy; 2026 - v2.0.1. GMAHK Sepanjang. All rights reserved.</p>
                     <p class="developer-credit">Developed by <span>Meakhel Gunawan</span></p>
                 </footer>
             </section>
@@ -203,9 +203,34 @@
                         <button class="switcher-btn active" id="program-acara-btn-sabat"
                             onclick="filterProgramAcara('sabat')">Sabat Raya</button>
                         <button class="switcher-btn" id="program-acara-btn-pa" onclick="filterProgramAcara('pa')">Pemuda
-                            Advent (PA)</button>
+                            Advent</button>
                         <button class="switcher-btn" id="program-acara-btn-rabu"
                             onclick="filterProgramAcara('rabu')">Rabu Malam</button>
+                    </div>
+
+                    <!-- Edit Actions Bar (Tipe 1: Edit Sementara) -->
+                    <div class="schedule-edit-bar"
+                        style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; padding: 0 4px;">
+                        <button class="btn btn-secondary" id="btn-toggle-edit" onclick="toggleEditSementara()"
+                            style="font-size: 0.75rem; padding: 6px 12px; border-radius: 8px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                <path d="m15 5 4 4" />
+                            </svg>
+                            <span>Edit Sementara</span>
+                        </button>
+                        <button class="btn btn-danger" id="btn-reset-edit" onclick="resetEditSementara()"
+                            style="font-size: 0.75rem; padding: 6px 12px; border-radius: 8px; display: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                            <span>Reset Data</span>
+                        </button>
                     </div>
 
                     <!-- Main Schedule Card (Static, NO Date Arrows) -->
@@ -277,7 +302,7 @@
                         <button class="switcher-btn active" id="program-petugas-btn-sabat"
                             onclick="filterProgramPetugas('sabat')">Sabat Raya</button>
                         <button class="switcher-btn" id="program-petugas-btn-pa"
-                            onclick="filterProgramPetugas('pa')">Pemuda Advent (PA)</button>
+                            onclick="filterProgramPetugas('pa')">Pemuda Advent</button>
                         <button class="switcher-btn" id="program-petugas-btn-rabu"
                             onclick="filterProgramPetugas('rabu')">Rabu Malam</button>
                     </div>
