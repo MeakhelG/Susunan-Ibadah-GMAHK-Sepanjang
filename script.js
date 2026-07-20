@@ -72,15 +72,15 @@ const scheduleData = {
             day: "22",
             month: "Jul",
             dateDisplay: "Rabu, 22 Juli 2026",
-            title: "Ibadah Rabu Malam (19:00 - Selesai)",
+            title: "Ibadah Rabu Malam",
             timeline: [
-                { time: "", title: "Join Zoom & Pemimpin Acara", desc: "Sdri. Linda K." },
-                { time: "", title: "Pembukaan & MC Doa Buka", desc: "Sdri. Linda K." },
-                { time: "", title: "Kesaksian Jemaat", desc: "Sdr. Julian" },
-                { time: "", title: "Lagu-Lagu Pujian Tengah Pekan", desc: "Sdri. Linda K." },
-                { time: "", title: "Doa Syafaat Tengah Pekan", desc: "Pdt. Benny Lumbantobing", highlight: true },
-                { time: "", title: "Renungan Firman Tuhan", desc: "Pnt. J. Silitonga", highlight: true, note: "Tema: 'Kekuatan dalam Doa Syafaat'" },
-                { time: "", title: "Doa Tutup & Doa Berkat", desc: "Pnt. J. Silitonga" },
+                { time: "", title: "Host", desc: "Sdri. Linda K." },
+                { time: "", title: "MC & Doa Buka", desc: "Sdri. Linda K." },
+                { time: "", title: "Kesaksian", desc: "Sdr. Julian" },
+                { time: "", title: "Lagu Pujian", desc: "Sdri. Linda K." },
+                { time: "", title: "Doa Syafaat", desc: "Pdt. Benny Lumbantobing", highlight: true },
+                { time: "", title: "Firman Tuhan", desc: "Pnt. J. Silitonga", highlight: true, note: "Tema: 'Kekuatan dalam Doa Syafaat'" },
+                { time: "", title: "Doa Tutup", desc: "Pnt. J. Silitonga" },
                 { time: "", title: "Ucapan Terima Kasih & Pengumuman", desc: "Ketua Jemaat" }
             ],
             waFormat: `GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
@@ -335,6 +335,23 @@ const rosterData = {
 };
 
 /**
+ * Update Tanggal Hari Ini di Header
+ */
+function updateCurrentDate() {
+    const el = document.getElementById("currentDateText");
+    if (el) {
+        const now = new Date();
+        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const dayName = days[now.getDay()];
+        const dateNum = now.getDate();
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+        el.textContent = `${dayName}, ${dateNum} ${monthName} ${year}`;
+    }
+}
+
+/**
  * Inisialisasi Awal Aplikasi
  */
 function initApp() {
@@ -355,33 +372,57 @@ function initApp() {
 
     // Ambil data riil dari database Supabase
     fetchDataFromSupabase();
+
+    // Inisialisasi Routing & Back Button Handler
+    handleRoute();
+    window.addEventListener('popstate', handleRoute);
+    window.addEventListener('hashchange', handleRoute);
 }
 
 /**
- * Memperbarui Teks Tanggal di Header
+ * Handle URL Hash Routing & Browser Back/Forward Navigation
  */
-function updateCurrentDate() {
-    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabat"];
-    const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+function handleRoute(event) {
+    let rawHash = '';
 
-    const today = new Date();
-    const dayName = days[today.getDay()];
-    const dateNum = today.getDate();
-    const monthName = months[today.getMonth()];
-    const year = today.getFullYear();
+    if (event && event.state && event.state.tab) {
+        rawHash = event.state.tab;
+    } else {
+        rawHash = window.location.hash.replace('#', '').trim();
+    }
 
-    const dateStr = `${dayName}, ${dateNum} ${monthName} ${year}`;
-    const dateEl = document.getElementById("currentDateText");
-    if (dateEl) {
-        dateEl.textContent = dateStr;
+    if (!rawHash) {
+        rawHash = 'home';
+        if (window.location.hash !== '#home') {
+            history.replaceState({ tab: 'home' }, '', '#home');
+        }
+    }
+
+    if (rawHash === 'admin') {
+        if (currentAdminSession) {
+            openAdminDashboardView(false);
+        } else {
+            switchTab('home', false);
+            openLoginModal();
+        }
+    } else if (['home', 'susunan', 'persembahan', 'tentang'].includes(rawHash)) {
+        switchTab(rawHash, false);
+    } else {
+        switchTab('home', false);
     }
 }
 
 /**
  * Logika Perpindahan Tab Utama
  */
-function switchTab(tabId) {
-    if (tabId === appState.currentTab) return;
+function switchTab(tabId, updateHash = true) {
+    if (!tabId) tabId = 'home';
+
+    // Tutup tampilan admin jika sedang terbuka
+    const adminView = document.getElementById('adminDashboardView');
+    if (adminView && adminView.style.display !== 'none') {
+        closeAdminDashboardView(false);
+    }
 
     // Sembunyikan semua tab content
     const tabPanes = document.querySelectorAll(".tab-pane");
@@ -406,6 +447,11 @@ function switchTab(tabId) {
     // Update state & scroll ke atas
     appState.currentTab = tabId;
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Update URL Hash untuk histori browser
+    if (updateHash && window.location.hash !== `#${tabId}`) {
+        history.pushState({ tab: tabId }, '', `#${tabId}`);
+    }
 }
 
 /**
@@ -582,13 +628,14 @@ function renderActiveAcara() {
                     }
 
                     const isEditing = appState.isEditingSementara;
-                    const showNoteField = (item.note && item.note !== '-') || isEditing;
-                    const noteText = (item.note && item.note !== '-') ? item.note : (isEditing ? "(tambah catatan)" : "");
-                    const isPlaceholder = isEditing && (!item.note || item.note === '-');
+                    const isKhotbahItem = item.title.toLowerCase().includes("khotbah") || item.title.toLowerCase().includes("renungan");
+                    const showNoteField = (item.note && item.note !== '-') || (isEditing && isKhotbahItem);
+                    const noteText = (item.note && item.note !== '-') ? item.note : (isEditing && isKhotbahItem ? "(tambah catatan)" : "");
+                    const isPlaceholder = isEditing && isKhotbahItem && (!item.note || item.note === '-');
 
                     timelineContent += `
                         <div class="timeline-content">
-                            <h6 ${isEditing ? `contenteditable="true" class="editable-field" data-type="title" data-index="${itemIndex}"` : ''}>${item.title}</h6>
+                            <h6>${item.title}</h6>
                             <div class="timeline-desc-wrapper">
                                 <p ${isEditing ? `contenteditable="true" class="editable-field" data-type="desc" data-index="${itemIndex}"` : ''}>${item.desc}</p>
                                 ${showNoteField ? `<p class="detail-note ${isPlaceholder ? 'placeholder-note' : ''}" ${isEditing ? `contenteditable="true" class="editable-field" data-type="note" data-index="${itemIndex}"` : ''}>${noteText}</p>` : ''}
@@ -600,7 +647,7 @@ function renderActiveAcara() {
                 });
 
                 // Attach input event listener for inline editing
-                attachTimelineEditListener(timelineContainer, program, data);
+                attachTimelineEditListener(timelineContainer);
             }
 
             // Kembalikan Opasitas Kartu
@@ -1029,9 +1076,9 @@ async function fetchDataFromSupabase() {
             const timeline = [
                 // Group 1: Informasi Umum
                 { isHeader: true, title: "I. Informasi Umum" },
-                { time: "", title: "Pianist Jemaat", desc: `${pos.Pianist || '-'}`, highlight: true },
-                { time: "", title: "Operator Slide/Zoom", desc: `${pos.Operator || '-'}`, highlight: true },
-                { time: "", title: "Soundman Bertugas", desc: `${pos.Soundman || '-'}`, highlight: true },
+                { time: "", title: "Pianist", desc: `${pos.Pianist || '-'}`, highlight: true },
+                { time: "", title: "Operator", desc: `${pos.Operator || '-'}`, highlight: true },
+                { time: "", title: "Soundman", desc: `${pos.Soundman || '-'}`, highlight: true },
 
                 // Group 2: Ibadah Sekolah Sabat (09:00 - 10:30)
                 { isHeader: true, title: "II. Ibadah Sekolah Sabat (09:00 - 10:30)" },
@@ -1047,7 +1094,7 @@ async function fetchDataFromSupabase() {
                 { time: "", title: "Cerita Alkitab Anak-Anak", desc: "-", highlight: false },
 
                 // Group 3: Ibadah Khotbah (10:35 - 12:00)
-                { isHeader: true, title: "III. Ibadah Khotbah (10:35 - 12:00)" },
+                { isHeader: true, title: "III. Ibadah Khotbah (10:30 - 12:00)" },
                 { time: "", title: "Diakon & Diakones Bertugas", desc: `${kh.DiakenDiaken || '-'}`, highlight: false },
                 { time: "", title: "Pemimpin Lagu Ibadah Khotbah", desc: `${kh.PemimpinLagu || '-'}`, highlight: false },
                 { time: "", title: "Lagu Pengiring Partisipan Mimbar", desc: "LSEL No. 515", highlight: false },
@@ -1161,12 +1208,12 @@ async function fetchDataFromSupabase() {
                 { time: "", title: "Lagu Pembuka (AYS)", desc: "AYS No. [Kosong]" },
                 { time: "", title: "Ayat Inti & Doa Buka PA", desc: `${p.AyatIntiDoaBuka || '-'}` },
                 { time: "", title: "Belajar Alkitab Bersama (BAB)", desc: `${p.BAB || '-'}` },
-                { time: "", title: "Funfact / Tips Pemuda", desc: `${p.TipsFunfact || '-'}` },
-                { time: "", title: "Aktivitas / Games Pemuda", desc: `${p.Games || '-'}` },
+                { time: "", title: "Funfact / Tips", desc: `${p.TipsFunfact || '-'}` },
+                { time: "", title: "Games", desc: `${p.Games || '-'}` },
                 { time: "", title: "Acara Inti & Diskusi", desc: `${p.AcaraInti || '-'}` },
                 { time: "", title: "Lagu Penutup (AYS)", desc: "AYS No. [Kosong]" },
-                { time: "", title: "Doa Tutup & Vesper", desc: `${p.AcaraInti || '-'}` },
-                { time: "", title: "Pengumuman Pemuda", desc: "Pengurus PA" },
+                { time: "", title: "Doa Tutup", desc: `${p.AcaraInti || '-'}` },
+                { time: "", title: "Pengumuman", desc: "Pengurus PA" },
                 { time: "", title: "Laporan Bendahara PA", desc: "Bendahara PA" }
             ];
 
@@ -1188,7 +1235,7 @@ async function fetchDataFromSupabase() {
                 day,
                 month,
                 dateDisplay,
-                title: "Pemuda Advent (PA) (16:00 - Selesai)",
+                title: "Pemuda Advent (PA)",
                 timeline,
                 officersHtml,
                 waFormat
@@ -1529,41 +1576,53 @@ function resetEditSementara() {
 }
 
 // Event Delegation for ContentEditable Changes
-function attachTimelineEditListener(container, program, data) {
+function attachTimelineEditListener(container) {
     if (container.dataset.listenerAttached) return;
     container.dataset.listenerAttached = "true";
 
     container.addEventListener("input", (e) => {
         if (e.target.classList.contains("editable-field")) {
+            const program = appState.currentProgramAcara;
+            const dataList = scheduleData[program];
+            if (!dataList || dataList.length === 0) return;
+
+            let activeIndex = 0;
+            if (program === "sabat" || program === "pa") {
+                activeIndex = findClosestUpcomingIndex(dataList);
+            }
+            const data = dataList[activeIndex];
+            if (!data || !data.timeline) return;
+
             const type = e.target.dataset.type;
             const itemIndex = parseInt(e.target.dataset.index);
-            let val = e.target.textContent.trim();
+            let val = e.target.textContent;
 
             if (data.timeline[itemIndex]) {
                 const item = data.timeline[itemIndex];
                 if (type === "title") {
-                    item.title = val;
+                    item.title = val.trim();
                 } else if (type === "desc") {
-                    item.desc = val;
+                    item.desc = val.trim();
                 } else if (type === "note") {
-                    if (val === "(tambah catatan)") {
+                    if (val.trim() === "(tambah catatan)") {
                         item.note = "";
                     } else {
-                        item.note = val;
+                        item.note = val.trim();
                     }
                 }
 
-                // If user cleared the placeholder, remove formatting class
-                if (type === "note" && val !== "(tambah catatan)") {
+                if (type === "note" && val.trim() !== "(tambah catatan)") {
                     e.target.classList.remove("placeholder-note");
                 }
 
                 saveLocalScheduleChanges(program, data.dateDisplay, data.timeline);
+
+                const resetBtn = document.getElementById("btn-reset-edit");
+                if (resetBtn) resetBtn.style.display = "inline-flex";
             }
         }
     });
 
-    // Handle Placeholder Blur/Focus for notes
     container.addEventListener("focusin", (e) => {
         if (e.target.classList.contains("editable-field") && e.target.dataset.type === "note") {
             if (e.target.textContent.trim() === "(tambah catatan)") {
@@ -1579,7 +1638,199 @@ function attachTimelineEditListener(container, program, data) {
                 e.target.textContent = "(tambah catatan)";
                 e.target.classList.add("placeholder-note");
 
-                // Save empty note
+                const program = appState.currentProgramAcara;
+                const dataList = scheduleData[program];
+                if (!dataList || dataList.length === 0) return;
+
+                let activeIndex = 0;
+                if (program === "sabat" || program === "pa") {
+                    activeIndex = findClosestUpcomingIndex(dataList);
+                }
+                const data = dataList[activeIndex];
+                if (!data || !data.timeline) return;
+
+                const itemIndex = parseInt(e.target.dataset.index);
+                if (data.timeline[itemIndex]) {
+                    data.timeline[itemIndex].note = "";
+                    saveLocalScheduleChanges(program, data.dateDisplay, data.timeline);
+                }
+            }
+        }
+    });
+}
+
+
+// Local Persistence Helpers for Edit Sementara (Tipe 1)
+function saveLocalScheduleChanges(program, dateDisplay, timeline) {
+    const key = `schedule_override_${program}_${dateDisplay}`;
+    localStorage.setItem(key, JSON.stringify(timeline));
+}
+
+function loadLocalScheduleChanges(program, dateDisplay) {
+    const key = `schedule_override_${program}_${dateDisplay}`;
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : null;
+}
+
+function cleanupObsoleteLocalOverrides(currentSabatDate, currentPaDate) {
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith("schedule_override_")) {
+                if (!key.includes(currentSabatDate) && !key.includes(currentPaDate)) {
+                    localStorage.removeItem(key);
+                    i--; // adjust index
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Gagal membersihkan cache lokal:", e);
+    }
+}
+
+// Toggle Edit Mode
+function toggleEditSementara() {
+    appState.isEditingSementara = !appState.isEditingSementara;
+
+    const editBtn = document.getElementById("btn-toggle-edit");
+    if (editBtn) {
+        const textSpan = editBtn.querySelector("span");
+        if (appState.isEditingSementara) {
+            editBtn.classList.remove("btn-secondary");
+            editBtn.classList.add("btn-primary");
+            if (textSpan) textSpan.textContent = "Selesai Edit";
+            editBtn.querySelector("svg").innerHTML = `<path d="M20 6 9 17l-5-5"/>`; // checkmark icon
+        } else {
+            editBtn.classList.remove("btn-primary");
+            editBtn.classList.add("btn-secondary");
+            if (textSpan) textSpan.textContent = "Edit Sementara";
+            editBtn.querySelector("svg").innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>`; // edit icon
+        }
+    }
+
+    renderActiveAcara();
+}
+
+// Reset Local Changes
+function resetEditSementara() {
+    const program = appState.currentProgramAcara;
+    const dataList = scheduleData[program];
+    if (!dataList || dataList.length === 0) return;
+
+    let activeIndex = 0;
+    if (program === "sabat" || program === "pa") {
+        activeIndex = findClosestUpcomingIndex(dataList);
+    }
+    const data = dataList[activeIndex];
+    if (!data) return;
+
+    Swal.fire({
+        title: "Reset Edit Sementara?",
+        text: "Semua perubahan sementara yang Anda buat di browser ini akan dihapus dan dikembalikan ke data asli server.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#D97706",
+        cancelButtonColor: "#EF4444",
+        confirmButtonText: "Ya, Reset!",
+        cancelButtonText: "Batal"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const key = `schedule_override_${program}_${data.dateDisplay}`;
+            localStorage.removeItem(key);
+
+            // Re-fetch data from Supabase (or load default fallback) to cleanly restore memory variables
+            fetchDataFromSupabase().then(() => {
+                // If offline or supabase fails, manually reload fallback
+                renderActiveAcara();
+                Swal.fire({
+                    title: "Riset Selesai!",
+                    text: "Jadwal telah dikembalikan ke data default server.",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: "bottom-end",
+                    iconColor: "#D97706"
+                });
+            });
+        }
+    });
+}
+
+// Event Delegation for ContentEditable Changes
+function attachTimelineEditListener(container) {
+    if (container.dataset.listenerAttached) return;
+    container.dataset.listenerAttached = "true";
+
+    container.addEventListener("input", (e) => {
+        if (e.target.classList.contains("editable-field")) {
+            const program = appState.currentProgramAcara;
+            const dataList = scheduleData[program];
+            if (!dataList || dataList.length === 0) return;
+
+            let activeIndex = 0;
+            if (program === "sabat" || program === "pa") {
+                activeIndex = findClosestUpcomingIndex(dataList);
+            }
+            const data = dataList[activeIndex];
+            if (!data || !data.timeline) return;
+
+            const type = e.target.dataset.type;
+            const itemIndex = parseInt(e.target.dataset.index);
+            let val = e.target.textContent;
+
+            if (data.timeline[itemIndex]) {
+                const item = data.timeline[itemIndex];
+                if (type === "title") {
+                    item.title = val.trim();
+                } else if (type === "desc") {
+                    item.desc = val.trim();
+                } else if (type === "note") {
+                    if (val.trim() === "(tambah catatan)") {
+                        item.note = "";
+                    } else {
+                        item.note = val.trim();
+                    }
+                }
+
+                if (type === "note" && val.trim() !== "(tambah catatan)") {
+                    e.target.classList.remove("placeholder-note");
+                }
+
+                saveLocalScheduleChanges(program, data.dateDisplay, data.timeline);
+
+                const resetBtn = document.getElementById("btn-reset-edit");
+                if (resetBtn) resetBtn.style.display = "inline-flex";
+            }
+        }
+    });
+
+    container.addEventListener("focusin", (e) => {
+        if (e.target.classList.contains("editable-field") && e.target.dataset.type === "note") {
+            if (e.target.textContent.trim() === "(tambah catatan)") {
+                e.target.textContent = "";
+                e.target.classList.remove("placeholder-note");
+            }
+        }
+    });
+
+    container.addEventListener("focusout", (e) => {
+        if (e.target.classList.contains("editable-field") && e.target.dataset.type === "note") {
+            if (e.target.textContent.trim() === "") {
+                e.target.textContent = "(tambah catatan)";
+                e.target.classList.add("placeholder-note");
+
+                const program = appState.currentProgramAcara;
+                const dataList = scheduleData[program];
+                if (!dataList || dataList.length === 0) return;
+
+                let activeIndex = 0;
+                if (program === "sabat" || program === "pa") {
+                    activeIndex = findClosestUpcomingIndex(dataList);
+                }
+                const data = dataList[activeIndex];
+                if (!data || !data.timeline) return;
+
                 const itemIndex = parseInt(e.target.dataset.index);
                 if (data.timeline[itemIndex]) {
                     data.timeline[itemIndex].note = "";
@@ -1600,7 +1851,7 @@ Review and Herald. 14 April 1885.
 *Susunan Ibadah SABAT* 
 
 *Sabat ke - .... TW - ....*
-\${dateDisplay}
+${dateDisplay}
 
 *Dimulai Pukul : 09.00 WIB - 12.00 WIB*\n\n`;
 
@@ -1614,13 +1865,12 @@ Review and Herald. 14 April 1885.
                 text += `\n*III. IBADAH KHOTBAH*\n`;
             }
         } else {
-            // Omit optional fields if they are blank or '-'
-            if (item.title.toLowerCase().includes("lagu pujian") && (!item.desc || item.desc === '-')) {
-                return; // skip empty special songs
+            if (item.title.toLowerCase().includes("lagu pujian") && (!item.desc || item.desc.trim() === '' || item.desc.trim() === '-')) {
+                return;
             }
-            text += `● *\${item.title}*\n\${item.desc || '-'}\n`;
-            if (item.note && item.note !== '-') {
-                text += `_\${item.note}_\n`;
+            text += `● *${item.title}*\n${item.desc || '-'}\n`;
+            if (item.note && item.note.trim() !== '' && item.note.trim() !== '-') {
+                text += `_${item.note}_\n`;
             }
             text += `\n`;
         }
@@ -1636,13 +1886,13 @@ Ibrani 10 : 25`;
 
 function buildPaWaFormatFromTimeline(timeline, dateDisplay) {
     let text = `*Shalom KUPAS, berikut adalah :* 
-*Susunan Partisipan Ibadah Pemuda Advent Tanggal \${dateDisplay}*\n\n`;
+*Susunan Partisipan Ibadah Pemuda Advent Tanggal ${dateDisplay}*\n\n`;
 
     timeline.forEach(item => {
         if (!item.isHeader) {
-            text += `● *\${item.title}* : \n\${item.desc || '-'}\n`;
-            if (item.note && item.note !== '-') {
-                text += `_\${item.note}_\n`;
+            text += `● *${item.title}* : \n${item.desc || '-'}\n`;
+            if (item.note && item.note.trim() !== '' && item.note.trim() !== '-') {
+                text += `_${item.note}_\n`;
             }
             text += `\n`;
         }
@@ -1658,7 +1908,7 @@ function buildRabuWaFormatFromTimeline(timeline, dateDisplay) {
     let text = `GMAHK Sepanjang mengundang Anda untuk bergabung ke rapat Zoom yang terjadwal.
 
 Topic: Ibadah Rabu Malam - GMAHK Sepanjang
-*Waktu: \${dateDisplay}; Jam: 19:00 WIB (ontime)*
+*Waktu: ${dateDisplay}; Jam: 19:00 WIB (ontime)*
 
 Join Zoom Meeting
 https://us06web.zoom.us/j/84580474203?pwd=pfIdV8blFAQkxcb3g18YAHmd016e2X.1
@@ -1669,16 +1919,16 @@ Passcode: sepanjang
 
 🌟 *JADWAL PELAYANAN* 
 ⛪️ Konferens Jawa Kawasan Timur
-🗓️ \${dateDisplay}
+🗓️ ${dateDisplay}
 Pukul 19.00 WIB (Malam)
 
 *Pelayan Ibadah:*\n`;
 
     timeline.forEach(item => {
         if (!item.isHeader) {
-            text += `* _\${item.title}: \${item.desc || '-'}_ \n`;
-            if (item.note && item.note !== '-') {
-                text += `  _(\${item.note})_\n`;
+            text += `* _${item.title}: ${item.desc || '-'}_ \n`;
+            if (item.note && item.note.trim() !== '' && item.note.trim() !== '-') {
+                text += `  _(${item.note})_\n`;
             }
         }
     });
@@ -1690,4 +1940,547 @@ Pukul 19.00 WIB (Malam)
 🙏 Tuhan Memberkati`;
 
     return text;
+}
+
+/* ============================================================
+   ADMIN SIDE & SUPABASE CRUD (TIPE 2)
+   ============================================================ */
+
+const DB_SCHEMAS = {
+    pos: {
+        title: "Tabel POS (Pianist, Operator, Soundman)",
+        supabaseTable: "Tabel POS",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'Pianist': 'Pianist',
+            'Operator': 'Operator',
+            'Soundman': 'Soundman'
+        }
+    },
+    ss: {
+        title: "Tabel Sekolah Sabat",
+        supabaseTable: "Tabel SS",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'MC': 'MC',
+            'AyatIntiDoaBuka': 'Ayat Inti & Doa Buka',
+            'BeritaMision': 'Berita Mision',
+            'RingkasanSS': 'Ringkasan SS',
+            'PelayananPerorangan': 'Pelayanan Perorangan'
+        }
+    },
+    khotbah: {
+        title: "Tabel Khotbah",
+        supabaseTable: "Tabel Khotbah",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'Khotbah': 'Khotbah',
+            'DoaSyafaat': 'Doa Syafaat',
+            'BacaanPersembahan': 'Bacaan Persembahan',
+            'PemimpinLagu': 'Pemimpin Lagu',
+            'DiakenDiaken': 'Diaken-Diaken'
+        }
+    },
+    pa: {
+        title: "Tabel Pemuda Advent",
+        supabaseTable: "Tabel PA",
+        columns: {
+            'Tanggal': 'Tanggal',
+            'MC': 'MC & Janji PA',
+            'AyatIntiDoaBuka': 'Ayat Inti & Doa Buka',
+            'BAB': 'Belajar Alkitab Bersama (BAB)',
+            'Games': 'Games',
+            'TipsFunfact': 'Tips / Funfact',
+            'AcaraInti': 'Acara Inti & Doa Tutup'
+        }
+    }
+};
+
+let currentAdminTab = 'pos';
+let currentEditId = null;
+let currentAdminTableData = [];
+let currentSort = { col: 'Tanggal', asc: false };
+
+// Auth State Listener
+let currentAdminSession = null;
+
+if (supabaseClient) {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        currentAdminSession = session;
+        const loginBtn = document.getElementById('adminLoginBtn');
+        if (!loginBtn) return;
+
+        if (session) {
+            loginBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                <span>Dashboard Admin</span>
+            `;
+            loginBtn.onclick = openAdminDashboardView;
+            loginBtn.classList.remove("btn-secondary-outline");
+            loginBtn.classList.add("btn-primary");
+        } else {
+            loginBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Admin</span>
+            `;
+            loginBtn.onclick = openLoginModal;
+            loginBtn.classList.remove("btn-primary");
+            loginBtn.classList.add("btn-secondary-outline");
+            closeAdminDashboardView();
+        }
+    });
+}
+
+function handleAdminButtonClick() {
+    if (currentAdminSession) {
+        openAdminDashboardView();
+    } else {
+        openLoginModal();
+    }
+}
+
+function openLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.classList.add('active');
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function handleLogin() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value.trim();
+    const btn = document.getElementById('loginSubmitBtn');
+
+    if (!email || !password) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Email dan password wajib diisi.' });
+        return;
+    }
+
+    btn.innerHTML = "Memuat...";
+    btn.disabled = true;
+
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) throw error;
+
+        closeLoginModal();
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Berhasil',
+            text: 'Selamat datang di Dashboard Admin Supabase.',
+            timer: 1800,
+            showConfirmButton: false
+        });
+        
+        openAdminDashboardView();
+    } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Gagal Login', text: err.message || 'Email atau password salah.' });
+        console.error("Login Error:", err);
+    } finally {
+        btn.innerHTML = "Login Admin";
+        btn.disabled = false;
+    }
+}
+
+async function handleLogout() {
+    Swal.fire({
+        title: 'Logout Admin?',
+        text: "Anda yakin ingin keluar dari sesi Admin Supabase?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#475569',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            closeAdminDashboardView();
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) {
+                console.error("Logout Error:", error);
+                Swal.fire('Error', 'Gagal memproses logout.', 'error');
+            } else {
+                Swal.fire({ icon: 'success', title: 'Berhasil Logout', text: 'Sesi Admin telah diakhiri.', timer: 1500, showConfirmButton: false });
+            }
+        }
+    });
+}
+
+function openAdminDashboardView(updateHash = true) {
+    const appContainer = document.querySelector('.app-container');
+    const appHeader = document.querySelector('.app-header');
+    const bottomNav = document.querySelector('.bottom-nav');
+    const mainContent = document.querySelector('.main-content');
+    const adminDashboardView = document.getElementById('adminDashboardView');
+
+    if (adminDashboardView) {
+        document.body.classList.add('admin-mode-active');
+        if (appContainer) appContainer.classList.add('admin-mode-active');
+        if (appHeader) appHeader.style.display = 'none';
+        if (bottomNav) bottomNav.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'none';
+        adminDashboardView.style.display = 'block';
+
+        switchAdminTab(currentAdminTab);
+
+        if (updateHash && window.location.hash !== '#admin') {
+            history.pushState({ tab: 'admin' }, '', '#admin');
+        }
+    }
+}
+
+function closeAdminDashboardView(updateHash = true) {
+    const appContainer = document.querySelector('.app-container');
+    const appHeader = document.querySelector('.app-header');
+    const bottomNav = document.querySelector('.bottom-nav');
+    const mainContent = document.querySelector('.main-content');
+    const adminDashboardView = document.getElementById('adminDashboardView');
+
+    if (adminDashboardView) {
+        document.body.classList.remove('admin-mode-active');
+        if (appContainer) appContainer.classList.remove('admin-mode-active');
+        if (appHeader) appHeader.style.display = 'flex';
+        if (bottomNav) bottomNav.style.display = 'flex';
+        if (mainContent) mainContent.style.display = 'block';
+        adminDashboardView.style.display = 'none';
+
+        if (updateHash) {
+            const targetTab = appState.currentTab || 'home';
+            if (window.location.hash !== `#${targetTab}`) {
+                history.pushState({ tab: targetTab }, '', `#${targetTab}`);
+            }
+        }
+    }
+}
+
+function switchAdminTab(tabKey) {
+    currentAdminTab = tabKey;
+    const config = DB_SCHEMAS[tabKey];
+
+    document.querySelectorAll('.admin-nav-item, .admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+    const btn = document.getElementById('btn-adm-' + tabKey);
+    if (btn) btn.classList.add('active');
+
+    const titleEl = document.getElementById('adminTableTitle');
+    if (titleEl) titleEl.innerText = config.title;
+
+    loadAdminTableData(config.supabaseTable);
+}
+
+async function loadAdminTableData(tableName) {
+    const tbody = document.getElementById('adminTableBody');
+    const thead = document.getElementById('adminTableHead');
+
+    if (!tbody || !thead) return;
+
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Memuat data dari Supabase...</td></tr>`;
+    thead.innerHTML = '';
+
+    try {
+        const { data, error } = await supabaseClient
+            .from(tableName)
+            .select('*')
+            .order('Tanggal', { ascending: false })
+            .limit(100);
+
+        if (error) throw error;
+
+        currentAdminTableData = data || [];
+        currentSort = { col: 'Tanggal', asc: false };
+
+        renderAdminTable();
+
+    } catch (err) {
+        console.error("Gagal memuat tabel admin:", err);
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #EF4444; padding: 20px;">Error: Gagal memuat data dari server. ${err.message}</td></tr>`;
+    }
+}
+
+function sortAdminTable(colName) {
+    if (currentSort.col === colName) {
+        currentSort.asc = !currentSort.asc;
+    } else {
+        currentSort.col = colName;
+        currentSort.asc = true;
+    }
+
+    currentAdminTableData.sort((a, b) => {
+        let valA = a[colName];
+        let valB = b[colName];
+
+        if (valA === null || valA === undefined) valA = '';
+        if (valB === null || valB === undefined) valB = '';
+
+        if (!isNaN(valA) && !isNaN(valB) && valA !== '' && valB !== '') {
+            valA = Number(valA);
+            valB = Number(valB);
+        } else {
+            valA = valA.toString().toLowerCase();
+            valB = valB.toString().toLowerCase();
+        }
+
+        if (valA < valB) return currentSort.asc ? -1 : 1;
+        if (valA > valB) return currentSort.asc ? 1 : -1;
+        return 0;
+    });
+
+    renderAdminTable();
+}
+
+function renderAdminTable() {
+    const tbody = document.getElementById('adminTableBody');
+    const thead = document.getElementById('adminTableHead');
+
+    if (!tbody || !thead) return;
+
+    if (currentAdminTableData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Belum ada data tersedia di tabel ini.</td></tr>`;
+        thead.innerHTML = '';
+        return;
+    }
+
+    const config = DB_SCHEMAS[currentAdminTab];
+    const columns = Object.keys(currentAdminTableData[0]).filter(col => col.toLowerCase() !== 'created_at' && col.toLowerCase() !== 'id');
+
+    let headerHTML = '';
+    columns.forEach(col => {
+        let displayLabel = (config.columns && config.columns[col]) ? config.columns[col] : col;
+        headerHTML += `<th style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel}</th>`;
+    });
+    headerHTML += `<th>Aksi</th>`;
+    thead.innerHTML = headerHTML;
+
+    let bodyHTML = '';
+    currentAdminTableData.forEach(row => {
+        let rowHTML = `<tr>`;
+        columns.forEach(col => {
+            let cellData = row[col];
+            if (cellData === null || cellData === undefined || cellData === "") cellData = '-';
+
+            if (col.toLowerCase() === 'tanggal') {
+                let formattedDate = cellData;
+                if (typeof cellData === 'string') {
+                    if (cellData.includes('T')) formattedDate = cellData.split('T')[0];
+                    else if (cellData.includes(' ')) formattedDate = cellData.split(' ')[0];
+                }
+                rowHTML += `<td><span class="date-tag-badge">${formattedDate}</span></td>`;
+            } else {
+                if (typeof cellData === 'string' && cellData.length > 40) {
+                    cellData = cellData.substring(0, 40) + '...';
+                }
+                rowHTML += `<td>${cellData}</td>`;
+            }
+        });
+
+        const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+
+        rowHTML += `
+            <td>
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;" onclick="openFormModal('${safeRowJson}')">Edit</button>
+                    <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.72rem;" onclick="deleteAdminTableData('${safeRowJson}')">Hapus</button>
+                </div>
+            </td>
+        </tr>`;
+        bodyHTML += rowHTML;
+    });
+    tbody.innerHTML = bodyHTML;
+}
+
+function openFormModal(rowDataStr = null) {
+    const modal = document.getElementById('dataFormModal');
+    const title = document.getElementById('formModalTitle');
+    const container = document.getElementById('dynamicFormContainer');
+
+    if (!modal) return;
+    modal.classList.add('active');
+
+    let rowData = null;
+    currentEditId = null;
+
+    const config = DB_SCHEMAS[currentAdminTab];
+
+    if (rowDataStr) {
+        rowData = JSON.parse(rowDataStr);
+        currentEditId = rowData.Id || rowData.id;
+        title.innerText = "Edit Jadwal Permanen - " + config.title;
+    } else {
+        title.innerText = "Tambah Jadwal Baru - " + config.title;
+    }
+
+    let schemaDbKeys = Object.keys(config.columns);
+
+    let formHTML = '';
+    schemaDbKeys.forEach(dbCol => {
+        let label = config.columns[dbCol];
+        let value = (rowData && rowData[dbCol]) ? rowData[dbCol] : '';
+        let inputType = 'text';
+
+        if (dbCol.toLowerCase().includes('tanggal')) {
+            inputType = 'date';
+            if (value && value.includes('T')) value = value.split('T')[0];
+            else if (value && value.includes(' ')) value = value.split(' ')[0];
+        }
+
+        formHTML += `
+            <div class="input-group" style="display: flex; flex-direction: column; gap: 4px;">
+                <label style="font-size: 0.78rem; font-weight: 700;">${label}</label>
+                <input type="${inputType}" id="dyn_${dbCol}" value="${value}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.85rem; background-color: var(--bg-card); color: var(--text-main);">
+            </div>
+        `;
+    });
+
+    container.innerHTML = formHTML;
+}
+
+function closeFormModal() {
+    const modal = document.getElementById('dataFormModal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function simpanDataTabel() {
+    const btn = document.getElementById('saveDataBtn');
+    btn.innerHTML = "Menyimpan ke Supabase...";
+    btn.disabled = true;
+
+    let payload = {};
+    let isDateEmpty = false;
+    const inputs = document.querySelectorAll('#dynamicFormContainer input');
+
+    inputs.forEach(input => {
+        const colName = input.id.replace('dyn_', '');
+        payload[colName] = input.value;
+        if (colName === 'Tanggal' && !input.value) isDateEmpty = true;
+    });
+
+    if (isDateEmpty) {
+        Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Kolom Tanggal wajib diisi.' });
+        btn.innerHTML = "Simpan Data Permanen";
+        btn.disabled = false;
+        return;
+    }
+
+    Object.keys(payload).forEach(k => {
+        if (payload[k] === "") payload[k] = "-";
+    });
+
+    try {
+        const config = DB_SCHEMAS[currentAdminTab];
+
+        if (currentEditId) {
+            let result = await supabaseClient
+                .from(config.supabaseTable)
+                .update(payload)
+                .eq('Id', currentEditId);
+
+            if (result.error && result.error.message.includes('does not exist')) {
+                result = await supabaseClient
+                    .from(config.supabaseTable)
+                    .update(payload)
+                    .eq('id', currentEditId);
+            }
+
+            if (result.error) throw result.error;
+        } else {
+            const { error } = await supabaseClient
+                .from(config.supabaseTable)
+                .insert([payload]);
+            if (error) throw error;
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil Disimpan!',
+            text: 'Data jadwal telah diperbarui permanen di server Supabase.',
+            timer: 1800,
+            showConfirmButton: false
+        });
+
+        closeFormModal();
+        loadAdminTableData(config.supabaseTable);
+
+        // Auto-refresh main app view
+        fetchDataFromSupabase();
+
+    } catch (err) {
+        console.error("Gagal simpan:", err);
+        Swal.fire({ icon: 'error', title: 'Gagal', text: err.message || 'Gagal menyimpan ke database' });
+    } finally {
+        btn.innerHTML = "Simpan Data Permanen";
+        btn.disabled = false;
+    }
+}
+
+async function deleteAdminTableData(rowDataStr) {
+    if (!rowDataStr) return;
+
+    let rowData;
+    try {
+        rowData = JSON.parse(rowDataStr);
+    } catch (e) {
+        console.error("Gagal parse data baris:", e);
+        return;
+    }
+
+    const rowId = rowData.Id || rowData.id;
+    const config = DB_SCHEMAS[currentAdminTab];
+
+    Swal.fire({
+        title: 'Hapus Data Permanen?',
+        text: "Apakah Anda yakin ingin menghapus data ini dari server Supabase?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#475569',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                let deleteResult = await supabaseClient
+                    .from(config.supabaseTable)
+                    .delete()
+                    .eq('Id', rowId);
+
+                if (deleteResult.error && deleteResult.error.message.includes('does not exist')) {
+                    deleteResult = await supabaseClient
+                        .from(config.supabaseTable)
+                        .delete()
+                        .eq('id', rowId);
+                }
+
+                if (deleteResult.error) throw deleteResult.error;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil Dihapus',
+                    text: 'Data telah dihapus secara permanen.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                loadAdminTableData(config.supabaseTable);
+                fetchDataFromSupabase();
+
+            } catch (err) {
+                console.error("Gagal hapus:", err);
+                Swal.fire({ icon: 'error', title: 'Gagal Hapus', text: err.message || 'Gagal menghapus data' });
+            }
+        }
+    });
+}
+
+// Inisialisasi Aplikasi saat DOM Siap
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
 }

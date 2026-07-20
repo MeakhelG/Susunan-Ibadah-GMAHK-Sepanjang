@@ -158,7 +158,7 @@
 
                 <!-- FOOTER -->
                 <footer class="app-footer">
-                    <p>&copy; 2026 - v2.0.1. GMAHK Sepanjang. All rights reserved.</p>
+                    <p>&copy; 2026 - v2.0.2. GMAHK Sepanjang. All rights reserved.</p>
                     <p class="developer-credit">Developed by <span>Meakhel Gunawan</span></p>
                 </footer>
             </section>
@@ -166,8 +166,19 @@
             <!-- ================= SUSUNAN IBADAH TAB ================= -->
             <section id="tab-susunan" class="tab-pane">
                 <div class="susunan-header">
-                    <h2>Susunan Ibadah Sabat</h2>
-                    <p>Jadwal dan Pelayan Ibadah Jemaat GMAHK Sepanjang</p>
+                    <div class="susunan-header-title">
+                        <h2>Susunan Ibadah Sabat</h2>
+                        <p>Jadwal dan Pelayan Ibadah Jemaat GMAHK Sepanjang</p>
+                    </div>
+                    <button class="btn btn-secondary-outline admin-header-btn" id="adminLoginBtn"
+                        onclick="openLoginModal()" title="Login Admin Supabase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                        <span>Admin</span>
+                    </button>
                 </div>
 
                 <!-- Sub-tab Switcher (Segment Control) -->
@@ -208,31 +219,6 @@
                             onclick="filterProgramAcara('rabu')">Rabu Malam</button>
                     </div>
 
-                    <!-- Edit Actions Bar (Tipe 1: Edit Sementara) -->
-                    <div class="schedule-edit-bar"
-                        style="display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; padding: 0 4px;">
-                        <button class="btn btn-secondary" id="btn-toggle-edit" onclick="toggleEditSementara()"
-                            style="font-size: 0.75rem; padding: 6px 12px; border-radius: 8px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                <path d="m15 5 4 4" />
-                            </svg>
-                            <span>Edit Sementara</span>
-                        </button>
-                        <button class="btn btn-danger" id="btn-reset-edit" onclick="resetEditSementara()"
-                            style="font-size: 0.75rem; padding: 6px 12px; border-radius: 8px; display: none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                <path d="M3 3v5h5" />
-                            </svg>
-                            <span>Reset Data</span>
-                        </button>
-                    </div>
-
                     <!-- Main Schedule Card (Static, NO Date Arrows) -->
                     <div class="card schedule-main-card">
                         <div class="schedule-card-header">
@@ -246,16 +232,38 @@
                                     <p class="schedule-subtitle" id="acaraSubtitleText">Sabat, 18 Juli 2026</p>
                                 </div>
                             </div>
-                            <button class="btn btn-primary copy-wa-header-btn" onclick="copyScheduleText()"
-                                title="Salin Format WA">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                                </svg>
-                                <span>Salin Format WA</span>
-                            </button>
+                            <div class="header-actions-group">
+                                <button class="btn btn-danger header-action-btn" id="btn-reset-edit"
+                                    onclick="resetEditSementara()" title="Reset Data" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                        <path d="M3 3v5h5" />
+                                    </svg>
+                                    <span>Reset Data</span>
+                                </button>
+                                <button class="btn btn-secondary header-action-btn" id="btn-toggle-edit"
+                                    onclick="toggleEditSementara()" title="Edit Sementara">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                        <path d="m15 5 4 4" />
+                                    </svg>
+                                    <span>Edit Sementara</span>
+                                </button>
+                                <button class="btn btn-primary header-action-btn copy-wa-header-btn"
+                                    onclick="copyScheduleText()" title="Salin Format WA">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                    </svg>
+                                    <span>Salin Format WA</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="schedule-timeline" id="acaraTimelineContainer">
@@ -627,6 +635,118 @@
         </main>
 
 
+        <!-- ====================================== -->
+        <!-- ADMIN DASHBOARD FULL PAGE VIEW         -->
+        <!-- ====================================== -->
+        <div id="adminDashboardView" class="admin-dashboard-view" style="display: none;">
+            <!-- Top Admin Navigation Bar -->
+            <div class="admin-top-bar">
+                <div class="admin-top-left">
+                    <button class="btn btn-secondary" onclick="closeAdminDashboardView()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12" />
+                            <polyline points="12 19 5 12 12 5" />
+                        </svg>
+                        <span>Kembali ke Web App</span>
+                    </button>
+                    <span class="admin-session-badge">🔒 Sesi Admin Aktif</span>
+                </div>
+                <button class="btn btn-danger" onclick="handleLogout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Main Layout (Sidebar + Content) -->
+            <div class="admin-main-grid">
+                <!-- Sidebar Panel -->
+                <div class="admin-sidebar-card">
+                    <div class="admin-sidebar-title">
+                        <h4>TABEL DATABASE</h4>
+                    </div>
+                    <nav class="admin-nav-menu">
+                        <button class="admin-nav-item active" id="btn-adm-pos" onclick="switchAdminTab('pos')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M3 9h18" />
+                                <path d="M9 21V9" />
+                            </svg>
+                            <span>Tabel POS</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-ss" onclick="switchAdminTab('ss')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+                                <path d="M6 6h10" />
+                            </svg>
+                            <span>Sekolah Sabat</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-khotbah" onclick="switchAdminTab('khotbah')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg>
+                            <span>Tabel Khotbah</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-pa" onclick="switchAdminTab('pa')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                            <span>Pemuda Advent</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Content Panel -->
+                <div class="admin-content-card">
+                    <div class="admin-content-header">
+                        <div>
+                            <h3 id="adminTableTitle">Tabel POS</h3>
+                            <p>Kelola data jadwal ibadah permanen di database server Supabase</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openFormModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            <span>Tambah Jadwal Baru</span>
+                        </button>
+                    </div>
+
+                    <div class="admin-table-container">
+                        <table class="admin-data-table">
+                            <thead>
+                                <tr id="adminTableHead"></tr>
+                            </thead>
+                            <tbody id="adminTableBody">
+                                <tr>
+                                    <td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- BOTTOM NAVIGATION BAR -->
         <nav class="bottom-nav">
             <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
@@ -654,6 +774,61 @@
                 <span>Persembahan</span>
             </button>
         </nav>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- ADMIN LOGIN MODAL BEAUTIFIED           -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content login-modal-card">
+            <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            <div class="login-modal-header">
+                <div class="login-modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                </div>
+                <h2>Admin Area</h2>
+                <p>Silakan login untuk mengelola data jadwal di Supabase secara permanen.</p>
+            </div>
+            <form onsubmit="event.preventDefault(); handleLogin();">
+                <div class="login-form-body">
+                    <div class="input-group">
+                        <label for="adminEmail">Email Admin</label>
+                        <input type="email" id="adminEmail" placeholder="admin@sepanjang.com" required
+                            onkeydown="if(event.key === 'Enter') document.getElementById('adminPassword').focus()">
+                    </div>
+                    <div class="input-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" placeholder="••••••••" required
+                            onkeydown="if(event.key === 'Enter') handleLogin()">
+                    </div>
+                </div>
+                <button class="btn btn-primary login-submit-btn" id="loginSubmitBtn" type="submit">Login Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- ADMIN FORM ADD/EDIT MODAL              -->
+    <!-- ====================================== -->
+    <div id="dataFormModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 520px; border-radius: 20px; padding: 28px;">
+            <button class="modal-close" onclick="closeFormModal()">&times;</button>
+            <h3 id="formModalTitle" style="font-size: 1.1rem; font-weight: 800; color: var(--primary-color);">Tambah
+                Data</h3>
+            <p id="formModalSubtitle" style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">
+                Formulir dinamis database Supabase</p>
+
+            <div class="form-grid form-scroll" id="dynamicFormContainer"
+                style="max-height: 55vh; overflow-y: auto; margin-bottom: 20px; padding-right: 6px; display: flex; flex-direction: column; gap: 14px;">
+                <!-- Input dinamis akan di-inject lewat JavaScript -->
+            </div>
+
+            <button class="btn btn-primary" id="saveDataBtn" style="width: 100%; height: 44px; border-radius: 10px;"
+                onclick="simpanDataTabel()">Simpan Data Permanen</button>
+        </div>
     </div>
 
     <!-- Script Files -->
