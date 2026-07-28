@@ -889,6 +889,30 @@ function copyCurrentRosterWA() {
     });
 }
 
+
+
+/**
+ * Auto-refresh Google Slides Hero iframe to ensure continuous infinite loop
+ */
+function ensureSlideshowLoop() {
+    const iframe = document.getElementById('heroSlideshowIframe');
+    if (!iframe) return;
+
+    // Refresh iframe src every 60 seconds to guarantee endless slide looping
+    setInterval(() => {
+        try {
+            const currentSrc = iframe.src;
+            iframe.src = currentSrc;
+        } catch (e) {}
+    }, 60000);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureSlideshowLoop);
+} else {
+    ensureSlideshowLoop();
+}
+
 /**
  * Mockup Putar Video Khotbah
  */
