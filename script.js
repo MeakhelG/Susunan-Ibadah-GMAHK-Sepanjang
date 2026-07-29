@@ -89,9 +89,9 @@ Topic: Ibadah Rabu Malam - GMAHK Sepanjang
 *Waktu: Rabu, 22 Juli 2026; Jam: 19:00 WIB (ontime)*
 
 Join Zoom Meeting
-https://us06web.zoom.us/j/84580474203?pwd=pfIdV8blFAQkxcb3g18YAHmd016e2X.1
+https://us06web.zoom.us/j/82101187786?pwd=dJOh8nzgiWRMFTkMvxByhbSrbnMtiH.1
 
-Meeting ID: 845 8047 4203
+Meeting ID: 821 0118 7786
 Passcode: sepanjang
 
 
@@ -1935,9 +1935,9 @@ Topic: Ibadah Rabu Malam - GMAHK Sepanjang
 *Waktu: ${dateDisplay}; Jam: 19:00 WIB (ontime)*
 
 Join Zoom Meeting
-https://us06web.zoom.us/j/84580474203?pwd=pfIdV8blFAQkxcb3g18YAHmd016e2X.1
+https://us06web.zoom.us/j/82101187786?pwd=dJOh8nzgiWRMFTkMvxByhbSrbnMtiH.1
 
-Meeting ID: 845 8047 4203
+Meeting ID: 821 0118 7786
 Passcode: sepanjang
 
 

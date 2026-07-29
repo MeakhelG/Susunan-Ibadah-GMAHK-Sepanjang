@@ -464,7 +464,8 @@ body.dark-theme .section-title {
 
 @media (max-width: 600px) {
     .hero-slideshow-container {
-        height: 250px;
+        height: auto;
+        aspect-ratio: 16 / 7.8;
     }
 }
 
@@ -2764,4 +2765,15 @@ body.dark-theme .social-h-item svg {
 
 body.dark-theme .app-footer .developer-credit span {
     color: var(--accent-light);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(74, 18, 30, 0.2);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 18px rgba(74, 18, 30, 0.35);
+    }
 }
