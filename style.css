@@ -520,10 +520,7 @@ body.dark-theme .hero-slideshow-fade {
 .home-banner {
     position: relative;
     border-radius: var(--card-radius);
-    background: url('cover.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
     color: white;
     margin-bottom: 20px;
     overflow: hidden;
@@ -537,10 +534,7 @@ body.dark-theme .hero-slideshow-fade {
 }
 
 body.dark-theme .home-banner {
-    background: url('cover.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--primary-rose) 100%);
 }
 
 .banner-overlay {
@@ -2776,4 +2770,211 @@ body.dark-theme .app-footer .developer-credit span {
         transform: scale(1.05);
         box-shadow: 0 6px 18px rgba(74, 18, 30, 0.35);
     }
+}
+
+/* Song Edit Container (Modern Interactive Song Editor) */
+.song-edit-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-app);
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1px dashed var(--primary-color);
+    margin-top: 4px;
+    flex-wrap: wrap;
+    transition: var(--transition);
+}
+
+.song-prefix-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+body.dark-theme .song-prefix-label {
+    color: var(--accent-light);
+}
+
+.song-num-input {
+    width: 70px;
+    padding: 5px 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    text-align: center;
+}
+
+.song-dash {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.song-title-input {
+    flex: 1;
+    min-width: 140px;
+    padding: 5px 10px;
+    font-size: 0.82rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
+.song-num-input:focus,
+.song-title-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-rose);
+}
+
+/* Song Suggestions Autocomplete Dropdown */
+.song-edit-container {
+    position: relative;
+}
+
+.song-suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    margin-top: 4px;
+    padding: 4px 0;
+}
+
+.song-suggestion-item {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.song-suggestion-item:hover {
+    background-color: var(--primary-rose);
+    color: var(--primary-color);
+}
+
+.song-suggestion-item .suggestion-num {
+    font-weight: 700;
+    color: var(--primary-color);
+    background-color: var(--bg-app);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+body.dark-theme .song-suggestion-item:hover {
+    background-color: rgba(217, 119, 6, 0.15);
+    color: var(--accent-light);
+}
+
+body.dark-theme .song-suggestion-item .suggestion-num {
+    color: var(--accent-light);
+}
+
+/* Placeholder for ContentEditable Fields */
+.editable-field[data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: var(--text-muted);
+    opacity: 0.65;
+    font-style: italic;
+    pointer-events: none;
+}
+
+/* Google Drive Banner Card (Clickable Entire Card) */
+.drive-banner-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    text-decoration: none !important;
+    background-color: var(--primary-rose);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.drive-banner-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.drive-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+}
+
+.drive-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: #FFFFFF;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+}
+
+body.dark-theme .drive-banner-icon {
+    background-color: var(--bg-card);
+    color: var(--accent-light);
+}
+
+.drive-banner-content h5 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 2px 0;
+}
+
+body.dark-theme .drive-banner-content h5 {
+    color: var(--accent-light);
+}
+
+.drive-banner-content p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.drive-redirect-action {
+    color: var(--primary-color);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+body.dark-theme .drive-redirect-action {
+    color: var(--accent-light);
+}
+
+.drive-banner-card:hover .drive-redirect-action {
+    opacity: 1;
+    transform: translate(2px, -2px);
 }
