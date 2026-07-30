@@ -994,15 +994,23 @@
                             <h3 id="adminTableTitle">Tabel POS</h3>
                             <p>Kelola data jadwal ibadah permanen di database server Supabase</p>
                         </div>
-                        <button class="btn btn-primary" onclick="openFormModal()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                            <span>Tambah Jadwal Baru</span>
-                        </button>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="shiftActiveTableSchedule(-7)" title="Majukan seluruh tanggal jadwal 1 minggu (-7 hari)">
+                                ◀ Majukan 1 Minggu
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="shiftActiveTableSchedule(7)" title="Mundurkan seluruh tanggal jadwal 1 minggu (+7 hari)">
+                                Mundurkan 1 Minggu ▶
+                            </button>
+                            <button class="btn btn-primary" onclick="openFormModal()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                                <span>+ Tambah Data</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="admin-table-container">

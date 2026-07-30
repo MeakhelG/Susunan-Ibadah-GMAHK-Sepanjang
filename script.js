@@ -2533,6 +2533,138 @@ async function loadAdminTableData(tableName) {
     }
 }
 
+/**
+ * Menggeser string tanggal maju/mundur sejumlah hari tertentu.
+ * Mendukung format YYYY-MM-DD, dengan atau tanpa bagian waktu (T / spasi).
+ */
+function shiftDateString(dateStr, days) {
+    if (!dateStr) return dateStr;
+
+    // Ambil bagian tanggal YYYY-MM-DD
+    const partsT = dateStr.split('T');
+    const partsSpace = partsT[0].split(' ');
+    const datePart = partsSpace[0];
+
+    const parts = datePart.split('-');
+    if (parts.length !== 3) return dateStr;
+
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+
+    const dateObj = new Date(year, month, day);
+    dateObj.setDate(dateObj.getDate() + days);
+
+    const newYear = dateObj.getFullYear();
+    const newMonth = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const newDay = String(dateObj.getDate()).padStart(2, '0');
+
+    const newDatePart = `${newYear}-${newMonth}-${newDay}`;
+
+    // Pertahankan jam/menit/detik jika ada format aslinya
+    if (partsT.length > 1) {
+        return newDatePart + 'T' + partsT[1];
+    } else if (partsSpace.length > 1) {
+        return newDatePart + ' ' + partsSpace[1];
+    }
+
+    return newDatePart;
+}
+
+/**
+ * Menggeser seluruh tanggal pada tabel admin yang sedang aktif.
+ * Digunakan untuk memajukan (-7 hari) atau memundurkan (+7 hari) jadwal 1 minggu.
+ */
+async function shiftActiveTableSchedule(days) {
+    if (!currentAdminTableData || currentAdminTableData.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Tidak Ada Data',
+            text: 'Tidak ada data jadwal untuk dimodifikasi.'
+        });
+        return;
+    }
+
+    const config = DB_SCHEMAS[currentAdminTab];
+    const directionText = days < 0 ? "MAJUKAN (kurangi 7 hari)" : "MUNDURKAN (tambah 7 hari)";
+
+    Swal.fire({
+        title: 'Geser Jadwal?',
+        text: `Apakah Anda yakin ingin ${directionText} semua jadwal (${currentAdminTableData.length} baris) pada ${config.title}?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#4A121E',
+        cancelButtonColor: '#475569',
+        confirmButtonText: 'Ya, Geser!',
+        cancelButtonText: 'Batal'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Harap tunggu, sedang memperbarui database Supabase.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+                // Lakukan pembaruan secara paralel (Promise.all)
+                const updatePromises = currentAdminTableData.map(async (row) => {
+                    const rowId = row.Id || row.id || row.ID;
+                    const oldDate = row.Tanggal;
+                    if (!oldDate || rowId === undefined || rowId === null) return;
+
+                    const newDate = shiftDateString(oldDate, days);
+                    if (oldDate === newDate) return;
+
+                    const payload = { Tanggal: newDate };
+
+                    // Coba update dengan Primary Key 'Id' (huruf besar)
+                    let updateResult = await supabaseClient
+                        .from(config.supabaseTable)
+                        .update(payload)
+                        .eq('Id', rowId);
+
+                    // Jika PostgreSQL error karena kolom 'Id' tidak ada, coba pakai 'id' kecil
+                    if (updateResult.error) {
+                        updateResult = await supabaseClient
+                            .from(config.supabaseTable)
+                            .update(payload)
+                            .eq('id', rowId);
+                    }
+
+                    if (updateResult.error) throw updateResult.error;
+                });
+
+                await Promise.all(updatePromises);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: `Semua jadwal berhasil digeser ${days < 0 ? 'maju' : 'mundur'} 1 minggu!`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                // Muat ulang data tabel admin & data app utama
+                await loadAdminTableData(config.supabaseTable);
+                await fetchDataFromSupabase();
+
+            } catch (err) {
+                console.error("Gagal menggeser jadwal:", err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: err.message || 'Terjadi kesalahan saat memperbarui database.'
+                });
+
+                loadAdminTableData(config.supabaseTable);
+            }
+        }
+    });
+}
+
 function sortAdminTable(colName) {
     if (currentSort.col === colName) {
         currentSort.asc = !currentSort.asc;
@@ -2582,7 +2714,13 @@ function renderAdminTable() {
     let headerHTML = '';
     columns.forEach(col => {
         let displayLabel = (config.columns && config.columns[col]) ? config.columns[col] : col;
-        headerHTML += `<th style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel}</th>`;
+        let sortIcon = `<span style="opacity: 0.35; margin-left: 6px; font-size: 0.75rem;">⇅</span>`;
+        if (currentSort && currentSort.col === col) {
+            sortIcon = currentSort.asc 
+                ? `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▲</span>` 
+                : `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▼</span>`;
+        }
+        headerHTML += `<th style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel} ${sortIcon}</th>`;
     });
     headerHTML += `<th>Aksi</th>`;
     thead.innerHTML = headerHTML;
