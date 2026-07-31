@@ -241,16 +241,6 @@ body.dark-theme .section-title {
     color: var(--accent-light);
 }
 
---text-main: #F9FAFB;
---text-muted: #9CA3AF;
---border-color: #3D151B;
---primary-rose: #3D1018;
---shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5),
-0 8px 16px -6px rgba(0, 0, 0, 0.4);
---shadow-hover: 0 20px 30px -5px rgba(0, 0, 0, 0.6),
-0 15px 15px -5px rgba(0, 0, 0, 0.5);
-}
-
 /* Base Styles */
 * {
     margin: 0;
@@ -451,12 +441,15 @@ body.dark-theme .section-title {
 /* Hero Slideshow Banner (Flush Top/Left/Right, Hidden Embed UI, Smooth Bottom Fade) */
 .hero-slideshow-container {
     position: relative;
-    width: calc(100% + 40px); /* Bleeds 20px left & right to touch app container edges flush */
+    width: calc(100% + 40px);
+    /* Bleeds 20px left & right to touch app container edges flush */
     margin-left: -20px;
     margin-right: -20px;
-    margin-top: -20px;        /* Bleeds top to touch app-header directly */
+    margin-top: -20px;
+    /* Bleeds top to touch app-header directly */
     height: 360px;
-    border-radius: 0;         /* Rectangular edge-to-edge layout */
+    border-radius: 0;
+    /* Rectangular edge-to-edge layout */
     overflow: hidden;
     margin-bottom: 24px;
     background-color: #000;
@@ -495,24 +488,23 @@ body.dark-theme .section-title {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 150px; /* Deep, smooth transition space into page background */
-    background: linear-gradient(to bottom, 
-        rgba(250, 245, 245, 0) 0%, 
-        rgba(250, 245, 245, 0.25) 30%, 
-        rgba(250, 245, 245, 0.75) 70%, 
-        var(--bg-app) 100%
-    );
+    height: 150px;
+    /* Deep, smooth transition space into page background */
+    background: linear-gradient(to bottom,
+            rgba(250, 245, 245, 0) 0%,
+            rgba(250, 245, 245, 0.25) 30%,
+            rgba(250, 245, 245, 0.75) 70%,
+            var(--bg-app) 100%);
     pointer-events: none;
     z-index: 5;
 }
 
 body.dark-theme .hero-slideshow-fade {
-    background: linear-gradient(to bottom, 
-        rgba(20, 5, 7, 0) 0%, 
-        rgba(20, 5, 7, 0.3) 30%, 
-        rgba(20, 5, 7, 0.8) 70%, 
-        var(--bg-app) 100%
-    );
+    background: linear-gradient(to bottom,
+            rgba(20, 5, 7, 0) 0%,
+            rgba(20, 5, 7, 0.3) 30%,
+            rgba(20, 5, 7, 0.8) 70%,
+            var(--bg-app) 100%);
 }
 
 
@@ -2800,10 +2792,13 @@ body.dark-theme .app-footer .developer-credit span {
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
         box-shadow: 0 4px 12px rgba(74, 18, 30, 0.2);
     }
+
     50% {
         transform: scale(1.05);
         box-shadow: 0 6px 18px rgba(74, 18, 30, 0.35);
