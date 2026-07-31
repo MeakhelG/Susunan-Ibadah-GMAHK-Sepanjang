@@ -1642,6 +1642,38 @@ Ibrani 10 : 25`;
     return text;
 }
 
+// Helper untuk format judul lagu agar di-bold di WhatsApp (contoh: AYS No. 4: - *"Amazing Grace"*)
+function formatSongTitleForWa(str) {
+    if (!str || typeof str !== 'string') return str;
+
+    const trimmed = str.trim();
+    if (trimmed === '' || trimmed === '-' || trimmed.includes('[Kosong]')) {
+        return str;
+    }
+
+    // Cocokkan format LSEL No. X: - "Judul" atau AYS No. X: - "Judul"
+    const songRegex = /^((?:LSEL|AYS)\s+No\.\s*\d+[^:]*:\s*-\s*)(.*)$/i;
+    const match = trimmed.match(songRegex);
+
+    if (match) {
+        const prefix = match[1];
+        let rawTitle = match[2].trim();
+
+        if (!rawTitle || rawTitle === '-' || rawTitle.includes('[Kosong]')) {
+            return str;
+        }
+
+        // Hapus tanda petik atau asterisk berlebih agar tidak double bold
+        while ((rawTitle.startsWith('"') && rawTitle.endsWith('"')) || (rawTitle.startsWith('*') && rawTitle.endsWith('*'))) {
+            rawTitle = rawTitle.slice(1, -1).trim();
+        }
+
+        return `${prefix}*"${rawTitle}"*`;
+    }
+
+    return str;
+}
+
 // WhatsApp template generator helpers
 function buildSabatWaFormat(pos, ss, kh, dateDisplay) {
     const parsedDate = parseDateFromDisplay(dateDisplay) || new Date();
@@ -1721,10 +1753,10 @@ Officers/Tua-Tua Jemaat
 ${kh.PemimpinLagu || '-'}
 
 ● *Lagu Pengiring Partisipan Masuk Mimbar Atas*
-LSEL No. 515: - "Tuhan Ada Dalam Bait Allah"
+${formatSongTitleForWa('LSEL No. 515: - "Tuhan Ada Dalam Bait Allah"')}
 
 ● *Lagu Sambutan*
-LSEL No. 1: - "Di Hadapan Hadirat-Mu"
+${formatSongTitleForWa('LSEL No. 1: - "Di Hadapan Hadirat-Mu"')}
 
 ● *Doa Buka*
 ${kh.Khotbah || '-'}
@@ -1736,7 +1768,7 @@ ${kh.DoaSyafaat || '-'}
 -
 
 ● *Lagu Pengantar Doa Syafaat*
-LSEL No. 520: - "Kami Datang Dalam Doa"
+${formatSongTitleForWa('LSEL No. 520: - "Kami Datang Dalam Doa"')}
 
 ● *Doa Syafaat*
 ${kh.DoaSyafaat || '-'}
@@ -1745,7 +1777,7 @@ ${kh.DoaSyafaat || '-'}
 ${kh.BacaanPersembahan || '-'}
 
 ● *Lagu Persembahan*
-LSEL No. 260: - "Bawa Persembahanmu"
+${formatSongTitleForWa('LSEL No. 260: - "Bawa Persembahanmu"')}
 
 ● *Doa Persembahan*
 ${kh.BacaanPersembahan || '-'}
@@ -1766,7 +1798,7 @@ ${kh.Khotbah || '-'}
 Pdt. Benny Lumbantobing
 
 ● *Lagu Sambutan Doa Tutup dan Doa Berkat*
-LSEL No. 523: - "Tuhan Dengar Doa Kami"
+${formatSongTitleForWa('LSEL No. 523: - "Tuhan Dengar Doa Kami"')}
 
 __________________________
 
@@ -1780,25 +1812,25 @@ function buildPaWaFormat(p, dateDisplay) {
 
 ● *MC & Janji PA* : ${p.MC || '-'}
 
-● *Lagu Buka* : AYS [Kosong]
+● *Lagu Pembuka (AYS)* : ${formatSongTitleForWa(p.LaguBuka || 'AYS -')}
 
-● *Ayat Inti & Doa Buka* : ${p.AyatIntiDoaBuka || '-'}
+● *Ayat Inti & Doa Buka PA* : ${p.AyatIntiDoaBuka || '-'}
 
-● *BAB* : ${p.BAB || '-'}
+● *Belajar Alkitab Bersama (BAB)* : ${p.BAB || '-'}
 
 ● *Funfact / Tips* : ${p.TipsFunfact || '-'}
 
 ● *Games* : ${p.Games || '-'}
 
-● *Acara Inti* : ${p.AcaraInti || '-'}
+● *Acara Inti & Diskusi* : ${p.AcaraInti || '-'}
 
-● *Lagu Tutup* : AYS [Kosong]
+● *Lagu Penutup (AYS)* : ${formatSongTitleForWa(p.LaguTutup || 'AYS -')}
 
 ● *Doa Tutup* : ${p.AcaraInti || '-'}
 
-● *Pengumuman* : Ketua PA
+● *Pengumuman* : Pengurus PA
 
-● *Laporan Bendahara* : Bendahara PA
+● *Laporan Bendahara PA* : Bendahara PA
 
 *Selamat Melayani~*
 *Tuhan Memberkati 😇🙏*`;
@@ -2197,7 +2229,11 @@ ${dateDisplay}
             if (item.title.toLowerCase().includes("lagu pujian") && (!item.desc || item.desc.trim() === '' || item.desc.trim() === '-')) {
                 return;
             }
-            text += `● *${item.title}*\n${item.desc || '-'}\n`;
+            let descText = item.desc || '-';
+            if (descText.includes('[Kosong]')) descText = '-';
+            descText = formatSongTitleForWa(descText);
+
+            text += `● *${item.title}*\n${descText}\n`;
             if (item.note && item.note.trim() !== '' && item.note.trim() !== '-') {
                 text += `_${item.note}_\n`;
             }
@@ -2219,7 +2255,11 @@ function buildPaWaFormatFromTimeline(timeline, dateDisplay) {
 
     timeline.forEach(item => {
         if (!item.isHeader) {
-            text += `● *${item.title}* : \n${item.desc || '-'}\n`;
+            let descText = item.desc || '-';
+            if (descText.includes('[Kosong]')) descText = '-';
+            descText = formatSongTitleForWa(descText);
+
+            text += `● *${item.title}* : ${descText}\n`;
             if (item.note && item.note.trim() !== '' && item.note.trim() !== '-') {
                 text += `_${item.note}_\n`;
             }
