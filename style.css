@@ -1907,96 +1907,134 @@ body.dark-theme .about-header h2 {
     font-weight: 500;
 }
 
-.officers-container {
+.officers-list-single {
     display: flex;
     flex-direction: column;
     gap: 16px;
     margin-bottom: 24px;
 }
 
-.officers-grid-layout {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+.officer-card-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 !important;
+    overflow: hidden;
+    background-color: var(--bg-card);
+    border-radius: var(--card-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    min-height: 120px;
+    margin-bottom: 0 !important;
+    transition: var(--transition);
 }
 
-@media (min-width: 480px) {
-    .officers-grid-layout {
-        grid-template-columns: repeat(2, 1fr);
+.officer-card-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
+}
+
+.officer-photo-wrapper {
+    position: relative;
+    width: 180px;
+    min-width: 180px;
+    height: 120px;
+    align-self: stretch;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: var(--primary-rose);
+}
+
+@media (max-width: 480px) {
+    .officer-photo-wrapper {
+        width: 140px;
+        min-width: 140px;
     }
 }
 
-.officer-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    margin-bottom: 0;
-    /* Override default card margin */
+.officer-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
 }
 
-.officer-card.compact {
-    padding: 12px 16px;
+.officer-photo.hide-img {
+    display: none !important;
 }
 
-.officer-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
+.officer-photo-fallback {
+    width: 100%;
+    height: 100%;
+    display: none;
     align-items: center;
     justify-content: center;
     color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
 }
 
-.officer-card.compact .officer-avatar {
-    width: 42px;
-    height: 42px;
-    font-size: 0.95rem;
+.officer-photo-fallback.show-fallback {
+    display: flex !important;
+}
+
+/* Gradient transition overlay: moved further right so face remains crystal clear */
+.officer-photo-gradient {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0.5) 80%, var(--bg-card) 100%);
+    pointer-events: none;
+}
+
+body.dark-theme .officer-photo-gradient {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 45%, rgba(30, 27, 30, 0.5) 80%, var(--bg-card) 100%);
+}
+
+.officer-details {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 16px 16px;
+    z-index: 1;
+    gap: 14px;
 }
 
 .officer-info {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
 }
 
 .officer-info h5 {
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 1.05rem;
+    font-weight: 800;
     color: var(--text-main);
     margin: 0;
-}
-
-.officer-card.compact .officer-info h5 {
-    font-size: 0.85rem;
+    line-height: 1.25;
 }
 
 .officer-role {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--text-muted);
     margin: 0;
 }
 
-.officer-card.compact .officer-role {
-    font-size: 0.75rem;
-}
-
 .officer-badge {
     align-self: flex-start;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 700;
     background-color: #DEF7EC;
     color: #03543F;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-top: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-top: 2px;
 }
 
 body.dark-theme .officer-badge {
@@ -2045,8 +2083,8 @@ body.dark-theme .officer-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background-color: rgba(37, 211, 102, 0.12);
     color: #25D366;
