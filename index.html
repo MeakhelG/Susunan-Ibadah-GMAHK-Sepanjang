@@ -4,682 +4,1147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Susunan Ibadah</title>
-
+    <title>GMAHK Sepanjang App</title>
     <!-- Favicon / Ikon Website -->
     <link rel="icon" type="image/png" href="icon.png">
 
-    <!-- ===================== -->
-    <!-- FONTS & STYLESHEET    -->
-    <!-- ===================== -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
 
-    <!-- SweetAlert2 untuk Pop-up Elegan -->
+    <!-- SweetAlert2 for Toast & Modals -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="light-theme">
     <div class="app-container">
 
-        <!-- ========================== -->
-        <!-- HEADER: Judul & Tema       -->
-        <!-- ========================== -->
+        <!-- HEADER -->
         <header class="app-header">
-            <div>
-                <h1>Susunan Ibadah</h1>
-                <p>Generator format pesan WhatsApp untuk GMAHK Jemaat Sepanjang</p>
+            <div class="header-logo-section">
+                <div class="logo-circle">
+                    <img src="icon.png" alt="Logo GMAHK" class="app-logo">
+                </div>
+                <div>
+                    <h1>GMAHK Sepanjang</h1>
+                    <p class="current-date" id="currentDateText">Sabat, 18 Juli 2026</p>
+                </div>
             </div>
             <div class="header-actions">
-                <button class="btn btn-secondary" id="resetFormBtn" onclick="triggerResetForm()"
-                    title="Reset Formulir ke Kondisi Default">
-                    🔄 Reset
-                </button>
-                <button class="btn btn-secondary" id="adminLoginBtn" onclick="openLoginModal()"
-                    title="Login sebagai Admin">
-                    🔑 Admin
-                </button>
-                <button class="btn btn-secondary" id="themeToggleBtn" onclick="toggleTheme()"
-                    title="Ubah Tema Tampilan">
-                    ☀️ Tema Terang
+                <button class="action-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()"
+                    title="Ubah Tema">
+                    <!-- Icon Sun (shown in light mode to switch to dark) -->
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2" />
+                        <path d="M12 20v2" />
+                        <path d="m4.93 4.93 1.41 1.41" />
+                        <path d="m17.66 17.66 1.41 1.41" />
+                        <path d="M2 12h2" />
+                        <path d="M20 12h2" />
+                        <path d="m6.34 17.66-1.41 1.41" />
+                        <path d="m19.07 4.93-1.41 1.41" />
+                    </svg>
+                    <!-- Icon Moon (shown in dark mode to switch to light) -->
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                    </svg>
                 </button>
             </div>
         </header>
 
-        <div class="main-content" id="generatorView">
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
 
-            <!-- ====================================== -->
-            <!-- PANEL KIRI: FORMULIR INPUT             -->
-            <!-- ====================================== -->
-            <form id="generatorForm" class="form-panel">
-                <div class="form-scroll">
-
-                    <!-- ========================== -->
-                    <!-- TAB NAVIGATION             -->
-                    <!-- ========================== -->
-                    <div class="tabs-nav">
-                        <button type="button" class="tab-btn active" id="btn-tab-sabat"
-                            onclick="switchTab('sabat')">Sabat Raya</button>
-                        <button type="button" class="tab-btn" id="btn-tab-pa" onclick="switchTab('pa')">Pemuda Advent
-                            (PA)</button>
-                        <button type="button" class="tab-btn" id="btn-tab-rabu" onclick="switchTab('rabu')">Rabu
-                            Malam</button>
+            <!-- ================= HOME TAB ================= -->
+            <section id="tab-home" class="tab-pane active">
+                <!-- Hero Google Slideshow (Clean Auto-Slide 3s & Gradient Bottom Fade) -->
+                <div class="hero-slideshow-container">
+                    <div class="hero-slideshow-iframe-wrapper">
+                        <iframe id="heroSlideshowIframe" class="hero-slideshow-iframe"
+                            src="https://docs.google.com/presentation/d/1YHwJryRsK3Zit8VUBBv2Rwn1OAdzSVZghIzhLAUXP0Q/embed?start=true&loop=true&delayms=3000&rm=minimal"
+                            frameborder="0" allowfullscreen="true" mozallowfullscreen="true"
+                            webkitallowfullscreen="true" title="Slideshow GMAHK Sepanjang">
+                        </iframe>
                     </div>
 
-                    <!-- ============================================================ -->
-                    <!-- TAB 1: SABAT RAYA                                            -->
-                    <!-- Berisi 3 section: Informasi Umum, Sekolah Sabat, Khotbah     -->
-                    <!-- ============================================================ -->
-                    <div id="tab-sabat" class="tab-pane active">
-
-                        <!-- -------------------------------- -->
-                        <!-- SECTION 1.1: INFORMASI UMUM      -->
-                        <!-- Tanggal, Jenis Sabat, Waktu, POS  -->
-                        <!-- -------------------------------- -->
-                        <section class="form-section">
-                            <h2>Informasi Umum</h2>
-                            <div class="form-grid">
-                                <div class="input-row-half">
-                                    <div class="input-group">
-                                        <label for="tanggal">Tanggal Sabat</label>
-                                        <input type="date" id="tanggal" required>
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="jenisSabat">Jenis Sabat (Opsional)</label>
-                                        <input type="text" id="jenisSabat" placeholder="Contoh: SSAA / PERJAMUAN KUDUS"
-                                            value="">
-                                    </div>
-                                </div>
-                                <div class="input-row-half">
-                                    <div class="input-group">
-                                        <label for="sabatKe">Sabat Ke</label>
-                                        <input type="text" id="sabatKe" placeholder="...." value="">
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="tw">Triwulan (TW)</label>
-                                        <input type="text" id="tw" placeholder="...." value="">
-                                    </div>
-                                </div>
-                                <div class="input-row-half">
-                                    <div class="input-group">
-                                        <label for="waktuMulai">Mulai Pukul (WIB)</label>
-                                        <input type="text" id="waktuMulai" value="09.00">
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="waktuSelesai">Selesai Pukul (WIB)</label>
-                                        <input type="text" id="waktuSelesai" value="12.00">
-                                    </div>
-                                </div>
-                                <!-- Dropdown Pianist, Operator, Soundman (Eksklusif, saling kunci) -->
-                                <div class="input-group">
-                                    <label for="ssPianist">Pianist</label>
-                                    <select id="ssPianist" class="exclusive-select">
-                                        <option value="">-- Pilih Pianist --</option>
-                                        <option value="Sdra. Meakhel">Sdra. Meakhel</option>
-                                        <option value="Sdra. Fabian">Sdra. Fabian</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssOperator">Operator</label>
-                                    <select id="ssOperator" class="exclusive-select">
-                                        <option value="">-- Pilih Operator --</option>
-                                        <option value="Sdra. Fahrell">Sdra. Fahrell</option>
-                                        <option value="Sdra. Meakhel">Sdra. Meakhel</option>
-                                        <option value="Sdra. Fabian">Sdra. Fabian</option>
-                                        <option value="Sdra. Misaell">Sdra. Misaell</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssSoundman">Soundman</label>
-                                    <select id="ssSoundman" class="exclusive-select">
-                                        <option value="">-- Pilih Soundman --</option>
-                                        <option value="Sdra. Fahrell">Sdra. Fahrell</option>
-                                        <option value="Sdra. Meakhel">Sdra. Meakhel</option>
-                                        <option value="Sdra. Fabian">Sdra. Fabian</option>
-                                        <option value="Sdra. Misaell">Sdra. Misaell</option>
-                                        <option value="Sdra. Jimmy">Sdra. Jimmy</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- -------------------------------- -->
-                        <!-- SECTION 1.2: IBADAH SEKOLAH SABAT -->
-                        <!-- MC, Lagu, Ayat, Mission, dll      -->
-                        <!-- -------------------------------- -->
-                        <section class="form-section">
-                            <h2>Ibadah Sekolah Sabat</h2>
-                            <div class="form-grid">
-                                <div class="input-group">
-                                    <label for="ssMc">MC + Yel Yel SS</label>
-                                    <input type="text" id="ssMc" placeholder="Nama MC (contoh: Sdri Anabel)">
-                                </div>
-                                <div class="input-group">
-                                    <label>Lagu Buka (LSEL)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="ssLaguBukaNo" placeholder="No.">
-                                        <div class="autocomplete-container">
-                                            <input type="text" id="ssLaguBukaJudul" placeholder="Judul Lagu"
-                                                autocomplete="off">
-                                            <div class="autocomplete-list" id="auto_ssLaguBuka"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssAyatDoa">Ayat Inti SS dan Doa Buka</label>
-                                    <input type="text" id="ssAyatDoa" placeholder="Nama petugas (contoh: Sdri Elvira)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssMission">Bacaan Berita Mission</label>
-                                    <input type="text" id="ssMission" placeholder="Nama petugas (contoh: Sdri Gitta)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssRingkasan">Ringkasan Sekolah Sabat Dewasa</label>
-                                    <input type="text" id="ssRingkasan"
-                                        placeholder="Nama pemateri (contoh: Bpk Daniel)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssPromosi">Promosi Pelayanan Perorangan</label>
-                                    <input type="text" id="ssPromosi" placeholder="Nama petugas (contoh: Bpk Frans K)">
-                                </div>
-                                <div class="input-group">
-                                    <label>Lagu Tutup (LSEL)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="ssLaguTutupNo" placeholder="No.">
-                                        <div class="autocomplete-container">
-                                            <input type="text" id="ssLaguTutupJudul" placeholder="Judul Lagu"
-                                                autocomplete="off">
-                                            <div class="autocomplete-list" id="auto_ssLaguTutup"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <label for="ssDoaTutup">Doa Tutup</label>
-                                    <input type="text" id="ssDoaTutup" placeholder="Nama pendoa">
-                                </div>
-                                <div class="input-group">
-                                    <label for="pengumuman">Pengumuman</label>
-                                    <input type="text" id="pengumuman" value="Officers/Tua-Tua Jemaat"
-                                        placeholder="Petugas pengumuman">
-                                </div>
-                                <div class="input-group">
-                                    <label for="khCerita">Cerita Alkitab Anak</label>
-                                    <input type="text" id="khCerita" placeholder="Nama pencerita (contoh: Sdr Jimmy)">
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ---------------------------------------- -->
-                        <!-- SECTION 1.3: IBADAH KHOTBAH              -->
-                        <!-- Diakon, Pemimpin Lagu, Doa, Pengkhotbah  -->
-                        <!-- ---------------------------------------- -->
-                        <section class="form-section">
-                            <h2>Ibadah Khotbah</h2>
-                            <div class="form-grid">
-                                <!-- Diakon/Diakones -->
-                                <div class="input-row-half">
-                                    <div class="input-group">
-                                        <label for="khDiakon1">Diakon/Diakones 1</label>
-                                        <input type="text" id="khDiakon1" placeholder="Nama (contoh: Sdr Avis)">
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="khDiakon2">Diakon/Diakones 2</label>
-                                        <input type="text" id="khDiakon2" placeholder="Nama (contoh: Sdr Hanannia)">
-                                    </div>
-                                </div>
-
-                                <!-- Dropdown Pemimpin Lagu (Eksklusif, saling kunci dengan POS) -->
-                                <div class="input-group">
-                                    <label for="khPemimpinLagu">Pemimpin Lagu</label>
-                                    <select id="khPemimpinLagu" class="exclusive-select">
-                                        <option value="">-- Pilih Pemimpin Lagu --</option>
-                                        <option value="Sdra. Jimmy">Sdra. Jimmy</option>
-                                        <option value="Sdri. Tata">Sdri. Tata</option>
-                                        <option value="Ibu Wiwin">Ibu Wiwin</option>
-                                    </select>
-                                </div>
-
-                                <!-- Info Lagu Tetap (Tidak bisa diedit, hanya tampilan) -->
-                                <div class="static-notice">
-                                    <span class="badge">Lagu Khotbah Tetap</span>
-                                    <p><strong>Lagu Mimbar:</strong> LSEL No. 515 "Tuhan Ada Dalam Bait Allah"</p>
-                                    <p><strong>Lagu Pembuka:</strong> LSEL No. 1 "Di Hadapan Hadirat-Mu"</p>
-                                    <p><strong>Lagu Pengantar Syafaat:</strong> LSEL No. 520 "Kami Datang Dalam Doa"</p>
-                                    <p><strong>Lagu Sambutan Syafaat:</strong> LSEL No. 516 "Dengar Ya Tuhan"</p>
-                                    <p><strong>Lagu Persembahan:</strong> LSEL No. 260 "Bawa Persembahanmu"</p>
-                                    <p><strong>Lagu Sambutan Persembahan:</strong> LSEL No. 21 "Pada-Mu Allah Ku Puji"
-                                    </p>
-                                    <p><strong>Lagu Sambutan Doa Tutup dan Doa Berkat:</strong> LSEL No. 523 "Tuhan
-                                        Dengar Doa Kami"</p>
-                                </div>
-
-                                <!-- Doa Buka -->
-                                <div class="input-group">
-                                    <label for="khDoaBuka">Doa Buka</label>
-                                    <input type="text" id="khDoaBuka" placeholder="Nama pendoa (contoh: Sdr Ricky K)">
-                                </div>
-
-                                <!-- Ayat Bersahutan -->
-                                <div class="input-group">
-                                    <label>Ayat Bersahutan</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="khAyatBersahutanNama" placeholder="Nama pembaca"
-                                            style="flex: 1;">
-                                        <input type="text" id="khAyatBersahutanRef"
-                                            placeholder="Referensi Ayat (contoh: Lukas 9:41-43)" style="flex: 2;">
-                                    </div>
-                                </div>
-
-                                <!-- Lagu Buka Khotbah -->
-                                <div class="input-group">
-                                    <label>Lagu Buka (LSEL)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="khLaguBukaNo" placeholder="No.">
-                                        <div class="autocomplete-container">
-                                            <input type="text" id="khLaguBukaJudul" placeholder="Judul Lagu"
-                                                autocomplete="off">
-                                            <div class="autocomplete-list" id="auto_khLaguBuka"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Doa Syafaat -->
-                                <div class="input-group">
-                                    <label for="khDoaSyafaat">Doa Syafaat</label>
-                                    <input type="text" id="khDoaSyafaat" placeholder="Nama pendoa">
-                                </div>
-
-                                <!-- Persembahan -->
-                                <div class="input-group">
-                                    <label for="khBacaanPersembahan">Bacaan Persembahan & Persepuluhan</label>
-                                    <input type="text" id="khBacaanPersembahan" placeholder="Nama petugas">
-                                </div>
-
-                                <!-- Doa Persembahan -->
-                                <div class="input-group">
-                                    <label for="khDoaPersembahan">Doa Persembahan</label>
-                                    <input type="text" id="khDoaPersembahan" placeholder="Nama pendoa">
-                                </div>
-
-                                <!-- Lagu Pujian (dengan Toggle tampilkan/sembunyikan) -->
-                                <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <label for="khLaguPujian">Lagu Pujian</label>
-                                        <label
-                                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--accent);">
-                                            <input type="checkbox" id="togglePujianSabat" checked
-                                                style="width: 18px; height: 18px; accent-color: var(--accent);">
-                                            Tampilkan
-                                        </label>
-                                    </div>
-                                    <input type="text" id="khLaguPujian"
-                                        placeholder="Contoh: SSA Sepanjang / VG Kaum Pria">
-                                </div>
-
-                                <!-- Ayat Inti Khotbah -->
-                                <div class="input-group">
-                                    <label>Ayat Inti Khotbah</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="khAyatIntiNama" placeholder="Nama pembaca"
-                                            style="flex: 1;">
-                                        <input type="text" id="khAyatIntiRef"
-                                            placeholder="Referensi (contoh: Markus 9:29)" style="flex: 2;">
-                                    </div>
-                                </div>
-
-                                <!-- Info Lagu Tema Tetap Per Tahun -->
-                                <div class="static-notice">
-                                    <span class="badge">Lagu Khotbah Tetap Per Tahun</span>
-                                    <p><strong>Lagu Tema:</strong> "MISI KITA"</p>
-                                </div>
-
-                                <!-- Pengkhotbah -->
-                                <div class="input-group">
-                                    <label>PENGKHOTBAH</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="khPengkhotbahNama" placeholder="Nama Pengkhotbah"
-                                            style="flex: 1;">
-                                        <input type="text" id="khPengkhotbahJudul" placeholder="Judul Khotbah"
-                                            style="flex: 2;">
-                                    </div>
-                                </div>
-
-                                <!-- Lagu Tutup Khotbah -->
-                                <div class="input-group">
-                                    <label>Lagu Tutup (LSEL)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="khLaguTutupNo" placeholder="No.">
-                                        <div class="autocomplete-container">
-                                            <input type="text" id="khLaguTutupJudul" placeholder="Judul Lagu"
-                                                autocomplete="off">
-                                            <div class="autocomplete-list" id="auto_khLaguTutup"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Doa Berkat -->
-                                <div class="input-group">
-                                    <label for="khDoaBerkat">Doa TUTUP dan Doa BERKAT</label>
-                                    <input type="text" id="khDoaBerkat" placeholder="Nama Pdt / Pendoa"
-                                        value="Pdt. Benny Lumbantobing">
-                                </div>
-                            </div>
-                        </section>
-                    </div> <!-- End tab-sabat -->
-
-                    <!-- ============================================================ -->
-                    <!-- TAB 2: PEMUDA ADVENT (PA)                                    -->
-                    <!-- Berisi 1 section: Ibadah Pemuda Advent                       -->
-                    <!-- ============================================================ -->
-                    <div id="tab-pa" class="tab-pane">
-                        <section class="form-section">
-                            <h2>Ibadah Pemuda Advent</h2>
-                            <div class="form-grid">
-                                <div class="input-group">
-                                    <label for="paTanggal">Tanggal Pelaksanaan</label>
-                                    <div class="date-wrapper">
-                                        <input type="date" id="paTanggal" required>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <label for="paMc">MC & Janji PA</label>
-                                    <input type="text" id="paMc" placeholder="Contoh: Sdra Fahrell">
-                                </div>
-                                <div class="input-group">
-                                    <label>Lagu Buka (AYS)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="paLaguBukaNo" placeholder="No. (contoh: 9)">
-                                        <div class="autocomplete-container">
-                                            <input type="text" id="paLaguBukaJudul" placeholder="Judul Lagu"
-                                                autocomplete="off">
-                                            <div class="autocomplete-list" id="auto_paLaguBuka"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <label for="paAyatDoa">Ayat Inti & Doa Buka</label>
-                                    <input type="text" id="paAyatDoa" placeholder="Nama petugas">
-                                </div>
-                                <div class="input-group">
-                                    <label>Belajar Alkitab Bersama (BAB)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="paBabNama" placeholder="Nama pembawa"
-                                            value="Pdt. Benny Lumbantobing" style="flex: 1;">
-                                        <input type="text" id="paBabJudul" placeholder="Topik/Ayat (contoh: Wahyu 7)"
-                                            style="flex: 1;">
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <label for="paFunfact">Funfact / Tips</label>
-                                    <input type="text" id="paFunfact" placeholder="Contoh: Kak Wiwin">
-                                </div>
-                                <div class="input-group">
-                                    <label for="paGames">Games</label>
-                                    <input type="text" id="paGames" placeholder="Contoh: Sdra Misaell">
-                                </div>
-                                <div class="input-group">
-                                    <label for="paAcaraInti">Acara Inti</label>
-                                    <input type="text" id="paAcaraInti" placeholder="Contoh: Sdra Jimmy">
-                                </div>
-                                <div class="input-group">
-                                    <label>Lagu Tutup (AYS)</label>
-                                    <div class="input-row-song">
-                                        <input type="text" id="paLaguTutupNo" placeholder="No.">
-                                        <div class="autocomplete-container">
-                                            <input type="text" id="paLaguTutupJudul" placeholder="Judul Lagu"
-                                                autocomplete="off">
-                                            <div class="autocomplete-list" id="auto_paLaguTutup"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <label for="paDoaTutup">Doa Tutup</label>
-                                    <input type="text" id="paDoaTutup" placeholder="Nama pendoa">
-                                </div>
-                                <div class="input-group">
-                                    <label for="paPengumuman">Pengumuman PA</label>
-                                    <input type="text" id="paPengumuman" value="Ketua PA"
-                                        placeholder="Petugas pengumuman">
-                                </div>
-                                <div class="input-group">
-                                    <label for="paBendahara">Laporan Bendahara</label>
-                                    <input type="text" id="paBendahara" value="Bendahara PA"
-                                        placeholder="Petugas bendahara">
-                                </div>
-                            </div>
-                        </section>
-                    </div> <!-- End tab-pa -->
-
-                    <!-- ============================================================ -->
-                    <!-- TAB 3: RABU MALAM                                            -->
-                    <!-- Berisi 1 section: Ibadah Rabu Malam (via Zoom)               -->
-                    <!-- ============================================================ -->
-                    <div id="tab-rabu" class="tab-pane">
-                        <section class="form-section">
-                            <h2>Ibadah Rabu Malam</h2>
-                            <div class="form-grid">
-                                <div class="input-group">
-                                    <label for="rmTanggal">Tanggal</label>
-                                    <input type="date" id="rmTanggal" required>
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmHost">Host</label>
-                                    <input type="text" id="rmHost" placeholder="Nama Host (contoh: Ricky K)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmMcDoa">MC, Doa</label>
-                                    <input type="text" id="rmMcDoa" placeholder="Nama MC/Doa (contoh: Meakhel G)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmKesaksian">Kesaksian</label>
-                                    <input type="text" id="rmKesaksian"
-                                        placeholder="Nama petugas (contoh: Kel Enas Febryanto)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmDoaSyafaat">Doa Syafaat</label>
-                                    <input type="text" id="rmDoaSyafaat" value="Pdt. Benny Lumbantobing"
-                                        placeholder="Nama pendoa">
-                                </div>
-                                <!-- Pujian (dengan Toggle tampilkan/sembunyikan) -->
-                                <div class="input-group">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <label for="rmPujian">Pujian</label>
-                                        <label
-                                            style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--accent);">
-                                            <input type="checkbox" id="togglePujianRabu" checked
-                                                style="width: 18px; height: 18px; accent-color: var(--accent);">
-                                            Tampilkan
-                                        </label>
-                                    </div>
-                                    <input type="text" id="rmPujian" placeholder="Contoh: VG Kaum Pria">
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmFirman">Firman Tuhan</label>
-                                    <input type="text" id="rmFirman"
-                                        placeholder="Nama Pembicara (contoh: Irfan Haniffa)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmDoaTutup">Doa Tutup</label>
-                                    <input type="text" id="rmDoaTutup" placeholder="Nama Pendoa (contoh: Jimmy T)">
-                                </div>
-                                <div class="input-group">
-                                    <label for="rmPengumuman">Ucapan Terima kasih & Pengumuman</label>
-                                    <input type="text" id="rmPengumuman" value="Ketua" placeholder="Petugas pengumuman">
-                                </div>
-                            </div>
-                        </section>
-                    </div> <!-- End tab-rabu -->
-
+                    <!-- Bottom Gradient Fade into --bg-app -->
+                    <div class="hero-slideshow-fade"></div>
                 </div>
-            </form>
 
-            <!-- ====================================== -->
-            <!-- PANEL KANAN: LIVE PREVIEW TEKS WA      -->
-            <!-- ====================================== -->
-            <div class="preview-panel">
-                <div class="preview-header">
-                    <h2>Live Preview Teks</h2>
-                    <button class="btn btn-primary" onclick="copyToClipboard()" id="copyBtnTop">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                <!-- Greeting Card -->
+                <div class="card greeting-card">
+                    <div class="greeting-header">
+                        <h3 class="greeting-title-main">Syalom!</h3>
+                    </div>
+                    <h4 class="greeting-subtitle">Selamat Datang di Gereja Masehi Advent Hari Ketujuh - Sepanjang,
+                        Surabaya</h4>
+                    <p class="greeting-desc">
+                        Hadir sebagai rumah rohani yang penuh kasih dan damai. Berlokasi strategis di dekat Bandara
+                        Juanda, Stasiun Sepanjang, dan Terminal Bungurasih, kami siap menyambut Anda dalam hadirat Tuhan
+                        dengan suasana ibadah yang nyaman, hangat dan bersahabat.
+                    </p>
+                    <ul class="greeting-features">
+                        <li><span class="bullet">•</span> <strong>Parkir Luas & Nyaman</strong></li>
+                        <li><span class="bullet">•</span> <strong>Tempat Ibadah yang Nyaman</strong></li>
+                        <li><span class="bullet">•</span> <strong>Melayani dengan Kasih</strong></li>
+                    </ul>
+                    <p class="greeting-desc">
+                        Kita percaya bahwa gereja bukan hanya tempat beribadah, tetapi juga rumah bagi setiap orang yang
+                        rindu mengalami kasih Tuhan secara nyata. Mari beribadah bersama kami dan rasakan sukacita
+                        beribadah bersama!
+                    </p>
+                    <div class="greeting-footer">
+                        <strong>Kami menantikan kehadiran Anda!</strong>
+                    </div>
+                </div>
+
+                <!-- Quick Services Grid (6 Cards) -->
+                <h4 class="section-title">Layanan & Informasi Cepat</h4>
+                <div class="services-grid">
+                    <div class="service-card" onclick="switchTab('susunan')">
+                        <div class="service-icon maroon-bg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M8 2v4" />
+                                <path d="M16 2v4" />
+                                <rect width="18" height="18" x="3" y="4" rx="2" />
+                                <path d="M3 10h18" />
+                                <path d="m9 16 2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h5>Jadwal Sabat</h5>
+                        <p>Susunan acara & petugas ibadah Sabat ini</p>
+                    </div>
+
+                    <div class="service-card" onclick="switchTab('persembahan')">
+                        <div class="service-icon gold-bg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="20" height="14" x="2" y="5" rx="2" />
+                                <line x1="2" x2="22" y1="10" y2="10" />
+                            </svg>
+                        </div>
+                        <h5>Persembahan</h5>
+                        <p>Perpuluhan, persembahan & donasi pembangunan</p>
+                    </div>
+
+                    <div class="service-card" onclick="switchTab('tentang')">
+                        <div class="service-icon rose-bg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </div>
+                        <h5>Tentang Kami</h5>
+                        <p>Profil pendeta & pengurus jemaat gereja</p>
+                    </div>
+
+                    <div class="service-card"
+                        onclick="window.open('https://sabbath-school.adventech.io/in/', '_blank')">
+                        <div class="service-icon blue-bg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg>
+                        </div>
+                        <h5>Sekolah Sabat</h5>
+                        <p>Pedoman pendalaman Alkitab dewasa</p>
+                    </div>
+
+                    <div class="service-card"
+                        onclick="window.open('https://open.spotify.com/show/196nKOCMlvczUHFnglak1n?si=116d5b6b32c41fa', '_blank')">
+                        <div class="service-icon green-bg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polygon points="10 8 16 12 10 16 10 8" />
+                            </svg>
+                        </div>
+                        <h5>Renungan Harian</h5>
+                        <p>Podcast AWR renungan harian Alkitab</p>
+                    </div>
+
+                    <div class="service-card" onclick="window.open('https://play.lagusion.org/', '_blank')">
+                        <div class="service-icon purple-bg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M9 18V5l12-2v13" />
+                                <circle cx="6" cy="18" r="3" />
+                                <circle cx="18" cy="16" r="3" />
+                            </svg>
+                        </div>
+                        <h5>Lagu Sion</h5>
+                        <p>Buku & audio lagu-lagu pujian</p>
+                    </div>
+                </div>
+
+                <!-- Location Section (Full 100% Width) -->
+                <h4 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    Lokasi Gereja
+                </h4>
+                <div class="card location-card-full">
+                    <div class="map-embed-wrapper">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.3409156488!2d112.6976491!3d-7.3391087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fdec438f2ddb%3A0xa82b5101a9f95ebe!2sGereja%20Masehi%20Advent%20Hari%20Ketujuh%20(GMAHK)%20Sepanjang!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+                            width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" title="Peta Lokasi GMAHK Sepanjang">
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Google Maps Review Card (Fully Clickable Card) -->
+                <div class="service-card google-review-card-full"
+                    onclick="window.open('https://www.google.com/maps/place/Gereja+Masehi+Advent+Hari+Ketujuh+(GMAHK)+Sepanjang/@-7.3391087,112.6976491,2265m/data=!3m1!1e3!4m6!3m5!1s0x2dd7fdec438f2ddb:0xa82b5101a9f95ebe!8m2!3d-7.3391087!4d112.6976491!16s%2Fg%2F11vdh0dg9_?entry=ttu&g_ep=EgoyMDI2MDcyVi4wIKXMDSoASAFQAw%3D%3D', '_blank')">
+                    <div class="review-card-content">
+                        <div class="review-card-left">
+                            <div class="review-icon-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="#FFC107" stroke="#FFC107" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h5>Review Kami di Google Maps</h5>
+                                <p>Bantu berikan ulasan dan penilaian bintang untuk GMAHK Sepanjang di Google Maps</p>
+                            </div>
+                        </div>
+                        <div class="review-external-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                <polyline points="15 3 21 3 21 9" />
+                                <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horizontal Social Media Footer Bar -->
+                <h4 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Ikuti Media Sosial Kami
+                </h4>
+                <div class="social-horizontal-bar">
+                    <a href="https://www.instagram.com/kupas_sby" target="_blank" rel="noopener" class="social-h-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                         </svg>
-                        Salin ke Clipboard
+                        <span>@kupas_sby</span>
+                    </a>
+
+                    <a href="https://www.facebook.com/profile.php?id=61559546713681" target="_blank" rel="noopener"
+                        class="social-h-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                        </svg>
+                        <span>GMAHK Sepanjang</span>
+                    </a>
+
+                    <a href="https://www.youtube.com/@gmahksepanjang" target="_blank" rel="noopener"
+                        class="social-h-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.56 49.56 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+                            <polygon points="10 15 15 12 10 9 10 15" />
+                        </svg>
+                        <span>@gmahksepanjang</span>
+                    </a>
+
+                    <a href="https://www.tiktok.com/@kupas_sby" target="_blank" rel="noopener" class="social-h-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                        </svg>
+                        <span>@kupas_sby</span>
+                    </a>
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <p>&copy; 2026 - v2.0.0. GMAHK Sepanjang. All rights reserved.</p>
+                    <p class="developer-credit">Developed by <span>Meakhel Gunawan</span></p>
+                </footer>
+            </section>
+
+            <!-- ================= SUSUNAN IBADAH TAB ================= -->
+            <section id="tab-susunan" class="tab-pane">
+                <div class="susunan-header">
+                    <div class="susunan-header-title">
+                        <h2>Susunan Ibadah Sabat</h2>
+                        <p>Jadwal dan Pelayan Ibadah Jemaat GMAHK Sepanjang</p>
+                    </div>
+                    <button class="btn btn-secondary-outline admin-header-btn" id="adminLoginBtn"
+                        onclick="openLoginModal()" title="Login Admin Supabase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                        <span>Admin</span>
                     </button>
                 </div>
-                <div class="preview-scroll">
-                    <pre id="previewText" class="whatsapp-text"></pre>
+
+                <!-- Sekilas Jam Ibadah Card -->
+                <div class="card schedule-summary-card">
+                    <div class="schedule-summary-header">
+                        <div class="schedule-icon-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <h3>Jam Ibadah</h3>
+                    </div>
+
+                    <div class="schedule-summary-grid">
+                        <!-- Rabu -->
+                        <div class="schedule-day-group">
+                            <div class="day-badge wednesday">Setiap Rabu</div>
+                            <ul class="schedule-time-list">
+                                <li style="border-bottom: none; padding-bottom: 0;">
+                                    <span class="time-range">19.00 - 20.00 WIB</span>
+                                    <span class="service-name">Ibadah Permintaan Doa</span>
+                                </li>
+                            </ul>
+
+                            <!-- Zoom Details Box -->
+                            <div class="zoom-details-box"
+                                style="margin-top: 12px; padding: 12px; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; display: flex; flex-direction: column; gap: 6px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                    <!-- SVG Zoom Icon -->
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="#2D8CFF"
+                                        style="flex-shrink: 0;">
+                                        <path
+                                            d="M4.585 5.907a3.003 3.003 0 012.83-2.065h9.17a3.003 3.003 0 013 3v9.172a3.003 3.003 0 01-3 3h-9.17a3.003 3.003 0 01-3-3V5.907zM18 9.756l3.413-2.56a.998.998 0 01-1.587.8v7.973a.998.998 0 01-1.587.8L18 14.215V9.756z" />
+                                    </svg>
+                                    <span style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Zoom
+                                        Meeting</span>
+                                </div>
+                                <div
+                                    style="font-size: 0.78rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; padding-left: 2px; line-height: 1.4;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-color); padding-bottom: 4px;">
+                                        <strong>Meeting ID:</strong>
+                                        <span
+                                            style="font-family: monospace; color: var(--text-main); font-weight: 600;">821
+                                            0118 7786</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding-top: 2px;">
+                                        <strong>Passcode:</strong>
+                                        <span
+                                            style="font-family: monospace; color: var(--text-main); font-weight: 600;">sepanjang</span>
+                                    </div>
+                                </div>
+
+                                <!-- Join Button -->
+                                <a href="https://us06web.zoom.us/j/82101187786?pwd=dJOh8nzgiWRMFTkMvxByhbSrbnMtiH.1"
+                                    target="_blank" class="btn btn-primary"
+                                    style="margin-top: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; font-size: 0.8rem; text-decoration: none; border-radius: 8px; background-color: #2D8CFF; border-color: #2D8CFF; color: white; font-weight: 700; transition: background-color 0.2s, transform 0.1s; height: auto; box-shadow: 0 2px 4px rgba(45, 140, 255, 0.25);"
+                                    onmouseover="this.style.backgroundColor='#1a7be6'"
+                                    onmouseout="this.style.backgroundColor='#2D8CFF'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                        <polyline points="15 3 21 3 21 9" />
+                                        <line x1="10" y1="14" x2="21" y2="3" />
+                                    </svg>
+                                    <span>Gabung Zoom</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Sabtu -->
+                        <div class="schedule-day-group">
+                            <div class="day-badge saturday">Setiap Sabtu</div>
+                            <ul class="schedule-time-list">
+                                <li>
+                                    <span class="time-range">09.00 - 10.30 WIB</span>
+                                    <span class="service-name">Ibadah Sekolah Sabat</span>
+                                </li>
+                                <li>
+                                    <span class="time-range">10.30 - 12.00 WIB</span>
+                                    <span class="service-name">Ibadah Khotbah</span>
+                                </li>
+                                <li>
+                                    <span class="time-range">13.00 - 14.00 WIB</span>
+                                    <span class="service-name">Pendalaman Alkitab</span>
+                                </li>
+                                <li>
+                                    <span class="time-range">14.00 - 16.00 WIB</span>
+                                    <span class="service-name">Ibadah Pemuda</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-tab Switcher (Segment Control) -->
+                <div class="sub-tab-switcher">
+                    <button class="sub-tab-btn active" id="sub-tab-btn-acara" onclick="switchSubTab('acara')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" x2="21" y1="6" y2="6" />
+                            <line x1="8" x2="21" y1="12" y2="12" />
+                            <line x1="8" x2="21" y1="18" y2="18" />
+                            <line x1="3" x2="3.01" y1="6" y2="6" />
+                            <line x1="3" x2="3.01" y1="12" y2="12" />
+                            <line x1="3" x2="3.01" y1="18" y2="18" />
+                        </svg>
+                        Susunan Acara
+                    </button>
+                    <button class="sub-tab-btn" id="sub-tab-btn-petugas" onclick="switchSubTab('petugas')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        Jadwal Petugas
+                    </button>
+                </div>
+
+                <!-- SUB-TAB CONTENT 1: SUSUNAN ACARA -->
+                <div id="sub-tab-content-acara" class="sub-tab-pane active">
+                    <!-- Program Type Switcher untuk Acara -->
+                    <div class="program-switcher">
+                        <button class="switcher-btn active" id="program-acara-btn-sabat"
+                            onclick="filterProgramAcara('sabat')">Sabat Raya</button>
+                        <button class="switcher-btn" id="program-acara-btn-pa" onclick="filterProgramAcara('pa')">Pemuda
+                            Advent</button>
+                        <button class="switcher-btn" id="program-acara-btn-rabu"
+                            onclick="filterProgramAcara('rabu')">Rabu Malam</button>
+                    </div>
+
+                    <!-- Main Schedule Card (Static, NO Date Arrows) -->
+                    <div class="card schedule-main-card">
+                        <div class="schedule-card-header">
+                            <div class="header-date-info">
+                                <div class="date-badge">
+                                    <span class="day" id="acaraDayText">18</span>
+                                    <span class="month" id="acaraMonthText">Jul</span>
+                                </div>
+                                <div class="schedule-title-section">
+                                    <h4 id="acaraTitleText">Ibadah Sabat Raya</h4>
+                                    <p class="schedule-subtitle" id="acaraSubtitleText">Sabat, 18 Juli 2026</p>
+                                </div>
+                            </div>
+                            <div class="header-actions-group">
+                                <button class="btn btn-danger header-action-btn" id="btn-reset-edit"
+                                    onclick="resetEditSementara()" title="Reset Data" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                        <path d="M3 3v5h5" />
+                                    </svg>
+                                    <span>Reset Data</span>
+                                </button>
+                                <button class="btn btn-secondary header-action-btn" id="btn-toggle-edit"
+                                    onclick="toggleEditSementara()" title="Edit Sementara">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                        <path d="m15 5 4 4" />
+                                    </svg>
+                                    <span>Edit Sementara</span>
+                                </button>
+                                <button class="btn btn-primary header-action-btn copy-wa-header-btn"
+                                    onclick="copyScheduleText()" title="Salin Format WA">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                    </svg>
+                                    <span>Salin Format WA</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="schedule-timeline" id="acaraTimelineContainer">
+                            <!-- Timeline loaded dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Quick info card -->
+                    <div class="info-alert-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" x2="12" y1="16" y2="12" />
+                            <line x1="12" x2="12.01" y1="8" y2="8" />
+                        </svg>
+                        <p>Petugas ibadah diharapkan datang 15 menit sebelum acara dimulai untuk berdoa bersama di
+                            ruang persiapan.</p>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB CONTENT 2: JADWAL PETUGAS -->
+                <div id="sub-tab-content-petugas" class="sub-tab-pane">
+                    <!-- Google Drive Link Card (Seluruh Kartu Bisa Diklik) -->
+                    <a href="https://drive.google.com" target="_blank" class="card drive-banner-card">
+                        <div class="drive-banner-left">
+                            <div class="drive-banner-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                            </div>
+                            <div class="drive-banner-content">
+                                <h5>Jadwal Lengkap</h5>
+                                <p>Unduh PDF jadwal pelayanan bulanan / triwulan di Google Drive.</p>
+                            </div>
+                        </div>
+                        <div class="drive-redirect-action">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <!-- Program Type Switcher untuk Roster (Hanya Sabat Raya & Pemuda Advent) -->
+                    <div class="program-switcher">
+                        <button class="switcher-btn active" id="program-petugas-btn-sabat"
+                            onclick="filterProgramPetugas('sabat')">Sabat Raya</button>
+                        <button class="switcher-btn" id="program-petugas-btn-pa"
+                            onclick="filterProgramPetugas('pa')">Pemuda Advent</button>
+                    </div>
+
+                    <!-- Date Navigator (FOR ROSTER ONLY) -->
+                    <div class="date-navigator-container">
+                        <button class="nav-arrow-btn" onclick="navigateRosterDate('prev')" title="Sebelumnya">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                        </button>
+
+                        <div class="navigator-date-info">
+                            <h4 id="rosterDateTitle">Sabtu, 18 Juli 2026</h4>
+                            <span class="badge-accent" id="rosterProgramTag">IBADAH SABAT RAYA</span>
+                        </div>
+
+                        <button class="nav-arrow-btn" onclick="navigateRosterDate('next')" title="Berikutnya">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Roster Dynamic Content Card -->
+                    <div class="card roster-card" id="rosterDetailsContainer">
+                        <!-- Loaded dynamically by JS -->
+                    </div>
+
+                    <!-- Action for sharing current duty list -->
+                    <div class="roster-share-section">
+                        <button class="btn btn-primary" onclick="copyCurrentRosterWA()" style="width: 100%;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                <polyline points="16 6 12 2 8 6" />
+                                <line x1="12" x2="12" y1="2" y2="15" />
+                            </svg>
+                            Bagikan Pengumuman Petugas (WA)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PERSEMBAHAN TAB ================= -->
+            <section id="tab-persembahan" class="tab-pane">
+                <!-- Fitur Segera Hadir (Coming Soon) Card -->
+                <div class="card coming-soon-card"
+                    style="text-align: center; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; min-height: 380px; margin-top: 10px;">
+                    <div class="coming-soon-icon-wrapper"
+                        style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(74, 18, 30, 0.2); animation: pulse 2.5s infinite ease-in-out;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div style="max-width: 420px; display: flex; flex-direction: column; gap: 8px;">
+                        <h2
+                            style="font-size: 1.65rem; font-weight: 800; color: var(--primary-color); margin: 0; letter-spacing: -0.02em;">
+                            Segera Hadir!</h2>
+                        <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin: 0;">Fitur
+                            Persembahan & Perpuluhan online sedang dipersiapkan.</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin: 4px 0 0 0;">
+                            Halaman ini sedang dalam pengembangan untuk mempermudah Anda memberikan persembahan secara
+                            digital yang aman, praktis, dan transparan.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="switchTab('home')"
+                        style="margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.88rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12" />
+                            <polyline points="12 19 5 12 12 5" />
+                        </svg>
+                        <span>Kembali ke Home</span>
+                    </button>
+                </div>
+
+                <!-- BACKUP ORIGINAL CONTENT (COMMENTED OUT)
+                <div class="persembahan-header">
+                    <h2>Persembahan & Perpuluhan</h2>
+                    <p>Saluran berkat bagi pekerjaan Tuhan di Jemaat Sepanjang</p>
+                </div>
+
+                <div class="donation-grid">
+
+                    <div class="card qris-card">
+                        <h4>Pindai QRIS Resmi</h4>
+                        <p class="qris-subtitle">GMAHK Jemaat Sepanjang</p>
+
+                        <div class="qris-image-container">
+                            <div class="qris-mockup">
+                                <div class="qris-corner top-left"></div>
+                                <div class="qris-corner top-right"></div>
+                                <div class="qris-corner bottom-left"></div>
+                                <div class="qris-corner bottom-right"></div>
+                                <div class="qris-logo-header">
+                                    <span class="qris-brand">QRIS</span>
+                                    <span class="gpn-brand">GPN</span>
+                                </div>
+                                <div class="qris-code-box">
+                                    <svg viewBox="0 0 100 100" class="qris-svg">
+                                        <rect x="10" y="10" width="25" height="25" fill="currentColor" />
+                                        <rect x="15" y="15" width="15" height="15" fill="white" />
+                                        <rect x="18" y="18" width="9" height="9" fill="currentColor" />
+
+                                        <rect x="65" y="10" width="25" height="25" fill="currentColor" />
+                                        <rect x="70" y="15" width="15" height="15" fill="white" />
+                                        <rect x="73" y="18" width="9" height="9" fill="currentColor" />
+
+                                        <rect x="10" y="65" width="25" height="25" fill="currentColor" />
+                                        <rect x="15" y="70" width="15" height="15" fill="white" />
+                                        <rect x="18" y="73" width="9" height="9" fill="currentColor" />
+
+                                        <rect x="40" y="10" width="5" height="10" fill="currentColor" />
+                                        <rect x="50" y="15" width="10" height="5" fill="currentColor" />
+                                        <rect x="45" y="25" width="5" height="10" fill="currentColor" />
+                                        <rect x="40" y="40" width="20" height="20" fill="currentColor" />
+                                        <rect x="45" y="45" width="10" height="10" fill="white" />
+
+                                        <rect x="10" y="45" width="10" height="5" fill="currentColor" />
+                                        <rect x="25" y="40" width="5" height="15" fill="currentColor" />
+
+                                        <rect x="70" y="45" width="15" height="5" fill="currentColor" />
+                                        <rect x="65" y="55" width="5" height="10" fill="currentColor" />
+
+                                        <rect x="45" y="65" width="15" height="5" fill="currentColor" />
+                                        <rect x="40" y="75" width="5" height="15" fill="currentColor" />
+                                        <rect x="50" y="80" width="15" height="5" fill="currentColor" />
+
+                                        <rect x="70" y="70" width="20" height="20" fill="currentColor" />
+                                        <rect x="75" y="75" width="10" height="10" fill="white" />
+                                    </svg>
+                                </div>
+                                <p class="nmID">NMID: ID1020082729101</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary-outline btn-sm" onclick="downloadQRIS()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" x2="12" y1="15" y2="3" />
+                            </svg>
+                            Simpan QR Code
+                        </button>
+                    </div>
+
+                    <div class="card bank-card">
+                        <h4>Transfer Rekening Bank</h4>
+                        <p class="bank-subtitle">Gereja Masehi Advent Hari Ketujuh Jemaat Sepanjang</p>
+
+                        <div class="account-item">
+                            <div class="account-details">
+                                <span class="bank-name">BANK MANDIRI</span>
+                                <span class="account-number" id="accNumber1">1410-0177-3800-4</span>
+                                <span class="account-holder">GMAHK Jemaat Sepanjang</span>
+                            </div>
+                            <button class="copy-acc-btn" onclick="copyAccount('accNumber1', 'Mandiri')"
+                                title="Salin No. Rekening">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="account-item">
+                            <div class="account-details">
+                                <span class="bank-name">BANK BCA</span>
+                                <span class="account-number" id="accNumber2">0183-4929-11</span>
+                                <span class="account-holder">Bendahara Jemaat Sepanjang</span>
+                            </div>
+                            <button class="copy-acc-btn" onclick="copyAccount('accNumber2', 'BCA')"
+                                title="Salin No. Rekening">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="donation-instructions">
+                            <h5>Konfirmasi Transfer:</h5>
+                            <p>Kirimkan bukti transfer beserta rincian alokasi dana (Persepuluhan / Persembahan /
+                                Pembangunan) ke Whatsapp Bendahara:</p>
+                            <a href="https://wa.me/6281234567890" target="_blank" class="wa-confirm-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                                Hubungi Bendahara
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                -->
+            </section>
+
+            <!-- ================= TENTANG KAMI TAB ================= -->
+            <section id="tab-tentang" class="tab-pane">
+                <div class="about-header">
+                    <button class="back-home-btn" onclick="switchTab('home')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12" />
+                            <polyline points="12 19 5 12 12 5" />
+                        </svg>
+                        Kembali ke Home
+                    </button>
+                    <h2>Profil & Pengurus</h2>
+                    <p>Pelayan dan Pejabat Jemaat GMAHK Sepanjang</p>
+                </div>
+
+                <!-- Pendeta Section -->
+                <h4 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Pendeta Jemaat
+                </h4>
+                <div class="officers-list-single">
+                    <div class="card officer-card-row">
+                        <div class="officer-photo-wrapper">
+                            <img src="avatars/benny-lumbantobing.jpg" alt="Pdt. Benny Lumbantobing" class="officer-photo"
+                                onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='avatars/benny-lumbantobing.svg';}else{this.classList.add('hide-img');this.nextElementSibling.classList.add('show-fallback');}">
+                            <div class="officer-photo-fallback gradient-avatar-2">BL</div>
+                            <div class="officer-photo-gradient"></div>
+                        </div>
+                        <div class="officer-details">
+                            <div class="officer-info">
+                                <h5>Pdt. Benny Lumbantobing</h5>
+                                <p class="officer-role">Pendeta Jemaat</p>
+                                <span class="officer-badge">Aktif</span>
+                            </div>
+                            <a href="https://wa.me/6281805590988" target="_blank" class="officer-wa-btn"
+                                title="Hubungi Pendeta via WhatsApp">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Officers Section -->
+                <h4 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Officers
+                </h4>
+
+                <div class="officers-list-single">
+                    <!-- Officer 1 -->
+                    <div class="card officer-card-row">
+                        <div class="officer-photo-wrapper">
+                            <img src="avatars/enas-febriyanto.jpg" alt="Enas Febriyanto" class="officer-photo"
+                                onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='avatars/enas-febriyanto.svg';}else{this.classList.add('hide-img');this.nextElementSibling.classList.add('show-fallback');}">
+                            <div class="officer-photo-fallback gradient-avatar-3">EF</div>
+                            <div class="officer-photo-gradient"></div>
+                        </div>
+                        <div class="officer-details">
+                            <div class="officer-info">
+                                <h5>Enas Febriyanto</h5>
+                                <p class="officer-role">Ketua Jemaat</p>
+                            </div>
+                            <a href="https://wa.me/6281234000556" target="_blank" class="officer-wa-btn"
+                                title="Hubungi via WhatsApp">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Officer 2 -->
+                    <div class="card officer-card-row">
+                        <div class="officer-photo-wrapper">
+                            <img src="avatars/irfan-hanniffa.jpg" alt="Irfan Hanniffa" class="officer-photo"
+                                onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='avatars/irfan-hanniffa.svg';}else{this.classList.add('hide-img');this.nextElementSibling.classList.add('show-fallback');}">
+                            <div class="officer-photo-fallback gradient-avatar-4">IH</div>
+                            <div class="officer-photo-gradient"></div>
+                        </div>
+                        <div class="officer-details">
+                            <div class="officer-info">
+                                <h5>Irfan Hanniffa</h5>
+                                <p class="officer-role">Ketua Jemaat</p>
+                            </div>
+                            <a href="https://wa.me/6281295416165" target="_blank" class="officer-wa-btn"
+                                title="Hubungi via WhatsApp">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Officer 3 -->
+                    <div class="card officer-card-row">
+                        <div class="officer-photo-wrapper">
+                            <img src="avatars/agus-tinus.jpg" alt="Agus Tinus" class="officer-photo"
+                                onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='avatars/agus-tinus.svg';}else{this.classList.add('hide-img');this.nextElementSibling.classList.add('show-fallback');}">
+                            <div class="officer-photo-fallback gradient-avatar-5">AT</div>
+                            <div class="officer-photo-gradient"></div>
+                        </div>
+                        <div class="officer-details">
+                            <div class="officer-info">
+                                <h5>Agus Tinus</h5>
+                                <p class="officer-role">Sekretaris Jemaat</p>
+                            </div>
+                            <a href="https://wa.me/6281330035598" target="_blank" class="officer-wa-btn"
+                                title="Hubungi via WhatsApp">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Officer 4 -->
+                    <div class="card officer-card-row">
+                        <div class="officer-photo-wrapper">
+                            <img src="avatars/daniel-adjinirmala.jpg" alt="Daniel Adjinirmala" class="officer-photo"
+                                onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='avatars/daniel-adjinirmala.svg';}else{this.classList.add('hide-img');this.nextElementSibling.classList.add('show-fallback');}">
+                            <div class="officer-photo-fallback gradient-avatar-6">DA</div>
+                            <div class="officer-photo-gradient"></div>
+                        </div>
+                        <div class="officer-details">
+                            <div class="officer-info">
+                                <h5>Daniel Adjinirmala</h5>
+                                <p class="officer-role">Bendahara Jemaat</p>
+                            </div>
+                            <a href="https://wa.me/6289695631078" target="_blank" class="officer-wa-btn"
+                                title="Hubungi via WhatsApp">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+
+        <!-- ====================================== -->
+        <!-- ADMIN DASHBOARD FULL PAGE VIEW         -->
+        <!-- ====================================== -->
+        <div id="adminDashboardView" class="admin-dashboard-view" style="display: none;">
+            <!-- Top Admin Navigation Bar -->
+            <div class="admin-top-bar">
+                <div class="admin-top-left">
+                    <button class="btn btn-secondary" onclick="closeAdminDashboardView()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12" />
+                            <polyline points="12 19 5 12 12 5" />
+                        </svg>
+                        <span>Kembali ke Web App</span>
+                    </button>
+                    <span class="admin-session-badge">🔒 Sesi Admin Aktif</span>
+                </div>
+                <button class="btn btn-danger" onclick="handleLogout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Main Layout (Sidebar + Content) -->
+            <div class="admin-main-grid">
+                <!-- Sidebar Panel -->
+                <div class="admin-sidebar-card">
+                    <div class="admin-sidebar-title">
+                        <h4>TABEL DATABASE</h4>
+                    </div>
+                    <nav class="admin-nav-menu">
+                        <button class="admin-nav-item active" id="btn-adm-pos" onclick="switchAdminTab('pos')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M3 9h18" />
+                                <path d="M9 21V9" />
+                            </svg>
+                            <span>Tabel POS</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-ss" onclick="switchAdminTab('ss')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+                                <path d="M6 6h10" />
+                            </svg>
+                            <span>Sekolah Sabat</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-khotbah" onclick="switchAdminTab('khotbah')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg>
+                            <span>Tabel Khotbah</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-pa" onclick="switchAdminTab('pa')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                            <span>Pemuda Advent</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Content Panel -->
+                <div class="admin-content-card">
+                    <div class="admin-content-header">
+                        <div>
+                            <h3 id="adminTableTitle">Tabel POS</h3>
+                            <p>Kelola data jadwal ibadah permanen di database server Supabase</p>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;"
+                                onclick="shiftActiveTableSchedule(-7)"
+                                title="Majukan seluruh tanggal jadwal 1 minggu (-7 hari)">
+                                ◀ Majukan 1 Minggu
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;"
+                                onclick="shiftActiveTableSchedule(7)"
+                                title="Mundurkan seluruh tanggal jadwal 1 minggu (+7 hari)">
+                                Mundurkan 1 Minggu ▶
+                            </button>
+                            <button class="btn btn-primary" onclick="openFormModal()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                                <span>+ Tambah Data</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-table-container">
+                        <table class="admin-data-table">
+                            <thead>
+                                <tr id="adminTableHead"></tr>
+                            </thead>
+                            <tbody id="adminTableBody">
+                                <tr>
+                                    <td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ====================================== -->
-        <!-- ADMIN DASHBOARD VIEW (Disembunyikan)   -->
-        <!-- ====================================== -->
-        <div class="admin-dashboard" id="adminDashboardView" style="display: none;">
-            <div class="admin-sidebar" id="adminSidebar">
-                <div class="sidebar-header">
-                    <h3>Sidebar Supabase App</h3>
-                    <button class="sidebar-toggle-btn"
-                        onclick="document.getElementById('adminSidebar').classList.toggle('collapsed')"
-                        title="Tutup/Buka Sidebar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-toggle-icon">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                    </button>
-                </div>
-                <nav class="admin-nav">
-                    <button class="admin-tab-btn active" id="btn-adm-pos" onclick="switchAdminTab('pos')"
-                        title="Tabel POS">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="3" y1="9" x2="21" y2="9"></line>
-                            <line x1="9" y1="21" x2="9" y2="9"></line>
-                        </svg>
-                        <span>Tabel POS</span>
-                    </button>
-                    <button class="admin-tab-btn" id="btn-adm-ss" onclick="switchAdminTab('ss')"
-                        title="Tabel Sekolah Sabat">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-                        </svg>
-                        <span>Tabel Sekolah Sabat</span>
-                    </button>
-                    <button class="admin-tab-btn" id="btn-adm-khotbah" onclick="switchAdminTab('khotbah')"
-                        title="Tabel Khotbah">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
-                        </svg>
-                        <span>Tabel Khotbah</span>
-                    </button>
-                    <button class="admin-tab-btn" id="btn-adm-pa" onclick="switchAdminTab('pa')" title="Tabel PA">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span>Tabel PA</span>
-                    </button>
-                </nav>
-            </div>
-            <div class="admin-panel">
-                <div class="admin-panel-header">
-                    <h2 id="adminTableTitle" style="color: var(--header-title);">Tabel POS</h2>
-                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;"
-                            onclick="shiftActiveTableSchedule(-7)"
-                            title="Majukan semua jadwal 1 minggu (Tanggal - 7 hari)">◀ Majukan 1 Minggu</button>
-                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;"
-                            onclick="shiftActiveTableSchedule(7)"
-                            title="Mundurkan semua jadwal 1 minggu (Tanggal + 7 hari)">Mundurkan 1 Minggu ▶</button>
-                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;"
-                            onclick="openFormModal()">+ Tambah Data</button>
-                    </div>
-                </div>
-                <div class="admin-table-container">
-                    <table class="admin-data-table" id="adminDataTable">
-                        <thead>
-                            <tr id="adminTableHead">
-                                <!-- Heading tabel dinamis -->
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <tr>
-                                <td colspan="10" style="text-align: center; padding: 20px;">Memuat data...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================== -->
-        <!-- FOOTER                     -->
-        <!-- ========================== -->
-        <footer class="app-footer">
-            <p>&copy; 2026 - v1.7.0. GMAHK Sepanjang. All rights reserved.</p>
-            <p>Developed by Meakhel Gunawan</p>
-        </footer>
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" id="nav-susunan" onclick="switchTab('susunan')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
+                <span>Susunan</span>
+            </button>
+            <button class="nav-item" id="nav-persembahan" onclick="switchTab('persembahan')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                </svg>
+                <span>Persembahan</span>
+            </button>
+        </nav>
     </div>
 
-    <!-- ========================== -->
-    <!-- LOGIN MODAL                -->
-    <!-- ========================== -->
+    <!-- ====================================== -->
+    <!-- ADMIN LOGIN MODAL BEAUTIFIED           -->
     <div id="loginModal" class="modal-overlay">
-        <div class="modal-content">
+        <div class="modal-content login-modal-card">
             <button class="modal-close" onclick="closeLoginModal()">&times;</button>
-            <h2>Admin Area</h2>
-            <p>Silakan login untuk mengatur jadwal ibadah.</p>
-            <div class="form-grid" style="margin-bottom: 24px;">
-                <div class="input-group">
-                    <label for="adminEmail">Email</label>
-                    <input type="email" id="adminEmail" placeholder="admin@sepanjang.com"
-                        onkeydown="if(event.key === 'Enter') document.getElementById('adminPassword').focus()">
+            <div class="login-modal-header">
+                <div class="login-modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
                 </div>
-                <div class="input-group">
-                    <label for="adminPassword">Password</label>
-                    <input type="password" id="adminPassword" placeholder="••••••••"
-                        onkeydown="if(event.key === 'Enter') handleLogin()">
-                </div>
+                <h2>Admin Area</h2>
+                <p>Silakan login untuk mengelola data jadwal di Supabase secara permanen.</p>
             </div>
-            <button class="btn btn-primary" id="loginSubmitBtn" style="width: 100%;"
-                onclick="handleLogin()">Login</button>
+            <form onsubmit="event.preventDefault(); handleLogin();">
+                <div class="login-form-body">
+                    <div class="input-group">
+                        <label for="adminEmail">Email Admin</label>
+                        <input type="email" id="adminEmail" placeholder="admin@sepanjang.com" required
+                            onkeydown="if(event.key === 'Enter') document.getElementById('adminPassword').focus()">
+                    </div>
+                    <div class="input-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" placeholder="••••••••" required
+                            onkeydown="if(event.key === 'Enter') handleLogin()">
+                    </div>
+                </div>
+                <button class="btn btn-primary login-submit-btn" id="loginSubmitBtn" type="submit">Login Admin</button>
+            </form>
         </div>
     </div>
 
-    <!-- ADMIN EDIT/ADD MODAL -->
+    <!-- ====================================== -->
+    <!-- ADMIN FORM ADD/EDIT MODAL              -->
+    <!-- ====================================== -->
     <div id="dataFormModal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content" style="max-width: 520px; border-radius: 20px; padding: 28px;">
             <button class="modal-close" onclick="closeFormModal()">&times;</button>
-            <h2 id="formModalTitle">Tambah Data</h2>
-            <p id="formModalSubtitle">Formulir dinamis database Supabase</p>
+            <h3 id="formModalTitle" style="font-size: 1.1rem; font-weight: 800; color: var(--primary-color);">Tambah
+                Data</h3>
+            <p id="formModalSubtitle" style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px;">
+                Formulir dinamis database Supabase</p>
 
             <div class="form-grid form-scroll" id="dynamicFormContainer"
-                style="max-height: 50vh; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;">
+                style="max-height: 55vh; overflow-y: auto; margin-bottom: 20px; padding-right: 6px; display: flex; flex-direction: column; gap: 14px;">
                 <!-- Input dinamis akan di-inject lewat JavaScript -->
             </div>
 
-            <button class="btn btn-success" id="saveDataBtn" style="width: 100%;" onclick="simpanDataTabel()">Simpan
-                Data</button>
+            <button class="btn btn-primary" id="saveDataBtn" style="width: 100%; height: 44px; border-radius: 10px;"
+                onclick="simpanDataTabel()">Simpan Data Permanen</button>
         </div>
     </div>
 
-    <!-- ====================================== -->
-    <!-- SCRIPTS                                -->
-    <!-- 1. Supabase CDN (wajib dimuat duluan)  -->
-    <!-- 2. script.js (logika aplikasi)         -->
-    <!-- ====================================== -->
+    <!-- Script Files -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>

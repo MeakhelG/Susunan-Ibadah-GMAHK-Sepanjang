@@ -1,42 +1,60 @@
-# Generator Susunan Ibadah GMAHK Sepanjang 🌿
+# Susunan Ibadah GMAHK Sepanjang 🌿
 
-Aplikasi berbasis web (*Single Page Application*) yang elegan, interaktif, dan responsif. Digunakan untuk menghasilkan (*men-generate*) susunan acara ibadah secara cepat dan seragam, lalu menyalin format akhirnya secara otomatis ke *Clipboard* agar siap di-*Paste* ke aplikasi WhatsApp / Media Sosial Jemaat.
+Aplikasi web modern (*Single Page Application*) yang interaktif, elegan, dan responsif. Dirancang khusus untuk mempermudah pengelolaan, pengeditan langsung (*live inline edit*), serta generasi susunan ibadah dan jadwal petugas jemaat **GMAHK Sepanjang** yang siap disalin secara presisi ke WhatsApp dan media sosial.
 
-**Versi App:** v1.7.0
+**Versi App:** v2.0.0
 
-## Apa yang baru di v1.7.0 🎉
-- **Penyimpanan Draf Lokal (State Persistence):** Draf isian formulir di semua tab (Sabat Raya, PA, dan Rabu Malam) beserta tab terakhir yang dibuka kini tersimpan otomatis di browser, aman jika halaman tidak sengaja di-refresh.
-- **Pembersihan Draf Otomatis (Auto-Reset Dinamis):** Sistem mendeteksi tanggal secara pintar dan otomatis menghapus draf lama begitu melewati hari pelaksanaannya (hari Minggu untuk Sabat Raya & PA, dan hari Kamis untuk Rabu Malam) agar siap menyambut jadwal minggu berikutnya dari database.
-- **Tanggal Rabu Malam Otomatis:** Input tanggal Rabu Malam secara otomatis terisi hari Rabu terdekat dari waktu sistem saat ini.
-- **Reset Jadwal Terpadu (SweetAlert2):** Tombol reset tunggal di header yang memicu dialog SweetAlert2 proporsional untuk memulihkan jadwal semula secara sebagian atau menyeluruh (bebas istilah IT).
+---
 
-## Fitur Inti
-- **Dashboard Admin & Manajemen Jadwal:** Panel aman berbasis *Supabase Auth & RLS* untuk mengelola jadwal Sabat Raya dan PA. Dilengkapi fitur hapus data (konfirmasi *SweetAlert2*) serta tombol penggeser tanggal ("Majukan/Mundurkan 1 Minggu").
-- **Auto-Fill & Integrasi Database:** Pengisian otomatis (*Auto-Fill*) jadwal terdekat dari database *real-time* Supabase (termasuk petugas *Soundman*) serta fitur autocomplete pencarian judul lagu Sion (LSEL) dan lagu PA (AYS).
-- **Multi-Tab & Rapat Virtual:** Pemisahan form ibadah (Sabat Raya, Pemuda Advent, dan Rabu Malam) secara mulus tanpa *reload*, serta pembuatan otomatis undangan rapat Zoom dengan tautan, ID, dan passcode terbaru.
-- **Logika Validasi & Deteksi Otomatis Pintar:** Kalkulasi otomatis untuk penentuan angka "Sabat Ke" dan "Triwulan", penempatan otomatis lagu sambutan tetap setelah Doa Tutup, serta pengisian otomatis nama pendeta default pada doa syafaat Rabu Malam.
-- **Pratinjau Langsung & 1-Click Copy WA:** Teks WhatsApp pratinjau diperbarui secara langsung (*real-time*) saat mengetik dan dapat disalin ke *clipboard* dalam sekali klik.
-- **Desain Modern, Responsif, & Estetis:** Antarmuka berwarna *Maroon* elegan dengan dukungan *Dark/Light mode*, serta tampilan tabel full-screen yang responsif menyesuaikan visual laptop, tablet, maupun ponsel.
-- **Kode Sumber Bersih & Rapi:** Struktur HTML, CSS, dan JavaScript yang terorganisir dengan kelas utilitas terstandarisasi, dokumentasi logika yang mendetail, serta komentar kode yang rapi.
+## 🌟 Apa yang Baru di v2.0.0 🎉
 
-## Cara Penggunaan
-1. Buka Tautan [Susunan Ibadah GMAHK Sepanjang](https://meakhelg.github.io/Susunan-Ibadah-GMAHK-Sepanjang/)
-2. Tunggu 1 hingga 2 detik untuk inisialisasi Database Data Serverless **Supabase**. *Voila!* Anda akan mendapati jadwal otomatis tertarik ke form-form kosong Anda.
-3. Ketik dan poles sedikit kekosongan sisa yang belum terakomodasi di sistem untuk melengkapi alur peribadatan hari itu.
-4. Klik tombol "Salin ke Clipboard", buka Whatsapp jemaat, dan tekan CTRL+V (*Paste*). 
+- **Pembaruan Total Antarmuka (UI/UX v2.0.0):** Desain visual berbasis *cards* yang mewah dengan navigasi Tab yang responsif (*Home*, *Susunan Acara*, *Jadwal Petugas*, dan *Persembahan*), mendukung tema Terang (*Light Mode*) dan Gelap (*Dark Mode*).
+- **Mode Edit Sementara (Inline Editing):** Mengubah susunan acara secara langsung di atas kartu tanpa perlu membuka form rumit. Dilengkapi *placeholder* pintar seperti `(tambah judul)` dan `(tambah pasal ayat)` tanpa mengganggu pengetikan.
+- **Pencarian & Autocomplete Lagu Otomatis (LSEL & AYS):** Fitur pencarian lagu 2 arah real-time. Mengetik judul lagu (misal *"Mari"*) atau nomor lagu akan langsung menampilkan daftar saran *dropdown* lagu secara otomatis.
+- **Kalkulasi Otomatis Sabat ke-N & Triwulan (TW):** Perhitungan presisi jumlah hari Sabat dalam triwulan aktif (TW 1 – TW 4) yang terhitung otomatis sesuai tanggal ibadah dan melakukan *reset* otomatis di awal triwulan/tahun baru.
+- **Penanggalan Dinamis Rabu Malam:** Sistem secara pintar menghitung dan menampilkan tanggal hari Rabu mendatang (`Rabu, X Agustus 2026`) secara dinamis meskipun data belum diisi di database.
+- **Pembaruan Liturgi & Roster Petugas:**
+  - **Sabat Raya:** Penyempurnaan alur ibadah khotbah, penambahan sub-field rujukan ayat pada *Pembacaan Ayat Bersahutan* & *Pembacaan Ayat Inti*, serta standarisasi istilah Bahasa Indonesia pada jadwal petugas.
+  - **Pemuda Advent (PA):** Restrukturisasi 7 tahapan peribadatan PA yang sistematis.
+  - **Rabu Malam:** Nilai default pintar untuk pelayan ibadah (*Lagu Pujian = Host*, *Pengumuman = Ketua Jemaat*).
+- **Kartu Tautan Google Drive Interaktif:** Kartu akses langsung untuk mengunduh PDF Jadwal Pelayanan bulanan/triwulan di Google Drive dengan animasi *redirect*.
+
+---
+
+## 🔥 Fitur Unggulan
+
+- ⚡ **Auto-Sync Supabase Database:** Sinkronisasi jadwal secara otomatis dan *real-time* dari database serverless Supabase.
+- 📱 **1-Click Salin Format WhatsApp:** Menghasilkan format pesan WhatsApp yang rapi, presisi, dan lengkap dengan detail Zoom/Ayat/Lagu hanya dengan satu kali klik.
+- 🛠️ **Dashboard Admin Aman:** Panel administrasi terlindungi (*Supabase Auth & RLS*) untuk menambah, mengubah, menggeser tanggal minggu, atau menghapus jadwal ibadah.
+- 💾 **Penyimpanan Lokal (State Persistence):** Perubahan sementara pada *Mode Edit* tersimpan otomatis di *localStorage* browser dan dapat dikembalikan kapan saja dengan tombol *Reset Data*.
+- 🌐 **Desain Responsif & Tema Ganda:** Tampilan yang nyaman diakses dari smartphone, tablet, maupun desktop komputer.
+
+---
+
+## 📖 Cara Penggunaan
+
+1. Buka situs [Susunan Ibadah GMAHK Sepanjang](https://meakhelg.github.io/Susunan-Ibadah-GMAHK-Sepanjang/).
+2. Jadwal ibadah terdekat akan terisi secara otomatis dari database **Supabase**.
+3. Gunakan tombol **Edit Sementara** jika ingin menyesuaikan lagu, judul khotbah, atau ayat untuk hari itu.
+4. Klik **Salin Format WA**, lalu tempel (*Paste / Ctrl+V*) pada grup WhatsApp jemaat.
 
 ---
 
 ## 🛠 Hak Cipta
-&copy; 2026 - Semua Hak Cipta Dilindungi (All rights reserved).
+&copy; 2026 - **GMAHK Sepanjang**. All rights reserved.  
+Developed with ❤️ by **Meakhel Gunawan**.
 
+---
 
-## 🚀 Roadmap (Rencana Fitur Mendatang)
-Aplikasi ini direncanakan akan terus berekspansi ke depannya untuk menampung seluruh alur peribadatan jemaat:
-- [x] Susunan Ibadah PA (Pemuda Advent) - *Selesai di v1.1.0*
+## 🚀 Roadmap (Rencana Pengembangan Fitur)
+
+- [x] Susunan Ibadah Pemuda Advent (PA) - *Selesai di v1.1.0*
 - [x] Susunan Ibadah Rabu Malam - *Selesai di v1.2.0*
-- [x] Transformasi Serverless via Integrasi Supabase - *Selesai di v1.3.0*
+- [x] Integrasi Serverless Database Supabase - *Selesai di v1.3.0*
 - [x] Secured Admin Dashboard & Authentication - *Selesai di v1.4.0*
+- [x] Smart Autocomplete & PA Seamless Automation - *Selesai di v1.5.0*
+- [x] Secure Admin Deletion & Batch Schedule Shifting - *Selesai di v1.6.0*
+- [x] Local State Persistence & Dynamic Auto-Reset System - *Selesai di v1.7.0*
+- [x] Redesain Total UI v2.0.0, Mode Edit Sementara & Autocomplete Lagu - *Selesai di v2.0.0*
+- [ ] Fitur Persembahan & Persepuluhan Online (*Sedang Dipersiapkan*)
 - [ ] Susunan Jadwal Vesper / Buka Sabat
-
-*Note: Mengingat fondasi database solid berteknologi pintar sudah diletakkan, ekspansi otomatisasi untuk jadwal-jadwal baru di gereja kini adalah hal yang sangat mudah direalisasikan!*
