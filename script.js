@@ -112,7 +112,7 @@ function createDefaultRabuSchedule(dateObj = getNextWednesdayDate()) {
         { time: "", title: "Kesaksian", desc: "-" },
         { time: "", title: "Lagu Pujian", desc: "Host" },
         { time: "", title: "Doa Syafaat", desc: "-", highlight: true },
-        { time: "", title: "Firman Tuhan", desc: "-", highlight: true, note: "Tema: [Kosong]" },
+        { time: "", title: "Firman Tuhan", desc: "-", highlight: true },
         { time: "", title: "Doa Tutup", desc: "-" },
         { time: "", title: "Ucapan Terima Kasih & Pengumuman", desc: "Ketua Jemaat" }
     ];
@@ -779,16 +779,23 @@ function renderActiveAcara() {
             if (timelineContainer) {
                 timelineContainer.innerHTML = ""; // Bersihkan timeline lama
 
-                // Load local overrides if they exist (Tipe 1)
-                const overrides = loadLocalScheduleChanges(program, data.dateDisplay);
+                // Load overrides (Local Draft or Cloud Database)
+                const overrides = loadScheduleChanges(program, data.dateDisplay);
                 if (overrides) {
                     data.timeline = overrides;
                 }
 
-                // Toggle visibility of Reset button
+                const isAdmin = !!currentAdminSession;
+
+                // Toggle visibility of Edit & Reset buttons (Hanya Admin)
+                const editBtn = document.getElementById("btn-toggle-edit");
+                if (editBtn) {
+                    editBtn.style.display = isAdmin ? "inline-flex" : "none";
+                }
+
                 const resetBtn = document.getElementById("btn-reset-edit");
                 if (resetBtn) {
-                    resetBtn.style.display = (overrides || appState.isEditingSementara) ? "inline-flex" : "none";
+                    resetBtn.style.display = (isAdmin && (overrides || appState.isEditingSementara)) ? "inline-flex" : "none";
                 }
 
                 let currentGroupContainer = null;
@@ -820,7 +827,7 @@ function renderActiveAcara() {
                         timelineContent += `<span class="time">${item.time}</span>`;
                     }
 
-                    const isEditing = appState.isEditingSementara;
+                    const isEditing = isAdmin && appState.isEditingSementara;
                     const titleLower = item.title.toLowerCase();
                     const isKhotbah = titleLower.includes("khotbah") || titleLower.includes("renungan");
                     const isAyatBersahutan = titleLower.includes("ayat bersahutan") || titleLower.includes("ayat inti");
@@ -1061,8 +1068,8 @@ function copyScheduleText() {
     const data = dataList[activeIndex];
     if (!data) return;
 
-    // Load local overrides to make sure the copied text matches what's visible
-    const overrides = loadLocalScheduleChanges(program, data.dateDisplay);
+    // Load overrides to make sure the copied text matches what's visible
+    const overrides = loadScheduleChanges(program, data.dateDisplay);
     const activeTimeline = overrides || data.timeline;
 
     let waText = "";
@@ -1320,9 +1327,10 @@ async function fetchDataFromSupabase() {
     }
 
     try {
-        // Ambil data POS, SS, Khotbah, PA, serta Tabel LSEL & AYS
+        // Ambil data POS, SS, Khotbah, PA, Tabel Override Susunan, serta Tabel LSEL & AYS
         fetchLselData();
         fetchAysData();
+        await fetchCloudScheduleOverrides();
 
         const { data: posList, error: posErr } = await supabaseClient.from("Tabel POS").select("*");
         const { data: ssList, error: ssErr } = await supabaseClient.from("Tabel SS").select("*");
@@ -2018,16 +2026,56 @@ function attachTimelineEditListener(container) {
 }
 
 
-// Local Persistence Helpers for Edit Sementara (Tipe 1)
+// Persistence Helpers (Cloud Database + Local Fallback)
+let cloudOverridesMap = {};
+
+async function fetchCloudScheduleOverrides() {
+    try {
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
+            .from("Tabel Override Susunan")
+            .select("*");
+        if (error) {
+            console.warn("⚠️ Gagal menarik data Tabel Override Susunan:", error);
+            return;
+        }
+        if (data) {
+            cloudOverridesMap = {};
+            data.forEach(row => {
+                const key = `cloud_override_${row.program_type}_${row.date_display}`;
+                cloudOverridesMap[key] = row.timeline_json;
+            });
+            console.log("✅ Cloud Overrides berhasil dimuat:", data.length, "entri");
+        }
+    } catch (err) {
+        console.warn("⚠️ Error fetchCloudScheduleOverrides:", err);
+    }
+}
+
 function saveLocalScheduleChanges(program, dateDisplay, timeline) {
     const key = `schedule_override_${program}_${dateDisplay}`;
     localStorage.setItem(key, JSON.stringify(timeline));
 }
 
+function loadScheduleChanges(program, dateDisplay) {
+    // 1. Cek draft lokal terlebih dahulu
+    const localKey = `schedule_override_${program}_${dateDisplay}`;
+    const localStored = localStorage.getItem(localKey);
+    if (localStored) {
+        try { return JSON.parse(localStored); } catch (e) {}
+    }
+
+    // 2. Cek Cloud Database Supabase (terbaca oleh semua jemaat)
+    const cloudKey = `cloud_override_${program}_${dateDisplay}`;
+    if (cloudOverridesMap[cloudKey]) {
+        return cloudOverridesMap[cloudKey];
+    }
+
+    return null;
+}
+
 function loadLocalScheduleChanges(program, dateDisplay) {
-    const key = `schedule_override_${program}_${dateDisplay}`;
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : null;
+    return loadScheduleChanges(program, dateDisplay);
 }
 
 function cleanupObsoleteLocalOverrides(currentSabatDate, currentPaDate) {
@@ -2046,9 +2094,72 @@ function cleanupObsoleteLocalOverrides(currentSabatDate, currentPaDate) {
     }
 }
 
-// Toggle Edit Mode
+// Simpan Perubahan ke Cloud Database Supabase
+async function saveCloudScheduleOverride(program, dateDisplay, timeline) {
+    if (!supabaseClient || !currentAdminSession) return;
+    try {
+        const { error } = await supabaseClient
+            .from("Tabel Override Susunan")
+            .upsert({
+                program_type: program,
+                date_display: dateDisplay,
+                timeline_json: timeline,
+                updated_at: new Date().toISOString()
+            }, { onConflict: "program_type, date_display" });
+
+        if (error) {
+            console.error("Gagal simpan ke Tabel Override Susunan:", error);
+            showToast("Gagal menyimpan ke Cloud Database", "error");
+        } else {
+            const cloudKey = `cloud_override_${program}_${dateDisplay}`;
+            cloudOverridesMap[cloudKey] = timeline;
+
+            // Hapus draft lokal setelah tersimpan sukses ke cloud
+            const localKey = `schedule_override_${program}_${dateDisplay}`;
+            localStorage.removeItem(localKey);
+
+            showToast("Tersimpan ke Cloud! Seluruh jemaat kini melihat jadwal terupdate.", "success");
+        }
+    } catch (err) {
+        console.error("Error saveCloudScheduleOverride:", err);
+    }
+}
+
+// Toggle Edit Mode (Admin Only)
 function toggleEditSementara() {
+    if (!currentAdminSession) {
+        Swal.fire({
+            title: "Akses Terbatas",
+            text: "Fitur edit sementara hanya dapat digunakan oleh Admin yang telah login.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#6B1D2F",
+            cancelButtonColor: "#6B7280",
+            confirmButtonText: "Login Admin",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                openLoginModal();
+            }
+        });
+        return;
+    }
+
+    const wasEditing = appState.isEditingSementara;
     appState.isEditingSementara = !appState.isEditingSementara;
+
+    const program = appState.currentProgramAcara;
+    const dataList = scheduleData[program];
+    let activeIndex = 0;
+    if (program === "sabat" || program === "pa") {
+        activeIndex = findClosestUpcomingIndex(dataList);
+    }
+    const currentSchedule = dataList ? dataList[activeIndex] : null;
+
+    // Jika Admin mengeklik "Selesai Edit" -> Kirim perubahan ke Cloud Supabase
+    if (wasEditing && !appState.isEditingSementara && currentSchedule) {
+        saveCloudScheduleOverride(program, currentSchedule.dateDisplay, currentSchedule.timeline);
+    }
 
     const editBtn = document.getElementById("btn-toggle-edit");
     if (editBtn) {
@@ -2061,7 +2172,7 @@ function toggleEditSementara() {
         } else {
             editBtn.classList.remove("btn-primary");
             editBtn.classList.add("btn-secondary");
-            if (textSpan) textSpan.textContent = "Edit Sementara";
+            if (textSpan) textSpan.textContent = "Edit";
             editBtn.querySelector("svg").innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>`; // edit icon
         }
     }
@@ -2069,8 +2180,18 @@ function toggleEditSementara() {
     renderActiveAcara();
 }
 
-// Reset Local Changes
+// Reset Local & Cloud Overrides (Admin Only)
 function resetEditSementara() {
+    if (!currentAdminSession) {
+        Swal.fire({
+            title: "Akses Terbatas",
+            text: "Fitur reset data hanya dapat dilakukan oleh Admin yang telah login.",
+            icon: "warning",
+            confirmButtonColor: "#6B1D2F"
+        });
+        return;
+    }
+
     const program = appState.currentProgramAcara;
     const dataList = scheduleData[program];
     if (!dataList || dataList.length === 0) return;
@@ -2083,26 +2204,41 @@ function resetEditSementara() {
     if (!data) return;
 
     Swal.fire({
-        title: "Reset Edit Sementara?",
-        text: "Semua perubahan sementara yang Anda buat di browser ini akan dihapus dan dikembalikan ke data asli server.",
+        title: "Reset Edit Data?",
+        text: "Semua perubahan edit yang Anda buat akan dihapus di Cloud Database dan dikembalikan ke data awal server.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#D97706",
         cancelButtonColor: "#EF4444",
         confirmButtonText: "Ya, Reset!",
         cancelButtonText: "Batal"
-    }).then((result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
-            const key = `schedule_override_${program}_${data.dateDisplay}`;
-            localStorage.removeItem(key);
+            const localKey = `schedule_override_${program}_${data.dateDisplay}`;
+            localStorage.removeItem(localKey);
 
-            // Re-fetch data from Supabase (or load default fallback) to cleanly restore memory variables
+            const cloudKey = `cloud_override_${program}_${data.dateDisplay}`;
+            delete cloudOverridesMap[cloudKey];
+
+            // Hapus dari Supabase Cloud Database
+            if (supabaseClient && currentAdminSession) {
+                try {
+                    await supabaseClient
+                        .from("Tabel Override Susunan")
+                        .delete()
+                        .eq("program_type", program)
+                        .eq("date_display", data.dateDisplay);
+                } catch (err) {
+                    console.error("Gagal hapus override di Supabase:", err);
+                }
+            }
+
+            // Muat ulang data murni dari server
             fetchDataFromSupabase().then(() => {
-                // If offline or supabase fails, manually reload fallback
                 renderActiveAcara();
                 Swal.fire({
                     title: "Reset Selesai!",
-                    text: "Jadwal telah dikembalikan ke data default server.",
+                    text: "Jadwal telah dikembalikan ke data awal server.",
                     icon: "success",
                     timer: 2000,
                     showConfirmButton: false,
@@ -2376,27 +2512,34 @@ let currentAdminSession = null;
 if (supabaseClient) {
     supabaseClient.auth.onAuthStateChange((event, session) => {
         currentAdminSession = session;
-        const loginBtn = document.getElementById('adminLoginBtn');
-        if (!loginBtn) return;
-
-        if (session) {
-            loginBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
-                <span>Dashboard Admin</span>
-            `;
-            loginBtn.onclick = openAdminDashboardView;
-            loginBtn.classList.remove("btn-secondary-outline");
-            loginBtn.classList.add("btn-primary");
-        } else {
-            loginBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <span>Admin</span>
-            `;
-            loginBtn.onclick = openLoginModal;
-            loginBtn.classList.remove("btn-primary");
-            loginBtn.classList.add("btn-secondary-outline");
-            closeAdminDashboardView();
+        if (!session) {
+            appState.isEditingSementara = false;
         }
+
+        const loginBtn = document.getElementById('adminLoginBtn');
+        if (loginBtn) {
+            if (session) {
+                loginBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                    <span>Dashboard Admin</span>
+                `;
+                loginBtn.onclick = openAdminDashboardView;
+                loginBtn.classList.remove("btn-secondary-outline");
+                loginBtn.classList.add("btn-primary");
+            } else {
+                loginBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>Admin</span>
+                `;
+                loginBtn.onclick = openLoginModal;
+                loginBtn.classList.remove("btn-primary");
+                loginBtn.classList.add("btn-secondary-outline");
+                closeAdminDashboardView();
+            }
+        }
+
+        // Render ulang susunan acara agar tombol Edit/Reset muncul/sembunyi sesuai status login admin
+        renderActiveAcara();
     });
 }
 
@@ -2756,8 +2899,8 @@ function renderAdminTable() {
         let displayLabel = (config.columns && config.columns[col]) ? config.columns[col] : col;
         let sortIcon = `<span style="opacity: 0.35; margin-left: 6px; font-size: 0.75rem;">⇅</span>`;
         if (currentSort && currentSort.col === col) {
-            sortIcon = currentSort.asc 
-                ? `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▲</span>` 
+            sortIcon = currentSort.asc
+                ? `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▲</span>`
                 : `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▼</span>`;
         }
         headerHTML += `<th style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel} ${sortIcon}</th>`;
