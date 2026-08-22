@@ -1545,7 +1545,8 @@ body.dark-theme .copy-acc-btn {
     color: var(--text-muted);
     cursor: pointer;
     height: 100%;
-    width: 33.33%;
+    flex: 1;
+    min-width: 0;
     transition: var(--transition);
     position: relative;
 }
@@ -3011,3 +3012,1128 @@ body.dark-theme .drive-redirect-action {
     opacity: 1;
     transform: translate(2px, -2px);
 }
+
+/* ==========================================
+   TAB 4: STATISTIK & ANALYTICS DASHBOARD
+   ========================================== */
+.statistik-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.statistik-header-title h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+}
+
+body.dark-theme .statistik-header-title h2 {
+    color: var(--accent-light);
+}
+
+.statistik-header-title p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.statistik-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.statistik-header-badge {
+    flex-shrink: 0;
+}
+
+.edit-stats-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.edit-stats-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(107, 29, 47, 0.25);
+}
+
+body.dark-theme .edit-stats-btn:hover {
+    box-shadow: 0 4px 10px rgba(217, 119, 6, 0.35);
+}
+
+.badge-lock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: var(--primary-rose);
+    color: var(--primary-color);
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .badge-lock {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #F87171;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.badge-active-session {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+body.dark-theme .badge-active-session {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #34D399;
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+/* 1. Locked State Card */
+.statistik-lock-card {
+    text-align: center;
+    padding: 44px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    min-height: 380px;
+    margin-top: 10px;
+}
+
+.lock-icon-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(107, 29, 47, 0.25);
+}
+
+body.dark-theme .lock-icon-circle {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-light) 100%);
+    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+    color: #140507;
+}
+
+.lock-content-text {
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lock-content-text h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+body.dark-theme .lock-content-text h3 {
+    color: var(--accent-light);
+}
+
+.lock-content-text p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.lock-login-btn {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    box-shadow: 0 4px 14px rgba(107, 29, 47, 0.2);
+}
+
+/* 2. KPI Cards Grid */
+.analytics-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+    .analytics-kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.stat-kpi-card {
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 125px;
+    border-top: 3px solid transparent;
+    transition: var(--transition);
+}
+
+.stat-kpi-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-kpi-card.total-kpi {
+    border-top-color: var(--primary-color);
+}
+
+.stat-kpi-card.attendance-kpi {
+    border-top-color: var(--accent-color);
+}
+
+.stat-kpi-card.male-kpi {
+    border-top-color: #3B82F6;
+}
+
+.stat-kpi-card.female-kpi {
+    border-top-color: #EC4899;
+}
+
+.stat-kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stat-kpi-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.stat-kpi-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.maroon-soft {
+    background-color: var(--primary-rose);
+    color: var(--primary-color);
+}
+
+.gold-soft {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+
+.blue-soft {
+    background-color: #EFF6FF;
+    color: #2563EB;
+}
+
+.pink-soft {
+    background-color: #FDF2F8;
+    color: #DB2777;
+}
+
+body.dark-theme .maroon-soft {
+    background-color: rgba(107, 29, 47, 0.3);
+    color: #F87171;
+}
+
+body.dark-theme .gold-soft {
+    background-color: rgba(217, 119, 6, 0.2);
+    color: var(--accent-light);
+}
+
+body.dark-theme .blue-soft {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+}
+
+body.dark-theme .pink-soft {
+    background-color: rgba(236, 72, 153, 0.2);
+    color: #F472B6;
+}
+
+.stat-kpi-body {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.stat-kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin: 0;
+}
+
+.stat-kpi-unit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.stat-kpi-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.trend-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 0.65rem;
+}
+
+.trend-badge.positive {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+body.dark-theme .trend-badge.positive {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #34D399;
+}
+
+.stat-footer-text {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+}
+
+.ratio-pill {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 0.65rem;
+}
+
+.ratio-pill.blue {
+    background-color: rgba(59, 130, 246, 0.12);
+    color: #2563EB;
+}
+
+.ratio-pill.pink {
+    background-color: rgba(236, 72, 153, 0.12);
+    color: #DB2777;
+}
+
+body.dark-theme .ratio-pill.blue {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+}
+
+body.dark-theme .ratio-pill.pink {
+    background-color: rgba(236, 72, 153, 0.2);
+    color: #F472B6;
+}
+
+/* 3. Gender & Demographic Card */
+.gender-demographic-card {
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.header-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mini-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mini-icon-circle.maroon {
+    background-color: var(--primary-rose);
+    color: var(--primary-color);
+}
+
+.mini-icon-circle.gold {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+
+body.dark-theme .mini-icon-circle.maroon {
+    background-color: rgba(107, 29, 47, 0.3);
+    color: #F87171;
+}
+
+body.dark-theme .mini-icon-circle.gold {
+    background-color: rgba(217, 119, 6, 0.2);
+    color: var(--accent-light);
+}
+
+.header-with-icon h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.header-with-icon p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.gender-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gender-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-main);
+}
+
+.gender-label-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.blue { background-color: #3B82F6; }
+.dot.pink { background-color: #EC4899; }
+
+.gender-progress-track {
+    height: 12px;
+    width: 100%;
+    background-color: var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+}
+
+.gender-progress-segment.male {
+    background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%);
+    transition: width 0.8s ease-in-out;
+}
+
+.gender-progress-segment.female {
+    background: linear-gradient(90deg, #F472B6 0%, #EC4899 100%);
+    transition: width 0.8s ease-in-out;
+}
+
+.age-demographics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-color);
+}
+
+@media (min-width: 640px) {
+    .age-demographics-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.age-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: var(--bg-app);
+    border: 1px solid var(--border-color);
+}
+
+.age-icon {
+    font-size: 1.25rem;
+}
+
+.age-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.age-label {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.age-count {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.age-pct {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+body.dark-theme .age-pct {
+    color: var(--accent-light);
+}
+
+/* 4. YouTube Analytics Style Chart Card */
+.analytics-chart-card {
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+}
+
+.chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.chart-time-switcher {
+    display: flex;
+    background-color: var(--bg-app);
+    border: 1px solid var(--border-color);
+    padding: 3px;
+    border-radius: 10px;
+    gap: 2px;
+}
+
+.time-filter-btn {
+    border: none;
+    background: none;
+    font-family: var(--font-family);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.time-filter-btn:hover {
+    color: var(--text-main);
+}
+
+.time-filter-btn.active {
+    background-color: var(--bg-card);
+    color: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+body.dark-theme .time-filter-btn.active {
+    color: var(--accent-light);
+    background-color: #2D0F14;
+}
+
+.chart-metrics-highlight {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 4px;
+}
+
+.chart-metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.chart-metric-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.chart-metric-value-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.chart-metric-val {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.chart-metric-unit {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.chart-canvas-container {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    background-color: var(--bg-app);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    overflow: hidden;
+}
+
+.attendance-svg-chart {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+}
+
+/* Tooltip on Chart */
+.chart-tooltip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 8px 12px;
+    pointer-events: none;
+    z-index: 10;
+    transition: transform 0.1s ease-out, opacity 0.15s ease-out;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 140px;
+}
+
+body.dark-theme .chart-tooltip {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.tooltip-date {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.tooltip-total {
+    font-size: 0.88rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+body.dark-theme .tooltip-total {
+    color: var(--accent-light);
+}
+
+.tooltip-sub {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.chart-footer-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding-top: 4px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-line {
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.legend-line.primary {
+    background-color: var(--primary-color);
+}
+
+body.dark-theme .legend-line.primary {
+    background-color: var(--accent-color);
+}
+
+.legend-line.dashed {
+    background: repeating-linear-gradient(90deg, var(--text-muted) 0, var(--text-muted) 4px, transparent 4px, transparent 8px);
+    height: 2px;
+}
+
+.legend-line.dashed-secondary {
+    background: repeating-linear-gradient(90deg, #3B82F6 0, #3B82F6 4px, transparent 4px, transparent 8px);
+    height: 2px;
+}
+
+.legend-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+/* 5. Department Attendance Cards */
+.dept-attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 600px) {
+    .dept-attendance-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.dept-card {
+    padding: 10px 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+.dept-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.dept-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.dept-name-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 1px;
+}
+
+.dept-info h5 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.25;
+    white-space: normal;
+    word-break: break-word;
+    padding-right: 0;
+}
+
+.dept-pct {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background-color: var(--bg-app);
+    padding: 1px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.dept-info p {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin: 1px 0 3px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dept-info strong {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+body.dark-theme .dept-info strong {
+    color: var(--accent-light);
+}
+
+/* 6. Recent Attendance Log Table */
+.recent-attendance-card {
+    padding: 14px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.table-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+
+.attendance-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.attendance-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+.attendance-table tr:last-child td {
+    border-bottom: none;
+}
+
+.attendance-table .date-col {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+body.dark-theme .attendance-table .date-col {
+    color: var(--accent-light);
+}
+
+.attendance-table .total-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background-color: var(--primary-rose);
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+body.dark-theme .attendance-table .total-badge {
+    background-color: rgba(217, 119, 6, 0.2);
+    color: var(--accent-light);
+}
+
+/* ==========================================
+   DUAL-LINE CHART & STATISTIK MODALS STYLING
+   ========================================== */
+.legend-line.secondary {
+    background-color: #3B82F6;
+}
+
+.legend-item.highlight-legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+body.dark-theme .legend-item.highlight-legend {
+    color: var(--accent-light);
+}
+
+.legend-star {
+    font-size: 0.85rem;
+}
+
+.tooltip-header {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.tooltip-theme {
+    font-size: 0.65rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+body.dark-theme .tooltip-theme {
+    color: var(--accent-light);
+}
+
+.tooltip-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--text-main);
+}
+
+.tooltip-stat-row.khotbah-row strong {
+    color: var(--primary-color);
+}
+
+body.dark-theme .tooltip-stat-row.khotbah-row strong {
+    color: var(--accent-light);
+}
+
+.tooltip-stat-row.ss-row strong {
+    color: #3B82F6;
+}
+
+/* Action Selector Modal Button List */
+.stats-action-button-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.stats-action-card-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background-color: var(--bg-app);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transition);
+    width: 100%;
+    color: var(--text-main);
+}
+
+.stats-action-card-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    background-color: var(--bg-card);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+body.dark-theme .stats-action-card-btn:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.stats-action-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stats-action-icon.blue {
+    background: rgba(59, 130, 246, 0.14);
+    color: #3B82F6;
+}
+
+.stats-action-icon.pink {
+    background: rgba(236, 72, 153, 0.14);
+    color: #EC4899;
+}
+
+.stats-action-icon.maroon {
+    background: var(--primary-rose);
+    color: var(--primary-color);
+}
+
+body.dark-theme .stats-action-icon.maroon {
+    background: rgba(217, 119, 6, 0.15);
+    color: var(--accent-light);
+}
+
+.stats-action-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.stats-action-text h5 {
+    font-size: 0.88rem;
+    font-weight: 800;
+    margin: 0 0 2px 0;
+    color: var(--text-main);
+}
+
+.stats-action-text p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.35;
+}
+
+.stats-action-arrow {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.stats-action-card-btn:hover .stats-action-arrow {
+    color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+body.dark-theme .stats-action-card-btn:hover .stats-action-arrow {
+    color: var(--accent-light);
+}
+
+/* Dual Session Input Box in Modal */
+.form-dual-section-box {
+    background-color: var(--bg-app);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.session-input-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.session-input-header.blue-accent {
+    color: #2563EB;
+}
+
+body.dark-theme .session-input-header.blue-accent {
+    color: #60A5FA;
+}
+
+.session-input-header.maroon-accent {
+    color: var(--primary-color);
+}
+
+body.dark-theme .session-input-header.maroon-accent {
+    color: var(--accent-light);
+}
+
+.session-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.session-dot.blue {
+    background-color: #3B82F6;
+}
+
+.session-dot.maroon {
+    background-color: var(--primary-color);
+}
+
+body.dark-theme .session-dot.maroon {
+    background-color: var(--accent-color);
+}
+
+.live-total-pill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(107, 29, 47, 0.06);
+    border: 1px dashed var(--primary-color);
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+body.dark-theme .live-total-pill {
+    background: rgba(217, 119, 6, 0.1);
+    border-color: var(--accent-color);
+}
+
+.live-total-pill strong {
+    font-size: 1.05rem;
+    color: var(--primary-color);
+}
+
+body.dark-theme .live-total-pill strong {
+    color: var(--accent-light);
+}
