@@ -2517,11 +2517,7 @@ const DB_SCHEMAS = {
             'Tanggal': 'Tanggal Sabat',
             'Tema': 'Tema Ibadah',
             'SekolahSabat': 'Sekolah Sabat',
-            'Pria': 'Hadir Pria',
-            'Wanita': 'Hadir Wanita',
-            'Anak': 'Hadir Anak',
-            'Total': 'Total Hadir',
-            'PemudaAdvent': 'Pemuda Advent'
+            'Total': 'Total Hadir Khotbah'
         }
     },
     jemaat: {
@@ -2948,9 +2944,10 @@ function renderAdminTable() {
                 ? `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▲</span>`
                 : `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▼</span>`;
         }
-        headerHTML += `<th style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel} ${sortIcon}</th>`;
+        let thClass = (col.toLowerCase() === 'tanggal' || col.toLowerCase() === 'tahun') ? 'class="col-fixed"' : '';
+        headerHTML += `<th ${thClass} style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel} ${sortIcon}</th>`;
     });
-    headerHTML += `<th>Aksi</th>`;
+    headerHTML += `<th class="col-aksi">Aksi</th>`;
     thead.innerHTML = headerHTML;
 
     let bodyHTML = '';
@@ -2966,7 +2963,9 @@ function renderAdminTable() {
                     if (cellData.includes('T')) formattedDate = cellData.split('T')[0];
                     else if (cellData.includes(' ')) formattedDate = cellData.split(' ')[0];
                 }
-                rowHTML += `<td><span class="date-tag-badge">${formattedDate}</span></td>`;
+                rowHTML += `<td class="col-fixed"><span class="date-tag-badge">${formattedDate}</span></td>`;
+            } else if (col.toLowerCase() === 'tahun') {
+                rowHTML += `<td class="col-fixed">${cellData}</td>`;
             } else {
                 if (typeof cellData === 'string' && cellData.length > 40) {
                     cellData = cellData.substring(0, 40) + '...';
@@ -2978,7 +2977,7 @@ function renderAdminTable() {
         const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
         rowHTML += `
-            <td>
+            <td class="col-aksi">
                 <div style="display: flex; gap: 6px;">
                     <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;" onclick="openFormModal('${safeRowJson}')">Edit</button>
                     <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.72rem;" onclick="deleteAdminTableData('${safeRowJson}')">Hapus</button>
@@ -3177,6 +3176,7 @@ async function deleteAdminTableData(rowDataStr) {
  * MODUL STATISTIK & ANALYTICS DASHBOARD GMAHK SEPANJANG
  * ============================================================ */
 
+/* Data dummy statistik disimpan sementara untuk referensi, tetapi tidak digunakan.
 // 1. Data Template Keanggotaan Jemaat (Profil Jemaat Sepanjang)
 const congregationStatsData = {
     total: 158,
@@ -3224,6 +3224,23 @@ const attendanceAnalyticsDatasets = {
         { sabatNo: 13, date: "Sabtu, 27 Jun 2026", shortDate: "27 Jun", ss: 95, khotbah: 112, male: 52, female: 60, children: 22, theme: "Penutupan Triwulan 2" }
     ]
 };
+*/
+
+// State statistik hanya diisi dari Supabase.
+const congregationStatsData = {
+    total: null,
+    male: null,
+    female: null,
+    growth: null,
+    avgAttendance: null,
+    participationPct: null,
+    ageGroups: []
+};
+
+const attendanceAnalyticsDatasets = {
+    "current-tw": [],
+    "prev-tw": []
+};
 
 let currentAnalyticsRange = "current-tw";
 
@@ -3254,17 +3271,28 @@ function updateStatistikView() {
         if (lockStateEl) lockStateEl.style.display = "none";
         if (dashboardContentEl) {
             dashboardContentEl.style.display = "block";
-            // Render elemen dashboard
-            renderCongregationStats();
-            renderAttendanceChart();
-            renderAttendanceTable();
-            // Muat data dari Supabase jika ada
+            clearStatistikDataView();
             fetchStatistikDataFromSupabase();
         }
     } else {
         if (lockStateEl) lockStateEl.style.display = "flex";
         if (dashboardContentEl) dashboardContentEl.style.display = "none";
     }
+}
+
+function clearStatistikDataView() {
+    congregationStatsData.total = null;
+    congregationStatsData.male = null;
+    congregationStatsData.female = null;
+    congregationStatsData.previousTotal = null;
+    congregationStatsData.ageGroups = [];
+    attendanceAnalyticsDatasets["current-tw"] = [];
+    attendanceAnalyticsDatasets["prev-tw"] = [];
+    renderParticipationSummary();
+    renderCongregationStats();
+    renderAttendanceSummary();
+    renderAttendanceChart();
+    renderAttendanceTable();
 }
 
 /**
@@ -3283,6 +3311,44 @@ function renderCongregationStats() {
     const barFemalePct = document.getElementById("barFemalePct");
     const progMale = document.getElementById("progressMale");
     const progFemale = document.getElementById("progressFemale");
+    const growthValueEl = document.getElementById("statGrowthValue");
+    const growthIconEl = document.getElementById("statGrowthIcon");
+    const growthBadgeEl = growthValueEl?.parentElement;
+    const ageTargets = [
+        ["ageCountAnak", "agePctAnak"],
+        ["ageCountPemuda", "agePctPemuda"],
+        ["ageCountDewasa", "agePctDewasa"],
+        ["ageCountLansia", "agePctLansia"]
+    ];
+
+    const setAgePlaceholders = () => ageTargets.forEach(([countId, pctId]) => {
+        const countEl = document.getElementById(countId);
+        const pctEl = document.getElementById(pctId);
+        if (countEl) countEl.textContent = "--";
+        if (pctEl) pctEl.textContent = "--";
+    });
+
+    const hasData = Number.isFinite(data.total) && data.total > 0
+        && Number.isFinite(data.male) && Number.isFinite(data.female);
+
+    if (!hasData) {
+        if (elTotal) elTotal.textContent = "--";
+        if (elMale) elMale.textContent = "--";
+        if (elFemale) elFemale.textContent = "--";
+        if (elMalePct) elMalePct.textContent = "--";
+        if (elFemalePct) elFemalePct.textContent = "--";
+        if (barMaleText) barMaleText.textContent = "--";
+        if (barFemaleText) barFemaleText.textContent = "--";
+        if (barMalePct) barMalePct.textContent = "--";
+        if (barFemalePct) barFemalePct.textContent = "--";
+        if (progMale) progMale.style.width = "0%";
+        if (progFemale) progFemale.style.width = "0%";
+        if (growthValueEl) growthValueEl.textContent = "";
+        if (growthIconEl) growthIconEl.style.display = "none";
+        if (growthBadgeEl) growthBadgeEl.style.display = "none";
+        setAgePlaceholders();
+        return;
+    }
 
     const malePct = ((data.male / data.total) * 100).toFixed(1) + "%";
     const femalePct = ((data.female / data.total) * 100).toFixed(1) + "%";
@@ -3300,6 +3366,29 @@ function renderCongregationStats() {
 
     if (progMale) progMale.style.width = malePct;
     if (progFemale) progFemale.style.width = femalePct;
+
+    if (growthValueEl && growthIconEl) {
+        const previousTotal = congregationStatsData.previousTotal;
+        if (Number.isFinite(previousTotal) && previousTotal > 0) {
+            const growthPct = ((data.total - previousTotal) / previousTotal) * 100;
+            growthValueEl.textContent = `${growthPct >= 0 ? "+" : ""}${growthPct.toFixed(1)}%`;
+            growthIconEl.style.display = growthPct >= 0 ? "block" : "none";
+            growthBadgeEl.style.display = "inline-flex";
+        } else {
+            growthValueEl.textContent = "";
+            growthIconEl.style.display = "none";
+            growthBadgeEl.style.display = "none";
+        }
+    }
+
+    ageTargets.forEach(([countId, pctId], index) => {
+        const group = data.ageGroups[index];
+        const countEl = document.getElementById(countId);
+        const pctEl = document.getElementById(pctId);
+        const count = group && Number.isFinite(group.count) ? group.count : null;
+        if (countEl) countEl.textContent = count === null ? "--" : `${count} Jiwa`;
+        if (pctEl) pctEl.textContent = count === null ? "--" : `${((count / data.total) * 100).toFixed(1)}%`;
+    });
 }
 
 /**
@@ -3318,11 +3407,12 @@ function switchAnalyticsRange(rangeKey) {
 
     renderAttendanceChart();
     renderAttendanceTable();
+    renderParticipationSummary();
 }
 
 /**
  * Generator Diagram Garis Interaktif 2 Waktu Ibadah (Sekolah Sabat vs Khotbah)
- * Dengan Highlight Sabat ke-2 dan Sabat ke-7
+ * Dengan highlight opsional dari data Supabase
  */
 function renderAttendanceChart() {
     const svg = document.getElementById("attendanceSvgChart");
@@ -3332,11 +3422,21 @@ function renderAttendanceChart() {
     const peakDateEl = document.getElementById("chartPeakDate");
     const avgSSValEl = document.getElementById("chartAvgSSVal");
     const trendBadgeEl = document.getElementById("chartTrendBadge");
+    const trendBadgeWrapper = trendBadgeEl;
 
     if (!svg) return;
 
-    const data = attendanceAnalyticsDatasets[currentAnalyticsRange] || attendanceAnalyticsDatasets["current-tw"];
-    if (!data || data.length === 0) return;
+    const data = attendanceAnalyticsDatasets[currentAnalyticsRange] || [];
+    if (!data.length) {
+        svg.innerHTML = "";
+        if (avgValEl) avgValEl.textContent = "--";
+        if (avgSSValEl) avgSSValEl.textContent = "--";
+        if (peakValEl) peakValEl.textContent = "--";
+        if (peakDateEl) peakDateEl.textContent = "";
+        if (trendBadgeEl) trendBadgeEl.textContent = "";
+        if (trendBadgeWrapper) trendBadgeWrapper.style.display = "none";
+        return;
+    }
 
     // 1. Hitung Rata-rata dan Puncak Khotbah (Patokan Utama)
     let sumKhotbah = 0;
@@ -3363,7 +3463,16 @@ function renderAttendanceChart() {
     if (peakValEl) peakValEl.textContent = maxKhotbah;
     if (peakDateEl) peakDateEl.textContent = `(Sabat ke-${peakItem.sabatNo}, ${peakItem.shortDate})`;
     if (trendBadgeEl) {
-        trendBadgeEl.textContent = currentAnalyticsRange === "current-tw" ? "+6.4%" : "+4.8%";
+        const previousData = attendanceAnalyticsDatasets["prev-tw"] || [];
+        if (previousData.length) {
+            const previousAverage = previousData.reduce((sum, item) => sum + (item.khotbah || item.total || 0), 0) / previousData.length;
+            const trendPct = previousAverage > 0 ? ((avgKhotbah - previousAverage) / previousAverage) * 100 : null;
+            trendBadgeEl.textContent = trendPct === null ? "" : `${trendPct >= 0 ? "+" : ""}${trendPct.toFixed(1)}%`;
+            trendBadgeWrapper.style.display = trendPct === null ? "none" : "inline-flex";
+        } else {
+            trendBadgeEl.textContent = "";
+            trendBadgeWrapper.style.display = "none";
+        }
     }
 
     // 2. Parameter Dimensi SVG
@@ -3414,7 +3523,14 @@ function renderAttendanceChart() {
     const yAvgPos = getY(avgKhotbah);
     const avgLineSvg = `
         <line x1="${padLeft}" y1="${yAvgPos}" x2="${width - padRight}" y2="${yAvgPos}" stroke="${textColor}" stroke-dasharray="3,3" stroke-width="1.5" opacity="0.6" />
-        <text x="${width - padRight + 4}" y="${yAvgPos + 3}" fill="${textColor}" font-size="10" font-weight="700">Rata²: ${avgKhotbah}</text>
+        <text x="${width - padRight + 10}" y="${yAvgPos - 4}" fill="${textColor}" font-size="12" font-weight="800">Rata² Khotbah: ${avgKhotbah}</text>
+    `;
+
+    // 4b. Garis Rata-rata Horisontal (Sekolah Sabat)
+    const yAvgSSPos = getY(avgSS);
+    const avgSSLineSvg = `
+        <line x1="${padLeft}" y1="${yAvgSSPos}" x2="${width - padRight}" y2="${yAvgSSPos}" stroke="${ssColor}" stroke-dasharray="3,3" stroke-width="1.5" opacity="0.5" />
+        <text x="${width - padRight + 10}" y="${yAvgSSPos - 4}" fill="${ssColor}" font-size="12" font-weight="800" opacity="0.8">Rata² SS: ${avgSS}</text>
     `;
 
     // 5. Hitung Koordinat Titik-titik untuk Khotbah & SS
@@ -3430,13 +3546,13 @@ function renderAttendanceChart() {
         pointsKhotbah.push({ x: xPos, y: getY(khotbahVal), val: khotbahVal, data: d, index: i });
         pointsSS.push({ x: xPos, y: getY(ssVal), val: ssVal, data: d, index: i });
 
-        // Highlight Sabat ke-2 dan Sabat ke-7 (Khusus Triwulan Ini / jika ada isHighlight)
-        if (d.isHighlight || d.sabatNo === 2 || d.sabatNo === 7) {
+        // Highlight hanya jika ditandai oleh data Supabase.
+        if (d.isHighlight) {
             const bandW = 34;
             const bandX = xPos - bandW / 2;
             const bandY = padTop - 12;
             const bandH = plotH + 16;
-            const badgeLabel = d.sabatNo === 2 ? "🌟 Sabat 2" : "🌟 Sabat 7";
+            const badgeLabel = d.highlightTitle || `Sabat ${d.sabatNo}`;
 
             highlightBandsSvg += `
                 <g class="highlight-band">
@@ -3492,7 +3608,7 @@ function renderAttendanceChart() {
         `;
 
         // Titik Khotbah (Depan - Utama)
-        const isHighlight = d.isHighlight || d.isPeak;
+        const isHighlight = d.isHighlight || d.isPeak || d.sabatNo === 2 || d.sabatNo === 7;
         const circleR = isHighlight ? 6 : 4.5;
         const strokeCol = isHighlight ? "#F59E0B" : primaryColor;
         const fillCol = isHighlight ? "#F59E0B" : (isDark ? "#20090D" : "#FFFFFF");
@@ -3529,6 +3645,9 @@ function renderAttendanceChart() {
         <!-- Average Line (Khotbah) -->
         <g class="avg-line">${avgLineSvg}</g>
 
+        <!-- Average Line (Sekolah Sabat) -->
+        <g class="avg-line-ss">${avgSSLineSvg}</g>
+
         <!-- Area Fill Under Khotbah Line -->
         <path d="${areaDKhotbah}" fill="url(#khotbahGradient)" />
 
@@ -3561,11 +3680,11 @@ function renderAttendanceChart() {
 
             if (toolHeader) toolHeader.textContent = `Sabat ke-${item.sabatNo} • ${item.date}`;
             if (toolTheme) {
-                toolTheme.textContent = item.highlightTitle ? `🌟 ${item.highlightTitle}` : (item.theme || "Ibadah Sabat");
+                toolTheme.textContent = item.highlightTitle ? `🌟 ${item.highlightTitle}` : (item.theme || "--");
             }
             if (toolKhotbah) toolKhotbah.textContent = item.khotbah || item.total || 0;
             if (toolSS) toolSS.textContent = item.ss || item.sekolahSabat || 0;
-            if (toolSub) toolSub.textContent = `Pria: ${item.male} | Wanita: ${item.female} | Anak: ${item.children || 0}`;
+            if (toolSub) toolSub.style.display = "none";
 
             const container = document.getElementById("attendanceChartContainer");
             if (container) {
@@ -3615,14 +3734,19 @@ function renderAttendanceTable() {
     if (!tbody) return;
 
     // Ambil data sabat dari dataset aktif dan urutkan dari yang terbaru
-    const currentDataset = attendanceAnalyticsDatasets[currentAnalyticsRange] || attendanceAnalyticsDatasets["current-tw"];
+    const currentDataset = attendanceAnalyticsDatasets[currentAnalyticsRange] || [];
     const logs = [...currentDataset].reverse();
+
+    if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-muted);">Belum ada data kehadiran dari Supabase.</td></tr>`;
+        return;
+    }
 
     let html = "";
     logs.forEach(row => {
         const valKhotbah = row.khotbah || row.total || 0;
         const valSS = row.ss || row.sekolahSabat || 0;
-        const isHl = row.isHighlight || row.sabatNo === 2 || row.sabatNo === 7;
+        const isHl = Boolean(row.isHighlight || row.sabatNo === 2 || row.sabatNo === 7);
 
         html += `
             <tr style="${isHl ? 'background-color: rgba(245, 158, 11, 0.05);' : ''}">
@@ -3643,6 +3767,61 @@ function renderAttendanceTable() {
     tbody.innerHTML = html;
 }
 
+function renderAttendanceSummary() {
+    const avgEl = document.getElementById("statAvgAttendance");
+    const participationEl = document.getElementById("statParticipationValue");
+    const participationBadgeEl = participationEl?.parentElement;
+    const data = attendanceAnalyticsDatasets["current-tw"] || [];
+
+    if (!data.length) {
+        if (avgEl) avgEl.textContent = "";
+        if (participationEl) participationEl.textContent = "";
+        if (participationBadgeEl) participationBadgeEl.style.display = "none";
+        return;
+    }
+
+    const totalAttendance = data.reduce((sum, row) => sum + (row.khotbah || row.total || 0), 0);
+    const average = Math.round(totalAttendance / data.length);
+    if (avgEl) avgEl.textContent = average;
+
+    const totalMembers = congregationStatsData.total;
+    if (participationEl) {
+        participationEl.textContent = Number.isFinite(totalMembers) && totalMembers > 0
+            ? `${((average / totalMembers) * 100).toFixed(1)}%`
+            : "";
+        if (participationBadgeEl) {
+            participationBadgeEl.style.display = Number.isFinite(totalMembers) && totalMembers > 0
+                ? "inline-flex"
+                : "none";
+        }
+    }
+}
+
+function renderParticipationSummary() {
+    const data = attendanceAnalyticsDatasets["current-tw"] || [];
+    const totalMembers = congregationStatsData.total;
+    const ssAvgEl = document.getElementById("deptSsAvg");
+    const ssPctEl = document.getElementById("deptSsPct");
+    const khotbahAvgEl = document.getElementById("deptKhotbahAvg");
+    const khotbahPctEl = document.getElementById("deptKhotbahPct");
+
+    if (!data.length) {
+        [ssAvgEl, ssPctEl, khotbahAvgEl, khotbahPctEl].forEach(el => {
+            if (el) el.textContent = "";
+        });
+        return;
+    }
+
+    const ssAverage = Math.round(data.reduce((sum, row) => sum + (row.ss || row.sekolahSabat || 0), 0) / data.length);
+    const khotbahAverage = Math.round(data.reduce((sum, row) => sum + (row.khotbah || row.total || 0), 0) / data.length);
+    if (ssAvgEl) ssAvgEl.textContent = `${ssAverage} Jiwa`;
+    if (khotbahAvgEl) khotbahAvgEl.textContent = `${khotbahAverage} Jiwa`;
+    if (Number.isFinite(totalMembers) && totalMembers > 0) {
+        if (ssPctEl) ssPctEl.textContent = `${((ssAverage / totalMembers) * 100).toFixed(1)}%`;
+        if (khotbahPctEl) khotbahPctEl.textContent = `${((khotbahAverage / totalMembers) * 100).toFixed(1)}%`;
+    }
+}
+
 /**
  * Fetch Data Statistik Realtime dari Supabase (Jika Tabel Sudah Dibuat)
  */
@@ -3654,18 +3833,34 @@ async function fetchStatistikDataFromSupabase() {
         const { data: jemaatData, error: jemaatErr } = await supabaseClient
             .from('Tabel Profil Jemaat')
             .select('*')
+            .order('Tahun', { ascending: false })
             .order('Id', { ascending: false })
-            .limit(1);
+            .limit(100);
 
         if (!jemaatErr && jemaatData && jemaatData.length > 0) {
             const j = jemaatData[0];
-            congregationStatsData.total = Number(j.TotalJemaat || j.total_jemaat || 158);
-            congregationStatsData.male = Number(j.Pria || j.pria || 74);
-            congregationStatsData.female = Number(j.Wanita || j.wanita || 84);
+            const currentYear = Number(j.Tahun ?? j.tahun);
+            const previous = jemaatData.find(row => {
+                const rowYear = Number(row.Tahun ?? row.tahun);
+                return Number.isFinite(currentYear) && Number.isFinite(rowYear) && rowYear < currentYear;
+            });
+            congregationStatsData.total = Number(j.TotalJemaat ?? j.total_jemaat);
+            congregationStatsData.male = Number(j.Pria ?? j.pria);
+            congregationStatsData.female = Number(j.Wanita ?? j.wanita);
+            congregationStatsData.previousTotal = previous
+                ? Number(previous.TotalJemaat ?? previous.total_jemaat)
+                : null;
+            congregationStatsData.ageGroups = [
+                { label: "Anak-anak (SS)", count: Number(j.Anak ?? j.anak), pct: null },
+                { label: "Pemuda (PA)", count: Number(j.Pemuda ?? j.pemuda), pct: null },
+                { label: "Dewasa", count: Number(j.Dewasa ?? j.dewasa), pct: null },
+                { label: "Senior / Lansia", count: Number(j.Lansia ?? j.lansia), pct: null }
+            ];
             renderCongregationStats();
+            renderParticipationSummary();
         }
     } catch (e) {
-        // Fallback ke data template
+        console.warn("Gagal memuat profil statistik:", e);
     }
 
     // 2. Ambil log kehadiran sabat dari Supabase
@@ -3676,7 +3871,26 @@ async function fetchStatistikDataFromSupabase() {
             .order('Tanggal', { ascending: true });
 
         if (!kehadiranErr && kehadiranData && kehadiranData.length > 0) {
-            const mapped = kehadiranData.map((row, idx) => {
+            const getQuarterInfo = dateRaw => {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(dateRaw)) return null;
+
+                const [year, month, day] = dateRaw.split('-').map(Number);
+                const quarter = Math.floor((month - 1) / 3) + 1;
+                const quarterStart = new Date(Date.UTC(year, (quarter - 1) * 3, 1));
+                const targetDate = new Date(Date.UTC(year, month - 1, day));
+                let sabatNo = 0;
+
+                for (const cursor = new Date(quarterStart); cursor <= targetDate; cursor.setUTCDate(cursor.getUTCDate() + 1)) {
+                    if (cursor.getUTCDay() === 6) sabatNo++;
+                }
+
+                return {
+                    key: `${year}-Q${quarter}`,
+                    sabatNo
+                };
+            };
+
+            const mapped = kehadiranData.map(row => {
                 const dateRaw = row.Tanggal ? String(row.Tanggal).split('T')[0] : '';
                 const parts = dateRaw.split('-');
                 let shortDate = dateRaw;
@@ -3689,37 +3903,52 @@ async function fetchStatistikDataFromSupabase() {
                     dateDisplay = `Sabtu, ${parseInt(parts[2], 10)} ${months[mIdx] || ''} ${parts[0]}`;
                 }
 
-                const male = Number(row.Pria || row.pria || 0);
-                const female = Number(row.Wanita || row.wanita || 0);
-                const children = Number(row.Anak || row.anak || 0);
-                const khotbah = Number(row.Total || row.total || (male + female + children));
-                const ss = Number(row.SekolahSabat || row.sekolah_sabat || (khotbah > 20 ? khotbah - 18 : khotbah));
-                const sabatNo = idx + 1;
+                const khotbah = Number(row.Total || row.total || 0);
+                const ss = Number(row.SekolahSabat ?? row.sekolah_sabat);
+                const quarterInfo = getQuarterInfo(dateRaw);
 
                 return {
                     id: row.Id || row.id,
-                    sabatNo: sabatNo,
+                    dateRaw: dateRaw,
+                    quarterKey: quarterInfo?.key || null,
+                    sabatNo: quarterInfo?.sabatNo || null,
                     date: dateDisplay,
                     shortDate: shortDate,
                     khotbah: khotbah,
                     ss: ss,
-                    male: male,
-                    female: female,
-                    children: children,
-                    theme: row.Tema || row.tema || 'Ibadah Sabat',
-                    isHighlight: sabatNo === 2 || sabatNo === 7
+                    theme: row.Tema ?? row.tema ?? "-",
+                    isHighlight: Boolean(row.isHighlight)
                 };
             });
 
-            // Update dataset Triwulan Ini
-            if (mapped.length > 0) {
-                attendanceAnalyticsDatasets["current-tw"] = mapped;
-                renderAttendanceChart();
-                renderAttendanceTable();
-            }
+            const latestRow = mapped.filter(row => row.dateRaw).at(-1);
+            const latestQuarterKey = latestRow?.quarterKey;
+            const [latestYear, latestQuarter] = latestQuarterKey
+                ? latestQuarterKey.split('-Q').map(Number)
+                : [null, null];
+            const previousQuarterKey = latestQuarterKey && latestQuarter > 1
+                ? `${latestYear}-Q${latestQuarter - 1}`
+                : latestQuarterKey
+                    ? `${latestYear - 1}-Q4`
+                    : null;
+
+            const currentRows = mapped.filter(row => row.quarterKey === latestQuarterKey);
+            const previousRows = mapped.filter(row => row.quarterKey === previousQuarterKey);
+            const addSabatNumbers = rows => rows.map(row => ({
+                ...row,
+                isHighlight: row.isHighlight || row.sabatNo === 2 || row.sabatNo === 7
+            }));
+
+            attendanceAnalyticsDatasets["current-tw"] = addSabatNumbers(currentRows);
+            attendanceAnalyticsDatasets["prev-tw"] = addSabatNumbers(previousRows);
+            currentAnalyticsRange = "current-tw";
+            renderAttendanceChart();
+            renderAttendanceTable();
+            renderAttendanceSummary();
+            renderParticipationSummary();
         }
     } catch (e) {
-        // Fallback ke data template
+        console.warn("Gagal memuat kehadiran statistik:", e);
     }
 }
 
@@ -3755,7 +3984,6 @@ function openModalInputKehadiran() {
     const dateInp = document.getElementById("inpKehadiranTanggal");
     if (dateInp) dateInp.value = defaultDate;
 
-    hitungTotalKhotbahModal();
     modal.classList.add("active");
 }
 
@@ -3764,74 +3992,40 @@ function closeModalInputKehadiran() {
     if (modal) modal.classList.remove("active");
 }
 
-function hitungTotalKhotbahModal() {
-    const pria = parseInt(document.getElementById("inpKehadiranPria")?.value || "0", 10);
-    const wanita = parseInt(document.getElementById("inpKehadiranWanita")?.value || "0", 10);
-    const anak = parseInt(document.getElementById("inpKehadiranAnak")?.value || "0", 10);
-    const total = pria + wanita + anak;
-
-    const preview = document.getElementById("modalKhotbahTotalPreview");
-    if (preview) preview.textContent = `${total} Jiwa`;
-}
-
 async function handleSimpanKehadiran() {
     const tanggal = document.getElementById("inpKehadiranTanggal")?.value;
     const tema = document.getElementById("inpKehadiranTema")?.value || "Ibadah Sabat";
     const ss = parseInt(document.getElementById("inpKehadiranSS")?.value || "0", 10);
-    const pria = parseInt(document.getElementById("inpKehadiranPria")?.value || "0", 10);
-    const wanita = parseInt(document.getElementById("inpKehadiranWanita")?.value || "0", 10);
-    const anak = parseInt(document.getElementById("inpKehadiranAnak")?.value || "0", 10);
-    const khotbah = pria + wanita + anak;
+    const khotbah = parseInt(document.getElementById("inpKehadiranTotal")?.value || "0", 10);
 
     if (!tanggal) {
         showToast("Pilih tanggal Sabat terlebih dahulu", "error");
         return;
     }
 
-    // Simpan ke Supabase jika terhubung & login
-    if (supabaseClient && currentAdminSession) {
-        try {
-            await supabaseClient.from("Tabel Kehadiran Sabat").insert({
-                Tanggal: tanggal,
-                Tema: tema,
-                SekolahSabat: ss,
-                Pria: pria,
-                Wanita: wanita,
-                Anak: anak,
-                Total: khotbah
-            });
-        } catch (err) {
-            console.warn("Simpan ke Supabase:", err);
-        }
+    if (!supabaseClient || !currentAdminSession) {
+        showToast("Koneksi Supabase tidak tersedia", "error");
+        return;
     }
 
-    // Tambahkan ke dataset lokal
-    const parts = tanggal.split("-");
-    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-    const mIdx = parseInt(parts[1], 10) - 1;
-    const shortDate = `${parseInt(parts[2], 10)} ${months[mIdx] || ""}`;
-    const dateDisplay = `Sabtu, ${parseInt(parts[2], 10)} ${months[mIdx] || ""} ${parts[0]}`;
-    const sabatNo = attendanceAnalyticsDatasets["current-tw"].length + 1;
+    try {
+        const { error } = await supabaseClient.from("Tabel Kehadiran Sabat").insert({
+            Tanggal: tanggal,
+            Tema: tema,
+            SekolahSabat: ss,
+            Total: khotbah
+        });
+        if (error) throw error;
+    } catch (err) {
+        console.warn("Simpan ke Supabase:", err);
+        showToast("Kehadiran gagal disimpan ke Supabase", "error");
+        return;
+    }
 
-    const newEntry = {
-        sabatNo: sabatNo,
-        date: dateDisplay,
-        shortDate: shortDate,
-        khotbah: khotbah,
-        ss: ss,
-        male: pria,
-        female: wanita,
-        children: anak,
-        theme: tema,
-        isHighlight: sabatNo === 2 || sabatNo === 7
-    };
-
-    attendanceAnalyticsDatasets["current-tw"].push(newEntry);
-    renderAttendanceChart();
-    renderAttendanceTable();
+    await fetchStatistikDataFromSupabase();
 
     closeModalInputKehadiran();
-    showToast(`Kehadiran Sabat ke-${sabatNo} (${khotbah} jiwa) berhasil disimpan!`, "success");
+    showToast(`Kehadiran Sabat (${khotbah} jiwa) berhasil disimpan!`, "success");
 }
 
 function openModalEditProfilJemaat() {
@@ -3868,26 +4062,26 @@ async function handleSimpanProfilJemaat() {
         return;
     }
 
-    // Simpan ke Supabase jika terhubung & login
-    if (supabaseClient && currentAdminSession) {
-        try {
-            await supabaseClient.from("Tabel Profil Jemaat").insert({
-                Tahun: tahun,
-                TotalJemaat: total,
-                Pria: male,
-                Wanita: female
-            });
-        } catch (err) {
-            console.warn("Simpan ke Supabase:", err);
-        }
+    if (!supabaseClient || !currentAdminSession) {
+        showToast("Koneksi Supabase tidak tersedia", "error");
+        return;
     }
 
-    // Update data lokal
-    congregationStatsData.total = total;
-    congregationStatsData.male = male;
-    congregationStatsData.female = female;
+    try {
+        const { error } = await supabaseClient.from("Tabel Profil Jemaat").insert({
+            Tahun: tahun,
+            TotalJemaat: total,
+            Pria: male,
+            Wanita: female
+        });
+        if (error) throw error;
+    } catch (err) {
+        console.warn("Simpan ke Supabase:", err);
+        showToast("Profil jemaat gagal disimpan ke Supabase", "error");
+        return;
+    }
 
-    renderCongregationStats();
+    await fetchStatistikDataFromSupabase();
     closeModalEditProfilJemaat();
     showToast(`Profil Jemaat diperbarui: ${total} Jiwa (${male} Pria, ${female} Wanita)`, "success");
 }

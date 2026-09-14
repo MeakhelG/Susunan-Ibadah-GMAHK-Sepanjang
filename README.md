@@ -2,19 +2,17 @@
 
 Aplikasi web modern (*Single Page Application*) yang interaktif, elegan, dan responsif. Dirancang khusus untuk mempermudah pengelolaan, pengeditan langsung (*live inline edit*), serta generasi susunan ibadah dan jadwal petugas jemaat **GMAHK Sepanjang** yang siap disalin secara presisi ke WhatsApp dan media sosial.
 
-**Versi App:** v2.0.2
+**Versi App:** v2.1.0
 
 ---
 
-## 🌟 Apa yang Baru di v2.0.2 🎉
+## 🌟 Apa yang Baru di v2.1.0 🎉
 
-- **☁️ Cloud Persistence Live Overrides (`Tabel Override Susunan`):** Perubahan susunan acara (judul lagu, pasal ayat, atau petugas) yang diubah oleh Admin melalui tombol **Edit** kini langsung tersimpan ke Cloud Database Supabase. Seluruh jemaat yang membuka website dapat langsung melihat susunan acara terupdate secara *real-time*.
-- **🔒 Proteksi Keamanan Fitur Edit & Reset Khusus Admin:** Tombol **Edit** dan **Reset Data** hanya ditampilkan bagi Admin yang telah terautentikasi Supabase Auth, menjaga antarmuka jemaat publik tetap rapi dan aman dari perubahan tak disengaja.
-- **🏛️ Redesain Kartu Profil & Pengurus Jemaat (Single-Column Layout):** Penataan ulang layout kartu Pengurus Jemaat menjadi 1 kolom penuh yang modern dengan foto profil berukuran lebih besar, efek *gradient blend overlay*, dan *fallback SVG/initials* di direktori `avatars/`.
-- **📱 Formatting Salin WhatsApp Presisi (PA & Song Bolding):**
-  - Susunan PA pada format salin WA kini tersusun *inline* / menyamping (`● *MC & Janji PA* : Sdra Ricky`).
-  - Judul lagu AYS dan LSEL otomatis di-format *bold* di WhatsApp (contoh: `AYS No. 4: - *"Amazing Grace"*`).
-  - Pembersihan field catatan tema pada item Firman Tuhan Ibadah Rabu Malam.
+- **📊 Statistik Jemaat & Kehadiran:** Tab statistik baru untuk melihat total anggota, komposisi pria/wanita, rata-rata kehadiran Sekolah Sabat dan Ibadah Khotbah, tren kehadiran, serta log kehadiran Sabat.
+- **🔒 Akses Statistik Khusus Admin:** Data statistik hanya dapat dibuka oleh Admin yang telah login melalui Supabase Auth. Pengunjung umum tetap melihat halaman statistik terkunci.
+- **☁️ Statistik Berbasis Data Supabase:** Seluruh angka pada statistik diambil dari tabel Supabase, tanpa menampilkan data dummy. Data profil dan kehadiran dapat diperbarui melalui modal pengelolaan data Admin.
+- **📅 Perhitungan Triwulan & Sabat Otomatis:** Data kehadiran dikelompokkan berdasarkan tanggal ke triwulan kalender yang benar, dengan nomor Sabat dihitung dari jumlah Sabtu sejak awal triwulan.
+- **🌟 Highlight Kehadiran:** Sabat ke-2 dan ke-7 ditandai pada grafik tren serta log kehadiran untuk memudahkan pembacaan data.
 
 ---
 
@@ -30,6 +28,10 @@ Aplikasi web modern (*Single Page Application*) yang interaktif, elegan, dan res
   - **Pemuda Advent (PA):** Restrukturisasi 7 tahapan peribadatan PA yang sistematis.
   - **Rabu Malam:** Nilai default pintar untuk pelayan ibadah (*Lagu Pujian = Host*, *Pengumuman = Ketua Jemaat*).
 - **Kartu Tautan Google Drive Interaktif:** Kartu akses langsung untuk mengunduh PDF Jadwal Pelayanan bulanan/triwulan di Google Drive dengan animasi *redirect*.
+- **☁️ Cloud Persistence Live Overrides (`Tabel Override Susunan`):** Perubahan susunan acara (judul lagu, pasal ayat, atau petugas) yang diubah oleh Admin melalui tombol **Edit** kini langsung tersimpan ke Cloud Database Supabase. Seluruh jemaat yang membuka website dapat langsung melihat susunan acara terupdate secara *real-time*.
+- **🔒 Proteksi Keamanan Fitur Edit & Reset Khusus Admin:** Tombol **Edit** dan **Reset Data** hanya ditampilkan bagi Admin yang telah terautentikasi Supabase Auth, menjaga antarmuka jemaat publik tetap rapi dan aman dari perubahan tak disengaja.
+- **🏛️ Redesain Kartu Profil & Pengurus Jemaat:** Penataan ulang layout kartu Pengurus Jemaat menjadi 1 kolom penuh dengan foto profil lebih besar, efek *gradient blend overlay*, dan *fallback SVG/initials* di direktori `avatars/`.
+- **📱 Formatting Salin WhatsApp Presisi:** Susunan PA pada format salin WA tersusun *inline*, judul lagu AYS dan LSEL otomatis di-format *bold*, serta field catatan tema yang tidak diperlukan dibersihkan dari item Firman Tuhan Ibadah Rabu Malam.
 
 ---
 
@@ -66,6 +68,7 @@ Developed with ❤️ by **Meakhel Gunawan**.
 - [x] Secured Admin Dashboard & Authentication - *Selesai di v1.4.0*
 - [x] Smart Autocomplete & PA Seamless Automation - *Selesai di v1.5.0*
 - [x] Secure Admin Deletion & Batch Schedule Shifting - *Selesai di v1.6.0*
-- [x] Redesain Total UI, Profil Officers, Admin Security & Cloud Persistence Overrides - *Selesai di v2.0.0*
+- [x] Redesain Total UI, Profil Officers, Admin Security, Cloud Persistence Overrides - *Selesai di v2.0.0*
+- [x] Statistik Jemaat & Kehadiran Berbasis Supabase - *Selesai di v2.1.0*
 - [ ] Fitur Persembahan & Persepuluhan Online (*Sedang Dipersiapkan*)
 - [ ] Susunan Jadwal Vesper / Buka Sabat

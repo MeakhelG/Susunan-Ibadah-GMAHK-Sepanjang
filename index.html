@@ -301,7 +301,7 @@
 
                 <!-- FOOTER -->
                 <footer class="app-footer">
-                    <p>&copy; 2026 - v2.0.2. GMAHK Sepanjang. All rights reserved.</p>
+                    <p>&copy; 2026 - v2.1.0. GMAHK Sepanjang. All rights reserved.</p>
                     <p class="developer-credit">Developed by <span>Meakhel Gunawan</span></p>
                 </footer>
             </section>
@@ -1007,17 +1007,17 @@
                                 </div>
                             </div>
                             <div class="stat-kpi-body">
-                                <h3 class="stat-kpi-value" id="statTotalJemaat">158</h3>
+                                <h3 class="stat-kpi-value" id="statTotalJemaat">--</h3>
                                 <span class="stat-kpi-unit">Jiwa</span>
                             </div>
                             <div class="stat-kpi-footer">
                                 <span class="trend-badge positive">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    <svg id="statGrowthIcon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                                         stroke-linejoin="round">
                                         <polyline points="18 15 12 9 6 15" />
                                     </svg>
-                                    +3 Jiwa (2026)
+                                    <span id="statGrowthValue"></span>
                                 </span>
                                 <span class="stat-footer-text">Jemaat Terdaftar</span>
                             </div>
@@ -1037,17 +1037,17 @@
                                 </div>
                             </div>
                             <div class="stat-kpi-body">
-                                <h3 class="stat-kpi-value" id="statAvgAttendance">112</h3>
+                                <h3 class="stat-kpi-value" id="statAvgAttendance">--</h3>
                                 <span class="stat-kpi-unit">Jiwa / Sabat</span>
                             </div>
                             <div class="stat-kpi-footer">
                                 <span class="trend-badge positive">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    <svg id="statParticipationIcon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                                         stroke-linejoin="round">
                                         <polyline points="18 15 12 9 6 15" />
                                     </svg>
-                                    70.9%
+                                    <span id="statParticipationValue"></span>
                                 </span>
                                 <span class="stat-footer-text">Rasio Partisipasi</span>
                             </div>
@@ -1068,11 +1068,11 @@
                                 </div>
                             </div>
                             <div class="stat-kpi-body">
-                                <h3 class="stat-kpi-value" id="statMaleCount">74</h3>
+                                <h3 class="stat-kpi-value" id="statMaleCount">--</h3>
                                 <span class="stat-kpi-unit">Jiwa</span>
                             </div>
                             <div class="stat-kpi-footer">
-                                <span class="ratio-pill blue" id="statMalePct">46.8%</span>
+                                <span class="ratio-pill blue" id="statMalePct">--</span>
                                 <span class="stat-footer-text">dari Total Jemaat</span>
                             </div>
                         </div>
@@ -1092,11 +1092,11 @@
                                 </div>
                             </div>
                             <div class="stat-kpi-body">
-                                <h3 class="stat-kpi-value" id="statFemaleCount">84</h3>
+                                <h3 class="stat-kpi-value" id="statFemaleCount">--</h3>
                                 <span class="stat-kpi-unit">Jiwa</span>
                             </div>
                             <div class="stat-kpi-footer">
-                                <span class="ratio-pill pink" id="statFemalePct">53.2%</span>
+                                <span class="ratio-pill pink" id="statFemalePct">--</span>
                                 <span class="stat-footer-text">dari Total Jemaat</span>
                             </div>
                         </div>
@@ -1128,18 +1128,18 @@
                             <div class="gender-bar-labels">
                                 <div class="gender-label-item male">
                                     <span class="dot blue"></span>
-                                    <span>Pria: <strong id="barMaleText">74 Jiwa</strong> (<span
-                                            id="barMalePct">46.8%</span>)</span>
+                                        <span>Pria: <strong id="barMaleText">--</strong> (<span
+                                            id="barMalePct">--</span>)</span>
                                 </div>
                                 <div class="gender-label-item female">
-                                    <span>Wanita: <strong id="barFemaleText">84 Jiwa</strong> (<span
-                                            id="barFemalePct">53.2%</span>)</span>
+                                        <span>Wanita: <strong id="barFemaleText">--</strong> (<span
+                                            id="barFemalePct">--</span>)</span>
                                     <span class="dot pink"></span>
                                 </div>
                             </div>
                             <div class="gender-progress-track">
-                                <div class="gender-progress-segment male" id="progressMale" style="width: 46.8%;"></div>
-                                <div class="gender-progress-segment female" id="progressFemale" style="width: 53.2%;">
+                                <div class="gender-progress-segment male" id="progressMale" style="width: 0%;"></div>
+                                <div class="gender-progress-segment female" id="progressFemale" style="width: 0%;">
                                 </div>
                             </div>
                         </div>
@@ -1150,33 +1150,33 @@
                                 <span class="age-icon">👶</span>
                                 <div class="age-details">
                                     <span class="age-label">Anak-anak (SS)</span>
-                                    <strong class="age-count">32 Jiwa</strong>
+                                    <strong class="age-count" id="ageCountAnak">--</strong>
                                 </div>
-                                <span class="age-pct">20%</span>
+                                <span class="age-pct" id="agePctAnak">--</span>
                             </div>
                             <div class="age-item">
                                 <span class="age-icon">🧑</span>
                                 <div class="age-details">
                                     <span class="age-label">Pemuda (PA)</span>
-                                    <strong class="age-count">41 Jiwa</strong>
+                                    <strong class="age-count" id="ageCountPemuda">--</strong>
                                 </div>
-                                <span class="age-pct">26%</span>
+                                <span class="age-pct" id="agePctPemuda">--</span>
                             </div>
                             <div class="age-item">
                                 <span class="age-icon">👨‍💼</span>
                                 <div class="age-details">
                                     <span class="age-label">Dewasa</span>
-                                    <strong class="age-count">59 Jiwa</strong>
+                                    <strong class="age-count" id="ageCountDewasa">--</strong>
                                 </div>
-                                <span class="age-pct">37%</span>
+                                <span class="age-pct" id="agePctDewasa">--</span>
                             </div>
                             <div class="age-item">
                                 <span class="age-icon">🧓</span>
                                 <div class="age-details">
                                     <span class="age-label">Senior / Lansia</span>
-                                    <strong class="age-count">26 Jiwa</strong>
+                                    <strong class="age-count" id="ageCountLansia">--</strong>
                                 </div>
-                                <span class="age-pct">17%</span>
+                                <span class="age-pct" id="agePctLansia">--</span>
                             </div>
                         </div>
                     </div>
@@ -1195,7 +1195,7 @@
                                     </div>
                                     <div>
                                         <h4>Tren Kehadiran Ibadah Sabat</h4>
-                                        <p>Grafik metrik kehadiran per minggu (YouTube Analytics style)</p>
+                                        <p>Grafik metrik kehadiran per sabat</p>
                                     </div>
                                 </div>
                             </div>
@@ -1215,23 +1215,23 @@
                                 <span class="chart-metric-label">Rata-rata Sekolah Sabat</span>
                                 <div class="chart-metric-value-wrap">
                                     <strong class="chart-metric-val" id="chartAvgSSVal"
-                                        style="color: #3B82F6;">101</strong>
+                                        style="color: #3B82F6;"></strong>
                                     <span class="chart-metric-unit">hadir / Sabat</span>
                                 </div>
                             </div>
                             <div class="chart-metric-item">
                                 <span class="chart-metric-label">Rata-rata Khotbah</span>
                                 <div class="chart-metric-value-wrap">
-                                    <strong class="chart-metric-val" id="chartAvgVal">122</strong>
+                                    <strong class="chart-metric-val" id="chartAvgVal"></strong>
                                     <span class="chart-metric-unit">hadir / Sabat</span>
-                                    <span class="trend-badge positive" id="chartTrendBadge">+6.4%</span>
+                                    <span class="trend-badge positive" id="chartTrendBadge"></span>
                                 </div>
                             </div>
                             <div class="chart-metric-item">
                                 <span class="chart-metric-label">Puncak Kehadiran</span>
                                 <div class="chart-metric-value-wrap">
-                                    <strong class="chart-metric-val" id="chartPeakVal">138</strong>
-                                    <span class="chart-metric-unit" id="chartPeakDate">(Sabat ke-2, 11 Jul)</span>
+                                    <strong class="chart-metric-val" id="chartPeakVal">--</strong>
+                                    <span class="chart-metric-unit" id="chartPeakDate"></span>
                                 </div>
                             </div>
                         </div>
@@ -1239,17 +1239,17 @@
                         <!-- SVG Interactive Dual-Line Chart Canvas -->
                         <div class="chart-canvas-container" id="attendanceChartContainer">
                             <div class="chart-tooltip" id="chartTooltip" style="display: none;">
-                                <div class="tooltip-header" id="tooltipHeader">Sabat ke-2 • 11 Juli 2026</div>
-                                <div class="tooltip-theme" id="tooltipTheme">Sabat Pelayanan Khusus</div>
+                                <div class="tooltip-header" id="tooltipHeader"></div>
+                                <div class="tooltip-theme" id="tooltipTheme"></div>
                                 <div class="tooltip-stat-row khotbah-row">
                                     <span class="dot maroon"></span>
-                                    <span>Ibadah Khotbah: <strong id="tooltipKhotbah">138</strong> Jiwa</span>
+                                    <span>Ibadah Khotbah: <strong id="tooltipKhotbah">--</strong> Jiwa</span>
                                 </div>
                                 <div class="tooltip-stat-row ss-row">
                                     <span class="dot blue"></span>
-                                    <span>Sekolah Sabat: <strong id="tooltipSS">118</strong> Jiwa</span>
+                                    <span>Sekolah Sabat: <strong id="tooltipSS">--</strong> Jiwa</span>
                                 </div>
-                                <div class="tooltip-sub" id="tooltipSub">Pria: 64 | Wanita: 74 | Anak: 28</div>
+                                <div class="tooltip-sub" id="tooltipSub"></div>
                             </div>
                             <svg id="attendanceSvgChart" class="attendance-svg-chart" viewBox="0 0 700 290">
                                 <!-- Generated dynamically via JavaScript -->
@@ -1307,10 +1307,10 @@
                             <div class="dept-info">
                                 <div class="dept-name-row">
                                     <h5>Sekolah Sabat</h5>
-                                    <span class="dept-pct">62%</span>
+                                    <span class="dept-pct" id="deptSsPct"></span>
                                 </div>
                                 <p>09.00 - 10.30 WIB</p>
-                                <strong>98 Jiwa</strong>
+                                <strong id="deptSsAvg"></strong>
                             </div>
                         </div>
                         <div class="card dept-card">
@@ -1318,21 +1318,22 @@
                             <div class="dept-info">
                                 <div class="dept-name-row">
                                     <h5>Ibadah Khotbah</h5>
-                                    <span class="dept-pct">75%</span>
+                                    <span class="dept-pct" id="deptKhotbahPct"></span>
                                 </div>
                                 <p>10.30 - 12.00 WIB</p>
-                                <strong>118 Jiwa</strong>
+                                <strong id="deptKhotbahAvg"></strong>
                             </div>
                         </div>
+                        <!--
                         <div class="card dept-card">
                             <div class="dept-icon purple-bg">🔥</div>
                             <div class="dept-info">
                                 <div class="dept-name-row">
                                     <h5>Pemuda Advent</h5>
-                                    <span class="dept-pct">29%</span>
+                                    <span class="dept-pct">--</span>
                                 </div>
                                 <p>14.00 - 16.00 WIB</p>
-                                <strong>46 Jiwa</strong>
+                                <strong>--</strong>
                             </div>
                         </div>
                         <div class="card dept-card">
@@ -1340,12 +1341,13 @@
                             <div class="dept-info">
                                 <div class="dept-name-row">
                                     <h5>Rabu Malam</h5>
-                                    <span class="dept-pct">24%</span>
+                                    <span class="dept-pct">--</span>
                                 </div>
                                 <p>19.00 - 20.00 WIB</p>
-                                <strong>38 Jiwa</strong>
+                                <strong>--</strong>
                             </div>
                         </div>
+                        -->
                     </div>
 
                     <!-- Recent Sabbath Attendance Log Table -->
@@ -1511,6 +1513,14 @@
                         </div>
                     </div>
 
+                    <div class="admin-mobile-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+                            <path d="M12 18h.01"/>
+                        </svg>
+                        <span>Untuk pengalaman melihat dan mengedit tabel yang lebih baik, sangat disarankan menggunakan perangkat layar lebar (Laptop/Desktop).</span>
+                    </div>
+
                     <div class="admin-table-container">
                         <table class="admin-data-table">
                             <thead>
@@ -1623,7 +1633,7 @@
     <!-- 1. STATISTIK ACTION SELECTOR MODAL     -->
     <!-- ====================================== -->
     <div id="modalStatistikAction" class="modal-overlay">
-        <div class="modal-content login-modal-card" style="max-width: 440px;">
+        <div class="modal-content login-modal-card stats-action-modal">
             <button class="modal-close" onclick="closeModalStatistikAction()">&times;</button>
             <div class="login-modal-header">
                 <div class="login-modal-icon">
@@ -1742,27 +1752,9 @@
                             <span class="session-dot maroon"></span>
                             <strong>2. Ibadah Khotbah (10.30 WIB - Patokan Utama)</strong>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px;">
-                            <div class="input-group">
-                                <label for="inpKehadiranPria">Pria</label>
-                                <input type="number" id="inpKehadiranPria" placeholder="0" min="0" value="55"
-                                    oninput="hitungTotalKhotbahModal()" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="inpKehadiranWanita">Wanita</label>
-                                <input type="number" id="inpKehadiranWanita" placeholder="0" min="0" value="63"
-                                    oninput="hitungTotalKhotbahModal()" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="inpKehadiranAnak">Anak</label>
-                                <input type="number" id="inpKehadiranAnak" placeholder="0" min="0" value="24"
-                                    oninput="hitungTotalKhotbahModal()" required>
-                            </div>
-                        </div>
-
-                        <div class="live-total-pill">
-                            <span>Total Hadir Ibadah Khotbah:</span>
-                            <strong id="modalKhotbahTotalPreview">142 Jiwa</strong>
+                        <div class="input-group" style="margin-top: 6px;">
+                            <label for="inpKehadiranTotal">Jumlah Hadir Ibadah Khotbah (Jiwa)</label>
+                            <input type="number" id="inpKehadiranTotal" placeholder="0" min="0" value="142" required>
                         </div>
                     </div>
                 </div>
