@@ -301,7 +301,7 @@
 
                 <!-- FOOTER -->
                 <footer class="app-footer">
-                    <p>&copy; 2026 - v2.0.2. GMAHK Sepanjang. All rights reserved.</p>
+                    <p>&copy; 2026 - v2.1.0. GMAHK Sepanjang. All rights reserved.</p>
                     <p class="developer-credit">Developed by <span>Meakhel Gunawan</span></p>
                 </footer>
             </section>
@@ -934,6 +934,454 @@
                     </div>
                 </div>
             </section>
+
+            <!-- ================= STATISTIK TAB (ADMIN ONLY) ================= -->
+            <section id="tab-statistik" class="tab-pane">
+                <!-- Header Tab Statistik -->
+                <div class="statistik-header">
+                    <div class="statistik-header-title">
+                        <h2>Statistik Jemaat & Kehadiran</h2>
+                        <p>Dashboard analitik keanggotaan dan tren kehadiran ibadah</p>
+                    </div>
+                    <div class="statistik-header-actions" id="statistikHeaderActions">
+                        <div class="statistik-header-badge" id="statistikSessionStatus">
+                            <span class="badge-lock">🔒 Akses Terbatas</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm edit-stats-btn" id="editStatsBtn"
+                            onclick="openEditStatsActionModal()" style="display: none;"
+                            title="Edit data statistik atau catat kehadiran">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                <path d="m15 5 4 4" />
+                            </svg>
+                            <span>Edit Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. LOCKED VIEW (Shown when NOT logged in as admin) -->
+                <div id="statistikLockState" class="card statistik-lock-card">
+                    <div class="lock-icon-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                    </div>
+                    <div class="lock-content-text">
+                        <h3>Akses Khusus Admin</h3>
+                        <p>Halaman statistik keanggotaan jemaat dan analitik kehadiran ibadah hanya dapat diakses oleh
+                            Admin atau Pengurus Jemaat GMAHK Sepanjang.</p>
+                    </div>
+                    <button class="btn btn-primary lock-login-btn" onclick="openLoginModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                            <polyline points="10 17 15 12 10 7" />
+                            <line x1="15" y1="12" x2="3" y2="12" />
+                        </svg>
+                        <span>Login Sebagai Admin</span>
+                    </button>
+                </div>
+
+                <!-- 2. AUTHENTICATED DASHBOARD VIEW (Shown when logged in as admin) -->
+                <div id="statistikDashboardContent" class="statistik-dashboard-content" style="display: none;">
+
+                    <!-- KPI Cards (4 Cards Grid) -->
+                    <div class="analytics-kpi-grid">
+                        <!-- Card 1: Total Anggota -->
+                        <div class="card stat-kpi-card total-kpi">
+                            <div class="stat-kpi-header">
+                                <span class="stat-kpi-label">Total Anggota</span>
+                                <div class="stat-kpi-icon maroon-soft">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-kpi-body">
+                                <h3 class="stat-kpi-value" id="statTotalJemaat">--</h3>
+                                <span class="stat-kpi-unit">Jiwa</span>
+                            </div>
+                            <div class="stat-kpi-footer">
+                                <span class="trend-badge positive">
+                                    <svg id="statGrowthIcon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="18 15 12 9 6 15" />
+                                    </svg>
+                                    <span id="statGrowthValue"></span>
+                                </span>
+                                <span class="stat-footer-text">Jemaat Terdaftar</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Rata-rata Kehadiran Sabat -->
+                        <div class="card stat-kpi-card attendance-kpi">
+                            <div class="stat-kpi-header">
+                                <span class="stat-kpi-label">Rata-rata Hadir</span>
+                                <div class="stat-kpi-icon gold-soft">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M3 3v18h18" />
+                                        <path d="m19 9-5 5-4-4-3 3" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-kpi-body">
+                                <h3 class="stat-kpi-value" id="statAvgAttendance">--</h3>
+                                <span class="stat-kpi-unit">Jiwa / Sabat</span>
+                            </div>
+                            <div class="stat-kpi-footer">
+                                <span class="trend-badge positive">
+                                    <svg id="statParticipationIcon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="18 15 12 9 6 15" />
+                                    </svg>
+                                    <span id="statParticipationValue"></span>
+                                </span>
+                                <span class="stat-footer-text">Rasio Partisipasi</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Laki-laki -->
+                        <div class="card stat-kpi-card male-kpi">
+                            <div class="stat-kpi-header">
+                                <span class="stat-kpi-label">Laki-laki</span>
+                                <div class="stat-kpi-icon blue-soft">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="10" cy="14" r="5" />
+                                        <line x1="19" y1="5" x2="13.6" y2="10.4" />
+                                        <polyline points="15 5 19 5 19 9" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-kpi-body">
+                                <h3 class="stat-kpi-value" id="statMaleCount">--</h3>
+                                <span class="stat-kpi-unit">Jiwa</span>
+                            </div>
+                            <div class="stat-kpi-footer">
+                                <span class="ratio-pill blue" id="statMalePct">--</span>
+                                <span class="stat-footer-text">dari Total Jemaat</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Perempuan -->
+                        <div class="card stat-kpi-card female-kpi">
+                            <div class="stat-kpi-header">
+                                <span class="stat-kpi-label">Perempuan</span>
+                                <div class="stat-kpi-icon pink-soft">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="9" r="5" />
+                                        <line x1="12" y1="14" x2="12" y2="21" />
+                                        <line x1="9" y1="18" x2="15" y2="18" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-kpi-body">
+                                <h3 class="stat-kpi-value" id="statFemaleCount">--</h3>
+                                <span class="stat-kpi-unit">Jiwa</span>
+                            </div>
+                            <div class="stat-kpi-footer">
+                                <span class="ratio-pill pink" id="statFemalePct">--</span>
+                                <span class="stat-footer-text">dari Total Jemaat</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gender & Demographic Breakdown Card -->
+                    <div class="card gender-demographic-card">
+                        <div class="card-section-header">
+                            <div class="header-with-icon">
+                                <div class="mini-icon-circle maroon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4>Komposisi Gender & Usia</h4>
+                                    <p>Proporsi pria & wanita serta kelompok pelayanan jemaat</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gender Ratio Progress Bar -->
+                        <div class="gender-bar-wrapper">
+                            <div class="gender-bar-labels">
+                                <div class="gender-label-item male">
+                                    <span class="dot blue"></span>
+                                        <span>Pria: <strong id="barMaleText">--</strong> (<span
+                                            id="barMalePct">--</span>)</span>
+                                </div>
+                                <div class="gender-label-item female">
+                                        <span>Wanita: <strong id="barFemaleText">--</strong> (<span
+                                            id="barFemalePct">--</span>)</span>
+                                    <span class="dot pink"></span>
+                                </div>
+                            </div>
+                            <div class="gender-progress-track">
+                                <div class="gender-progress-segment male" id="progressMale" style="width: 0%;"></div>
+                                <div class="gender-progress-segment female" id="progressFemale" style="width: 0%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Demographics Age Group Grid -->
+                        <div class="age-demographics-grid">
+                            <div class="age-item">
+                                <span class="age-icon">👶</span>
+                                <div class="age-details">
+                                    <span class="age-label">Anak-anak (SS)</span>
+                                    <strong class="age-count" id="ageCountAnak">--</strong>
+                                </div>
+                                <span class="age-pct" id="agePctAnak">--</span>
+                            </div>
+                            <div class="age-item">
+                                <span class="age-icon">🧑</span>
+                                <div class="age-details">
+                                    <span class="age-label">Pemuda (PA)</span>
+                                    <strong class="age-count" id="ageCountPemuda">--</strong>
+                                </div>
+                                <span class="age-pct" id="agePctPemuda">--</span>
+                            </div>
+                            <div class="age-item">
+                                <span class="age-icon">👨‍💼</span>
+                                <div class="age-details">
+                                    <span class="age-label">Dewasa</span>
+                                    <strong class="age-count" id="ageCountDewasa">--</strong>
+                                </div>
+                                <span class="age-pct" id="agePctDewasa">--</span>
+                            </div>
+                            <div class="age-item">
+                                <span class="age-icon">🧓</span>
+                                <div class="age-details">
+                                    <span class="age-label">Senior / Lansia</span>
+                                    <strong class="age-count" id="ageCountLansia">--</strong>
+                                </div>
+                                <span class="age-pct" id="agePctLansia">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YOUTUBE ANALYTICS STYLE ATTENDANCE LINE CHART CARD -->
+                    <div class="card analytics-chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title-area">
+                                <div class="header-with-icon">
+                                    <div class="mini-icon-circle gold">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4>Tren Kehadiran Ibadah Sabat</h4>
+                                        <p>Grafik metrik kehadiran per sabat</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Time Filter Segment Buttons (Triwulan Ini & Triwulan Sebelumnya) -->
+                            <div class="chart-time-switcher">
+                                <button class="time-filter-btn active" id="filter-current-tw"
+                                    onclick="switchAnalyticsRange('current-tw')">Triwulan Ini (TW 3)</button>
+                                <button class="time-filter-btn" id="filter-prev-tw"
+                                    onclick="switchAnalyticsRange('prev-tw')">Triwulan Sebelumnya (TW 2)</button>
+                            </div>
+                        </div>
+
+                        <!-- Chart Summary Highlight Numbers (Berdasarkan Ibadah Khotbah) -->
+                        <div class="chart-metrics-highlight">
+                            <div class="chart-metric-item">
+                                <span class="chart-metric-label">Rata-rata Sekolah Sabat</span>
+                                <div class="chart-metric-value-wrap">
+                                    <strong class="chart-metric-val" id="chartAvgSSVal"
+                                        style="color: #3B82F6;"></strong>
+                                    <span class="chart-metric-unit">hadir / Sabat</span>
+                                </div>
+                            </div>
+                            <div class="chart-metric-item">
+                                <span class="chart-metric-label">Rata-rata Khotbah</span>
+                                <div class="chart-metric-value-wrap">
+                                    <strong class="chart-metric-val" id="chartAvgVal"></strong>
+                                    <span class="chart-metric-unit">hadir / Sabat</span>
+                                    <span class="trend-badge positive" id="chartTrendBadge"></span>
+                                </div>
+                            </div>
+                            <div class="chart-metric-item">
+                                <span class="chart-metric-label">Puncak Kehadiran</span>
+                                <div class="chart-metric-value-wrap">
+                                    <strong class="chart-metric-val" id="chartPeakVal">--</strong>
+                                    <span class="chart-metric-unit" id="chartPeakDate"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SVG Interactive Dual-Line Chart Canvas -->
+                        <div class="chart-canvas-container" id="attendanceChartContainer">
+                            <div class="chart-tooltip" id="chartTooltip" style="display: none;">
+                                <div class="tooltip-header" id="tooltipHeader"></div>
+                                <div class="tooltip-theme" id="tooltipTheme"></div>
+                                <div class="tooltip-stat-row khotbah-row">
+                                    <span class="dot maroon"></span>
+                                    <span>Ibadah Khotbah: <strong id="tooltipKhotbah">--</strong> Jiwa</span>
+                                </div>
+                                <div class="tooltip-stat-row ss-row">
+                                    <span class="dot blue"></span>
+                                    <span>Sekolah Sabat: <strong id="tooltipSS">--</strong> Jiwa</span>
+                                </div>
+                                <div class="tooltip-sub" id="tooltipSub"></div>
+                            </div>
+                            <svg id="attendanceSvgChart" class="attendance-svg-chart" viewBox="0 0 700 290">
+                                <!-- Generated dynamically via JavaScript -->
+                            </svg>
+                        </div>
+
+                        <!-- Chart Legend / Details -->
+                        <div class="chart-footer-legend">
+                            <div class="legend-item">
+                                <span class="legend-line secondary"></span>
+                                <span>Sekolah Sabat (09:00)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line dashed-secondary"></span>
+                                <span>Rata-rata SS</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line primary"></span>
+                                <span>Ibadah Khotbah (10:30)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line dashed"></span>
+                                <span>Rata-rata Khotbah</span>
+                            </div>
+                            <div class="legend-item highlight-legend">
+                                <span class="legend-star">🌟</span>
+                                <span>Highlight Sabat ke-2 & ke-7</span>
+                            </div>
+                            <div class="legend-hint">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                </svg>
+                                Sentuh titik grafik untuk detail
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Department Attendance Averages -->
+                    <h4 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M3 9h18" />
+                            <path d="M9 21V9" />
+                        </svg>
+                        Rata-rata Partisipasi per Ibadah
+                    </h4>
+                    <div class="dept-attendance-grid">
+                        <div class="card dept-card">
+                            <div class="dept-icon blue-bg">📖</div>
+                            <div class="dept-info">
+                                <div class="dept-name-row">
+                                    <h5>Sekolah Sabat</h5>
+                                    <span class="dept-pct" id="deptSsPct"></span>
+                                </div>
+                                <p>09.00 - 10.30 WIB</p>
+                                <strong id="deptSsAvg"></strong>
+                            </div>
+                        </div>
+                        <div class="card dept-card">
+                            <div class="dept-icon maroon-bg">⛪</div>
+                            <div class="dept-info">
+                                <div class="dept-name-row">
+                                    <h5>Ibadah Khotbah</h5>
+                                    <span class="dept-pct" id="deptKhotbahPct"></span>
+                                </div>
+                                <p>10.30 - 12.00 WIB</p>
+                                <strong id="deptKhotbahAvg"></strong>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="card dept-card">
+                            <div class="dept-icon purple-bg">🔥</div>
+                            <div class="dept-info">
+                                <div class="dept-name-row">
+                                    <h5>Pemuda Advent</h5>
+                                    <span class="dept-pct">--</span>
+                                </div>
+                                <p>14.00 - 16.00 WIB</p>
+                                <strong>--</strong>
+                            </div>
+                        </div>
+                        <div class="card dept-card">
+                            <div class="dept-icon green-bg">🙏</div>
+                            <div class="dept-info">
+                                <div class="dept-name-row">
+                                    <h5>Rabu Malam</h5>
+                                    <span class="dept-pct">--</span>
+                                </div>
+                                <p>19.00 - 20.00 WIB</p>
+                                <strong>--</strong>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+
+                    <!-- Recent Sabbath Attendance Log Table -->
+                    <h4 class="section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                        Log Kehadiran Sabat Terkini
+                    </h4>
+                    <div class="card recent-attendance-card">
+                        <div class="table-scroll-wrapper">
+                            <table class="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal Sabat</th>
+                                        <th>Acara / Tema</th>
+                                        <th>Total Jam SS</th>
+                                        <th>Total Jam Khotbah</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceTableBody">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
         </main>
 
 
@@ -1012,6 +1460,26 @@
                             </svg>
                             <span>Pemuda Advent</span>
                         </button>
+                        <button class="admin-nav-item" id="btn-adm-kehadiran" onclick="switchAdminTab('kehadiran')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M3 3v18h18" />
+                                <path d="m19 9-5 5-4-4-3 3" />
+                            </svg>
+                            <span>Kehadiran Sabat</span>
+                        </button>
+                        <button class="admin-nav-item" id="btn-adm-jemaat" onclick="switchAdminTab('jemaat')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                            <span>Profil Jemaat</span>
+                        </button>
                     </nav>
                 </div>
 
@@ -1043,6 +1511,14 @@
                                 <span>Tambah Data</span>
                             </button>
                         </div>
+                    </div>
+
+                    <div class="admin-mobile-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+                            <path d="M12 18h.01"/>
+                        </svg>
+                        <span>Untuk pengalaman melihat dan mengedit tabel yang lebih baik, sangat disarankan menggunakan perangkat layar lebar (Laptop/Desktop).</span>
                     </div>
 
                     <div class="admin-table-container">
@@ -1086,6 +1562,14 @@
                         d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                 </svg>
                 <span>Persembahan</span>
+            </button>
+            <button class="nav-item" id="nav-statistik" onclick="switchTab('statistik')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18" />
+                    <path d="m19 9-5 5-4-4-3 3" />
+                </svg>
+                <span>Statistik</span>
             </button>
         </nav>
     </div>
@@ -1142,6 +1626,189 @@
 
             <button class="btn btn-primary" id="saveDataBtn" style="width: 100%; height: 44px; border-radius: 10px;"
                 onclick="simpanDataTabel()">Simpan Data Permanen</button>
+        </div>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- 1. STATISTIK ACTION SELECTOR MODAL     -->
+    <!-- ====================================== -->
+    <div id="modalStatistikAction" class="modal-overlay">
+        <div class="modal-content login-modal-card stats-action-modal">
+            <button class="modal-close" onclick="closeModalStatistikAction()">&times;</button>
+            <div class="login-modal-header">
+                <div class="login-modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18" />
+                        <path d="m19 9-5 5-4-4-3 3" />
+                    </svg>
+                </div>
+                <h2>Kelola Data Statistik</h2>
+                <p>Pilih data analitik jemaat atau kehadiran ibadah yang ingin Anda kelola.</p>
+            </div>
+            <div class="stats-action-button-list">
+                <button class="stats-action-card-btn" onclick="closeModalStatistikAction(); openModalInputKehadiran();">
+                    <div class="stats-action-icon blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <line x1="12" y1="14" x2="12" y2="18" />
+                            <line x1="10" y1="16" x2="14" y2="16" />
+                        </svg>
+                    </div>
+                    <div class="stats-action-text">
+                        <h5>Catat Kehadiran Sabat</h5>
+                        <p>Input kehadiran Sekolah Sabat & Ibadah Khotbah per Sabat</p>
+                    </div>
+                    <span class="stats-action-arrow">➜</span>
+                </button>
+
+                <button class="stats-action-card-btn"
+                    onclick="closeModalStatistikAction(); openModalEditProfilJemaat();">
+                    <div class="stats-action-icon pink">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <div class="stats-action-text">
+                        <h5>Ubah Profil & Jumlah Jemaat</h5>
+                        <p>Update total anggota jemaat terdaftar, pria, & wanita</p>
+                    </div>
+                    <span class="stats-action-arrow">➜</span>
+                </button>
+
+                <button class="stats-action-card-btn"
+                    onclick="closeModalStatistikAction(); openAdminDashboardView(); switchAdminTab('kehadiran');">
+                    <div class="stats-action-icon maroon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M3 9h18" />
+                            <path d="M9 21V9" />
+                        </svg>
+                    </div>
+                    <div class="stats-action-text">
+                        <h5>Buka Database Admin Penuh</h5>
+                        <p>Lihat dan edit seluruh baris data di spreadsheet admin</p>
+                    </div>
+                    <span class="stats-action-arrow">➜</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- 2. INPUT KEHADIRAN SABAT MODAL         -->
+    <!-- ====================================== -->
+    <div id="modalInputKehadiran" class="modal-overlay">
+        <div class="modal-content login-modal-card" style="max-width: 480px;">
+            <button class="modal-close" onclick="closeModalInputKehadiran()">&times;</button>
+            <div class="login-modal-header">
+                <div class="login-modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                </div>
+                <h2>Catat Kehadiran Sabat</h2>
+                <p>Input absensi Ibadah Khotbah dan Sekolah Sabat.</p>
+            </div>
+            <form onsubmit="event.preventDefault(); handleSimpanKehadiran();">
+                <div class="login-form-body">
+                    <div class="input-group">
+                        <label for="inpKehadiranTanggal">Tanggal Sabat</label>
+                        <input type="date" id="inpKehadiranTanggal" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="inpKehadiranTema">Tema Ibadah / Keterangan</label>
+                        <input type="text" id="inpKehadiranTema" placeholder="Contoh: Ibadah Sabat Raya"
+                            value="Ibadah Sabat Raya" required>
+                    </div>
+
+                    <!-- Dual Session Card Box -->
+                    <div class="form-dual-section-box">
+                        <!-- Sesi 1: Sekolah Sabat -->
+                        <div class="session-input-header blue-accent">
+                            <span class="session-dot blue"></span>
+                            <strong>1. Ibadah Sekolah Sabat (09.00 WIB)</strong>
+                        </div>
+                        <div class="input-group" style="margin-top: 6px;">
+                            <label for="inpKehadiranSS">Jumlah Hadir Sekolah Sabat (Jiwa)</label>
+                            <input type="number" id="inpKehadiranSS" placeholder="0" min="0" value="98" required>
+                        </div>
+
+                        <!-- Sesi 2: Ibadah Khotbah (Patokan Utama) -->
+                        <div class="session-input-header maroon-accent" style="margin-top: 14px;">
+                            <span class="session-dot maroon"></span>
+                            <strong>2. Ibadah Khotbah (10.30 WIB - Patokan Utama)</strong>
+                        </div>
+                        <div class="input-group" style="margin-top: 6px;">
+                            <label for="inpKehadiranTotal">Jumlah Hadir Ibadah Khotbah (Jiwa)</label>
+                            <input type="number" id="inpKehadiranTotal" placeholder="0" min="0" value="142" required>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary login-submit-btn" id="btnSimpanKehadiran" type="submit">Simpan Kehadiran
+                    Sabat</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====================================== -->
+    <!-- 3. EDIT PROFIL JEMAAT MODAL            -->
+    <!-- ====================================== -->
+    <div id="modalEditProfilJemaat" class="modal-overlay">
+        <div class="modal-content login-modal-card" style="max-width: 440px;">
+            <button class="modal-close" onclick="closeModalEditProfilJemaat()">&times;</button>
+            <div class="login-modal-header">
+                <div class="login-modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </div>
+                <h2>Profil & Anggota Jemaat</h2>
+                <p>Kelola data master jumlah keanggotaan jemaat GMAHK Sepanjang.</p>
+            </div>
+            <form onsubmit="event.preventDefault(); handleSimpanProfilJemaat();">
+                <div class="login-form-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group">
+                            <label for="inpProfilTotal">Total Seluruh Jemaat</label>
+                            <input type="number" id="inpProfilTotal" min="1" value="158" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="inpProfilTahun">Tahun Periode</label>
+                            <input type="number" id="inpProfilTahun" min="2020" max="2099" value="2026" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group">
+                            <label for="inpProfilPria">Laki-laki (Pria)</label>
+                            <input type="number" id="inpProfilPria" min="0" value="74" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="inpProfilWanita">Perempuan (Wanita)</label>
+                            <input type="number" id="inpProfilWanita" min="0" value="84" required>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary login-submit-btn" id="btnSimpanProfil" type="submit">Simpan Profil
+                    Jemaat</button>
+            </form>
         </div>
     </div>
 

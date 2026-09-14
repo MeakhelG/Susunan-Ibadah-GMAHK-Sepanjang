@@ -342,7 +342,7 @@ function handleRoute(event) {
             switchTab('home', false);
             openLoginModal();
         }
-    } else if (['home', 'susunan', 'persembahan', 'tentang'].includes(rawHash)) {
+    } else if (['home', 'susunan', 'persembahan', 'tentang', 'statistik'].includes(rawHash)) {
         switchTab(rawHash, false);
     } else {
         switchTab('home', false);
@@ -385,6 +385,11 @@ function switchTab(tabId, updateHash = true) {
     appState.currentTab = tabId;
     window.scrollTo({ top: 0, behavior: "smooth" });
 
+    // Jika tab yang dibuka adalah statistik, perbarui status tampilan & render analitik
+    if (tabId === 'statistik') {
+        updateStatistikView();
+    }
+
     // Update URL Hash untuk histori browser
     if (updateHash && window.location.hash !== `#${tabId}`) {
         history.pushState({ tab: tabId }, '', `#${tabId}`);
@@ -407,6 +412,11 @@ function toggleTheme() {
         appState.theme = "light";
         localStorage.setItem("gmahk-theme", "light");
         showToast("Tema Terang Diaktifkan", "success");
+    }
+
+    // Re-render chart statistik jika tab statistik sedang aktif agar warnanya menyesuaikan tema
+    if (appState.currentTab === 'statistik') {
+        renderAttendanceChart();
     }
 }
 
@@ -2062,7 +2072,7 @@ function loadScheduleChanges(program, dateDisplay) {
     const localKey = `schedule_override_${program}_${dateDisplay}`;
     const localStored = localStorage.getItem(localKey);
     if (localStored) {
-        try { return JSON.parse(localStored); } catch (e) {}
+        try { return JSON.parse(localStored); } catch (e) { }
     }
 
     // 2. Cek Cloud Database Supabase (terbaca oleh semua jemaat)
@@ -2498,6 +2508,32 @@ const DB_SCHEMAS = {
             'TipsFunfact': 'Tips / Funfact',
             'AcaraInti': 'Acara Inti & Doa Tutup'
         }
+    },
+    kehadiran: {
+        title: "Tabel Kehadiran Sabat",
+        supabaseTable: "Tabel Kehadiran Sabat",
+        orderBy: "Tanggal",
+        columns: {
+            'Tanggal': 'Tanggal Sabat',
+            'Tema': 'Tema Ibadah',
+            'SekolahSabat': 'Sekolah Sabat',
+            'Total': 'Total Hadir Khotbah'
+        }
+    },
+    jemaat: {
+        title: "Tabel Profil & Anggota Jemaat",
+        supabaseTable: "Tabel Profil Jemaat",
+        orderBy: "Id",
+        columns: {
+            'Tahun': 'Tahun',
+            'TotalJemaat': 'Total Jemaat',
+            'Pria': 'Laki-laki',
+            'Wanita': 'Perempuan',
+            'Anak': 'Anak-anak',
+            'Pemuda': 'Pemuda (PA)',
+            'Dewasa': 'Dewasa',
+            'Lansia': 'Lansia'
+        }
     }
 };
 
@@ -2540,6 +2576,9 @@ if (supabaseClient) {
 
         // Render ulang susunan acara agar tombol Edit/Reset muncul/sembunyi sesuai status login admin
         renderActiveAcara();
+
+        // Update tampilan tab statistik secara realtime sesuai status sesi login admin
+        updateStatistikView();
     });
 }
 
@@ -2697,10 +2736,12 @@ async function loadAdminTableData(tableName) {
     thead.innerHTML = '';
 
     try {
+        const config = DB_SCHEMAS[currentAdminTab];
+        const orderCol = config.orderBy || 'Tanggal';
         const { data, error } = await supabaseClient
             .from(tableName)
             .select('*')
-            .order('Tanggal', { ascending: false })
+            .order(orderCol, { ascending: false })
             .limit(100);
 
         if (error) throw error;
@@ -2903,9 +2944,10 @@ function renderAdminTable() {
                 ? `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▲</span>`
                 : `<span style="color: var(--primary-color); opacity: 1; margin-left: 6px; font-size: 0.75rem;">▼</span>`;
         }
-        headerHTML += `<th style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel} ${sortIcon}</th>`;
+        let thClass = (col.toLowerCase() === 'tanggal' || col.toLowerCase() === 'tahun') ? 'class="col-fixed"' : '';
+        headerHTML += `<th ${thClass} style="cursor: pointer; user-select: none;" onclick="sortAdminTable('${col}')">${displayLabel} ${sortIcon}</th>`;
     });
-    headerHTML += `<th>Aksi</th>`;
+    headerHTML += `<th class="col-aksi">Aksi</th>`;
     thead.innerHTML = headerHTML;
 
     let bodyHTML = '';
@@ -2921,7 +2963,9 @@ function renderAdminTable() {
                     if (cellData.includes('T')) formattedDate = cellData.split('T')[0];
                     else if (cellData.includes(' ')) formattedDate = cellData.split(' ')[0];
                 }
-                rowHTML += `<td><span class="date-tag-badge">${formattedDate}</span></td>`;
+                rowHTML += `<td class="col-fixed"><span class="date-tag-badge">${formattedDate}</span></td>`;
+            } else if (col.toLowerCase() === 'tahun') {
+                rowHTML += `<td class="col-fixed">${cellData}</td>`;
             } else {
                 if (typeof cellData === 'string' && cellData.length > 40) {
                     cellData = cellData.substring(0, 40) + '...';
@@ -2933,7 +2977,7 @@ function renderAdminTable() {
         const safeRowJson = JSON.stringify(row).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
 
         rowHTML += `
-            <td>
+            <td class="col-aksi">
                 <div style="display: flex; gap: 6px;">
                     <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.72rem;" onclick="openFormModal('${safeRowJson}')">Edit</button>
                     <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.72rem;" onclick="deleteAdminTableData('${safeRowJson}')">Hapus</button>
@@ -3128,9 +3172,925 @@ async function deleteAdminTableData(rowDataStr) {
     });
 }
 
+/* ============================================================
+ * MODUL STATISTIK & ANALYTICS DASHBOARD GMAHK SEPANJANG
+ * ============================================================ */
+
+/* Data dummy statistik disimpan sementara untuk referensi, tetapi tidak digunakan.
+// 1. Data Template Keanggotaan Jemaat (Profil Jemaat Sepanjang)
+const congregationStatsData = {
+    total: 158,
+    male: 74,
+    female: 84,
+    growth: 3,
+    avgAttendance: 122,
+    participationPct: "77.2%",
+    ageGroups: [
+        { label: "Anak-anak (SS)", count: 32, pct: 20 },
+        { label: "Pemuda (PA)", count: 41, pct: 26 },
+        { label: "Dewasa", count: 59, pct: 37 },
+        { label: "Senior / Lansia", count: 26, pct: 17 }
+    ]
+};
+
+// 2. Dataset Tren Kehadiran Sabat: "Triwulan Ini" (TW 3) & "Triwulan Sebelumnya" (TW 2)
+const attendanceAnalyticsDatasets = {
+    // TRIWULAN INI (TW 3 2026: Juli, Agustus, September 2026)
+    "current-tw": [
+        { sabatNo: 1, date: "Sabtu, 04 Jul 2026", shortDate: "4 Jul", ss: 92, khotbah: 108, male: 50, female: 58, children: 20, theme: "Pembukaan Triwulan 3" },
+        { sabatNo: 2, date: "Sabtu, 11 Jul 2026", shortDate: "11 Jul", ss: 118, khotbah: 138, male: 64, female: 74, children: 28, theme: "Sabat Pelayanan Khusus", isHighlight: true, isPeak: true, highlightTitle: "Sabat ke-2 (Pelayanan Khusus)" },
+        { sabatNo: 3, date: "Sabtu, 18 Jul 2026", shortDate: "18 Jul", ss: 98, khotbah: 118, male: 55, female: 63, children: 24, theme: "Ibadah Sabat Raya" },
+        { sabatNo: 4, date: "Sabtu, 25 Jul 2026", shortDate: "25 Jul", ss: 95, khotbah: 114, male: 53, female: 61, children: 22, theme: "Sabat Biasa" },
+        { sabatNo: 5, date: "Sabtu, 01 Agu 2026", shortDate: "1 Agu", ss: 102, khotbah: 120, male: 56, female: 64, children: 24, theme: "Hari Pendidikan Advent" },
+        { sabatNo: 6, date: "Sabtu, 08 Agu 2026", shortDate: "8 Agu", ss: 96, khotbah: 116, male: 54, female: 62, children: 23, theme: "Sabat Biasa" },
+        { sabatNo: 7, date: "Sabtu, 15 Agu 2026", shortDate: "15 Agu", ss: 110, khotbah: 132, male: 62, female: 70, children: 26, theme: "Sabat Gabungan & Evaluasi", isHighlight: true, highlightTitle: "Sabat ke-7 (Sabat Gabungan)" },
+        { sabatNo: 8, date: "Sabtu, 22 Agu 2026", shortDate: "22 Agu", ss: 104, khotbah: 122, male: 57, female: 65, children: 25, theme: "Ibadah Sabat Ini" }
+    ],
+
+    // TRIWULAN SEBELUMNYA (TW 2 2026: April, Mei, Juni 2026 - 13 Sabat Lengkap)
+    "prev-tw": [
+        { sabatNo: 1, date: "Sabtu, 04 Apr 2026", shortDate: "4 Apr", ss: 88, khotbah: 102, male: 47, female: 55, children: 19, theme: "Pembukaan Triwulan 2" },
+        { sabatNo: 2, date: "Sabtu, 11 Apr 2026", shortDate: "11 Apr", ss: 94, khotbah: 110, male: 51, female: 59, children: 21, theme: "Sabat Biasa" },
+        { sabatNo: 3, date: "Sabtu, 18 Apr 2026", shortDate: "18 Apr", ss: 91, khotbah: 108, male: 50, female: 58, children: 21, theme: "Sabat Biasa" },
+        { sabatNo: 4, date: "Sabtu, 25 Apr 2026", shortDate: "25 Apr", ss: 89, khotbah: 104, male: 48, female: 56, children: 19, theme: "Sabat Biasa" },
+        { sabatNo: 5, date: "Sabtu, 02 Mei 2026", shortDate: "2 Mei", ss: 97, khotbah: 115, male: 54, female: 61, children: 23, theme: "Hari Pembangunan" },
+        { sabatNo: 6, date: "Sabtu, 09 Mei 2026", shortDate: "9 Mei", ss: 93, khotbah: 110, male: 51, female: 59, children: 21, theme: "Sabat Biasa" },
+        { sabatNo: 7, date: "Sabtu, 16 Mei 2026", shortDate: "16 Mei", ss: 105, khotbah: 122, male: 57, female: 65, children: 25, theme: "Hari Musik & Pujian" },
+        { sabatNo: 8, date: "Sabtu, 23 Mei 2026", shortDate: "23 Mei", ss: 90, khotbah: 106, male: 49, female: 57, children: 20, theme: "Sabat Biasa" },
+        { sabatNo: 9, date: "Sabtu, 30 Mei 2026", shortDate: "30 Mei", ss: 96, khotbah: 114, male: 53, female: 61, children: 22, theme: "Penutupan Bulan Mei" },
+        { sabatNo: 10, date: "Sabtu, 06 Jun 2026", shortDate: "6 Jun", ss: 100, khotbah: 118, male: 55, female: 63, children: 24, theme: "Perjamuan Kudus TW 2" },
+        { sabatNo: 11, date: "Sabtu, 13 Jun 2026", shortDate: "13 Jun", ss: 92, khotbah: 109, male: 51, female: 58, children: 21, theme: "Sabat Biasa" },
+        { sabatNo: 12, date: "Sabtu, 20 Jun 2026", shortDate: "20 Jun", ss: 108, khotbah: 126, male: 59, female: 67, children: 26, theme: "Hari Pemuda Advent" },
+        { sabatNo: 13, date: "Sabtu, 27 Jun 2026", shortDate: "27 Jun", ss: 95, khotbah: 112, male: 52, female: 60, children: 22, theme: "Penutupan Triwulan 2" }
+    ]
+};
+*/
+
+// State statistik hanya diisi dari Supabase.
+const congregationStatsData = {
+    total: null,
+    male: null,
+    female: null,
+    growth: null,
+    avgAttendance: null,
+    participationPct: null,
+    ageGroups: []
+};
+
+const attendanceAnalyticsDatasets = {
+    "current-tw": [],
+    "prev-tw": []
+};
+
+let currentAnalyticsRange = "current-tw";
+
+/**
+ * Memperbarui Tampilan Tab Statistik (Lock Gate vs Dashboard)
+ */
+function updateStatistikView() {
+    const lockStateEl = document.getElementById("statistikLockState");
+    const dashboardContentEl = document.getElementById("statistikDashboardContent");
+    const sessionStatusEl = document.getElementById("statistikSessionStatus");
+    const editStatsBtn = document.getElementById("editStatsBtn");
+
+    const isAdminLoggedIn = !!currentAdminSession;
+
+    if (sessionStatusEl) {
+        if (isAdminLoggedIn) {
+            sessionStatusEl.innerHTML = `<span class="badge-active-session">🔓 Admin Sesi Aktif</span>`;
+        } else {
+            sessionStatusEl.innerHTML = `<span class="badge-lock">🔒 Akses Terbatas</span>`;
+        }
+    }
+
+    if (editStatsBtn) {
+        editStatsBtn.style.display = isAdminLoggedIn ? "inline-flex" : "none";
+    }
+
+    if (isAdminLoggedIn) {
+        if (lockStateEl) lockStateEl.style.display = "none";
+        if (dashboardContentEl) {
+            dashboardContentEl.style.display = "block";
+            clearStatistikDataView();
+            fetchStatistikDataFromSupabase();
+        }
+    } else {
+        if (lockStateEl) lockStateEl.style.display = "flex";
+        if (dashboardContentEl) dashboardContentEl.style.display = "none";
+    }
+}
+
+function clearStatistikDataView() {
+    congregationStatsData.total = null;
+    congregationStatsData.male = null;
+    congregationStatsData.female = null;
+    congregationStatsData.previousTotal = null;
+    congregationStatsData.ageGroups = [];
+    attendanceAnalyticsDatasets["current-tw"] = [];
+    attendanceAnalyticsDatasets["prev-tw"] = [];
+    renderParticipationSummary();
+    renderCongregationStats();
+    renderAttendanceSummary();
+    renderAttendanceChart();
+    renderAttendanceTable();
+}
+
+/**
+ * Render Nilai-Nilai Metrik Keanggotaan Jemaat
+ */
+function renderCongregationStats() {
+    const data = congregationStatsData;
+    const elTotal = document.getElementById("statTotalJemaat");
+    const elMale = document.getElementById("statMaleCount");
+    const elFemale = document.getElementById("statFemaleCount");
+    const elMalePct = document.getElementById("statMalePct");
+    const elFemalePct = document.getElementById("statFemalePct");
+    const barMaleText = document.getElementById("barMaleText");
+    const barFemaleText = document.getElementById("barFemaleText");
+    const barMalePct = document.getElementById("barMalePct");
+    const barFemalePct = document.getElementById("barFemalePct");
+    const progMale = document.getElementById("progressMale");
+    const progFemale = document.getElementById("progressFemale");
+    const growthValueEl = document.getElementById("statGrowthValue");
+    const growthIconEl = document.getElementById("statGrowthIcon");
+    const growthBadgeEl = growthValueEl?.parentElement;
+    const ageTargets = [
+        ["ageCountAnak", "agePctAnak"],
+        ["ageCountPemuda", "agePctPemuda"],
+        ["ageCountDewasa", "agePctDewasa"],
+        ["ageCountLansia", "agePctLansia"]
+    ];
+
+    const setAgePlaceholders = () => ageTargets.forEach(([countId, pctId]) => {
+        const countEl = document.getElementById(countId);
+        const pctEl = document.getElementById(pctId);
+        if (countEl) countEl.textContent = "--";
+        if (pctEl) pctEl.textContent = "--";
+    });
+
+    const hasData = Number.isFinite(data.total) && data.total > 0
+        && Number.isFinite(data.male) && Number.isFinite(data.female);
+
+    if (!hasData) {
+        if (elTotal) elTotal.textContent = "--";
+        if (elMale) elMale.textContent = "--";
+        if (elFemale) elFemale.textContent = "--";
+        if (elMalePct) elMalePct.textContent = "--";
+        if (elFemalePct) elFemalePct.textContent = "--";
+        if (barMaleText) barMaleText.textContent = "--";
+        if (barFemaleText) barFemaleText.textContent = "--";
+        if (barMalePct) barMalePct.textContent = "--";
+        if (barFemalePct) barFemalePct.textContent = "--";
+        if (progMale) progMale.style.width = "0%";
+        if (progFemale) progFemale.style.width = "0%";
+        if (growthValueEl) growthValueEl.textContent = "";
+        if (growthIconEl) growthIconEl.style.display = "none";
+        if (growthBadgeEl) growthBadgeEl.style.display = "none";
+        setAgePlaceholders();
+        return;
+    }
+
+    const malePct = ((data.male / data.total) * 100).toFixed(1) + "%";
+    const femalePct = ((data.female / data.total) * 100).toFixed(1) + "%";
+
+    if (elTotal) elTotal.textContent = data.total;
+    if (elMale) elMale.textContent = data.male;
+    if (elFemale) elFemale.textContent = data.female;
+    if (elMalePct) elMalePct.textContent = malePct;
+    if (elFemalePct) elFemalePct.textContent = femalePct;
+
+    if (barMaleText) barMaleText.textContent = `${data.male} Jiwa`;
+    if (barFemaleText) barFemaleText.textContent = `${data.female} Jiwa`;
+    if (barMalePct) barMalePct.textContent = malePct;
+    if (barFemalePct) barFemalePct.textContent = femalePct;
+
+    if (progMale) progMale.style.width = malePct;
+    if (progFemale) progFemale.style.width = femalePct;
+
+    if (growthValueEl && growthIconEl) {
+        const previousTotal = congregationStatsData.previousTotal;
+        if (Number.isFinite(previousTotal) && previousTotal > 0) {
+            const growthPct = ((data.total - previousTotal) / previousTotal) * 100;
+            growthValueEl.textContent = `${growthPct >= 0 ? "+" : ""}${growthPct.toFixed(1)}%`;
+            growthIconEl.style.display = growthPct >= 0 ? "block" : "none";
+            growthBadgeEl.style.display = "inline-flex";
+        } else {
+            growthValueEl.textContent = "";
+            growthIconEl.style.display = "none";
+            growthBadgeEl.style.display = "none";
+        }
+    }
+
+    ageTargets.forEach(([countId, pctId], index) => {
+        const group = data.ageGroups[index];
+        const countEl = document.getElementById(countId);
+        const pctEl = document.getElementById(pctId);
+        const count = group && Number.isFinite(group.count) ? group.count : null;
+        if (countEl) countEl.textContent = count === null ? "--" : `${count} Jiwa`;
+        if (pctEl) pctEl.textContent = count === null ? "--" : `${((count / data.total) * 100).toFixed(1)}%`;
+    });
+}
+
+/**
+ * Ganti Rentang Waktu Analisis (Triwulan Ini vs Triwulan Sebelumnya)
+ */
+function switchAnalyticsRange(rangeKey) {
+    if (!attendanceAnalyticsDatasets[rangeKey]) return;
+    currentAnalyticsRange = rangeKey;
+
+    // Update active class pada tombol switcher
+    document.querySelectorAll(".time-filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+    const activeBtn = document.getElementById(`filter-${rangeKey}`);
+    if (activeBtn) activeBtn.classList.add("active");
+
+    renderAttendanceChart();
+    renderAttendanceTable();
+    renderParticipationSummary();
+}
+
+/**
+ * Generator Diagram Garis Interaktif 2 Waktu Ibadah (Sekolah Sabat vs Khotbah)
+ * Dengan highlight opsional dari data Supabase
+ */
+function renderAttendanceChart() {
+    const svg = document.getElementById("attendanceSvgChart");
+    const tooltip = document.getElementById("chartTooltip");
+    const avgValEl = document.getElementById("chartAvgVal");
+    const peakValEl = document.getElementById("chartPeakVal");
+    const peakDateEl = document.getElementById("chartPeakDate");
+    const avgSSValEl = document.getElementById("chartAvgSSVal");
+    const trendBadgeEl = document.getElementById("chartTrendBadge");
+    const trendBadgeWrapper = trendBadgeEl;
+
+    if (!svg) return;
+
+    const data = attendanceAnalyticsDatasets[currentAnalyticsRange] || [];
+    if (!data.length) {
+        svg.innerHTML = "";
+        if (avgValEl) avgValEl.textContent = "--";
+        if (avgSSValEl) avgSSValEl.textContent = "--";
+        if (peakValEl) peakValEl.textContent = "--";
+        if (peakDateEl) peakDateEl.textContent = "";
+        if (trendBadgeEl) trendBadgeEl.textContent = "";
+        if (trendBadgeWrapper) trendBadgeWrapper.style.display = "none";
+        return;
+    }
+
+    // 1. Hitung Rata-rata dan Puncak Khotbah (Patokan Utama)
+    let sumKhotbah = 0;
+    let sumSS = 0;
+    let maxKhotbah = 0;
+    let peakItem = data[0];
+
+    data.forEach(item => {
+        const valKhotbah = item.khotbah || item.total || 0;
+        const valSS = item.ss || item.sekolahSabat || 0;
+        sumKhotbah += valKhotbah;
+        sumSS += valSS;
+        if (valKhotbah > maxKhotbah) {
+            maxKhotbah = valKhotbah;
+            peakItem = item;
+        }
+    });
+
+    const avgKhotbah = Math.round(sumKhotbah / data.length);
+    const avgSS = Math.round(sumSS / data.length);
+
+    if (avgValEl) avgValEl.textContent = avgKhotbah;
+    if (avgSSValEl) avgSSValEl.textContent = avgSS;
+    if (peakValEl) peakValEl.textContent = maxKhotbah;
+    if (peakDateEl) peakDateEl.textContent = `(Sabat ke-${peakItem.sabatNo}, ${peakItem.shortDate})`;
+    if (trendBadgeEl) {
+        const previousData = attendanceAnalyticsDatasets["prev-tw"] || [];
+        if (previousData.length) {
+            const previousAverage = previousData.reduce((sum, item) => sum + (item.khotbah || item.total || 0), 0) / previousData.length;
+            const trendPct = previousAverage > 0 ? ((avgKhotbah - previousAverage) / previousAverage) * 100 : null;
+            trendBadgeEl.textContent = trendPct === null ? "" : `${trendPct >= 0 ? "+" : ""}${trendPct.toFixed(1)}%`;
+            trendBadgeWrapper.style.display = trendPct === null ? "none" : "inline-flex";
+        } else {
+            trendBadgeEl.textContent = "";
+            trendBadgeWrapper.style.display = "none";
+        }
+    }
+
+    // 2. Parameter Dimensi SVG
+    const width = 700;
+    const height = 290;
+    const padTop = 38;
+    const padBottom = 45;
+    const padLeft = 45;
+    const padRight = 35;
+
+    const plotW = width - padLeft - padRight;
+    const plotH = height - padTop - padBottom;
+
+    // Skala Y (0 - 160)
+    const yMax = 160;
+    const yMin = 0;
+
+    const getX = (index) => {
+        if (data.length === 1) return padLeft + plotW / 2;
+        return padLeft + (index / (data.length - 1)) * plotW;
+    };
+
+    const getY = (val) => {
+        return padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+    };
+
+    // Warna Sesuai Tema
+    const isDark = document.body.classList.contains("dark-theme");
+    const primaryColor = isDark ? "#F59E0B" : "#6B1D2F";
+    const primaryLight = isDark ? "#FBBF24" : "#8E2B3F";
+    const ssColor = isDark ? "#60A5FA" : "#2563EB";
+    const ssLight = isDark ? "#93C5FD" : "#3B82F6";
+    const gridLineColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
+    const textColor = isDark ? "#9CA3AF" : "#6B7280";
+
+    // 3. Gridlines Horisontal & Label Y
+    let gridLinesSvg = "";
+    const ySteps = [0, 50, 100, 150];
+    ySteps.forEach(stepVal => {
+        const yPos = getY(stepVal);
+        gridLinesSvg += `
+            <line x1="${padLeft}" y1="${yPos}" x2="${width - padRight}" y2="${yPos}" stroke="${gridLineColor}" stroke-dasharray="4,4" stroke-width="1" />
+            <text x="${padLeft - 10}" y="${yPos + 4}" fill="${textColor}" font-size="11" font-weight="600" text-anchor="end">${stepVal}</text>
+        `;
+    });
+
+    // 4. Garis Rata-rata Horisontal (Khotbah)
+    const yAvgPos = getY(avgKhotbah);
+    const avgLineSvg = `
+        <line x1="${padLeft}" y1="${yAvgPos}" x2="${width - padRight}" y2="${yAvgPos}" stroke="${textColor}" stroke-dasharray="3,3" stroke-width="1.5" opacity="0.6" />
+        <text x="${width - padRight + 10}" y="${yAvgPos - 4}" fill="${textColor}" font-size="12" font-weight="800">Rata² Khotbah: ${avgKhotbah}</text>
+    `;
+
+    // 4b. Garis Rata-rata Horisontal (Sekolah Sabat)
+    const yAvgSSPos = getY(avgSS);
+    const avgSSLineSvg = `
+        <line x1="${padLeft}" y1="${yAvgSSPos}" x2="${width - padRight}" y2="${yAvgSSPos}" stroke="${ssColor}" stroke-dasharray="3,3" stroke-width="1.5" opacity="0.5" />
+        <text x="${width - padRight + 10}" y="${yAvgSSPos - 4}" fill="${ssColor}" font-size="12" font-weight="800" opacity="0.8">Rata² SS: ${avgSS}</text>
+    `;
+
+    // 5. Hitung Koordinat Titik-titik untuk Khotbah & SS
+    const pointsKhotbah = [];
+    const pointsSS = [];
+    let highlightBandsSvg = "";
+
+    data.forEach((d, i) => {
+        const xPos = getX(i);
+        const khotbahVal = d.khotbah || d.total || 0;
+        const ssVal = d.ss || d.sekolahSabat || 0;
+
+        pointsKhotbah.push({ x: xPos, y: getY(khotbahVal), val: khotbahVal, data: d, index: i });
+        pointsSS.push({ x: xPos, y: getY(ssVal), val: ssVal, data: d, index: i });
+
+        // Highlight hanya jika ditandai oleh data Supabase.
+        if (d.isHighlight) {
+            const bandW = 34;
+            const bandX = xPos - bandW / 2;
+            const bandY = padTop - 12;
+            const bandH = plotH + 16;
+            const badgeLabel = d.highlightTitle || `Sabat ${d.sabatNo}`;
+
+            highlightBandsSvg += `
+                <g class="highlight-band">
+                    <!-- Vertical Pillar Background Band -->
+                    <rect x="${bandX}" y="${bandY}" width="${bandW}" height="${bandH}" rx="8" fill="rgba(245, 158, 11, 0.08)" stroke="rgba(245, 158, 11, 0.3)" stroke-dasharray="3,3" stroke-width="1.2" />
+                    <!-- Mini Tag Badge -->
+                    <rect x="${xPos - 26}" y="${bandY - 14}" width="52" height="15" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1" />
+                    <text x="${xPos}" y="${bandY - 3}" fill="#B45309" font-size="9" font-weight="800" text-anchor="middle">${badgeLabel}</text>
+                </g>
+            `;
+        }
+    });
+
+    // Helper Bangun Smooth Bezier Curve Path
+    const buildBezierPath = (pts) => {
+        if (!pts || pts.length === 0) return "";
+        let pD = `M ${pts[0].x},${pts[0].y}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+            const p0 = pts[i];
+            const p1 = pts[i + 1];
+            const cpX = (p0.x + p1.x) / 2;
+            pD += ` C ${cpX},${p0.y} ${cpX},${p1.y} ${p1.x},${p1.y}`;
+        }
+        return pD;
+    };
+
+    const pathKhotbah = buildBezierPath(pointsKhotbah);
+    const pathSS = buildBezierPath(pointsSS);
+
+    // Area Fill Under Curve (Khotbah)
+    const firstP = pointsKhotbah[0];
+    const lastP = pointsKhotbah[pointsKhotbah.length - 1];
+    const bottomY = getY(0);
+    const areaDKhotbah = `${pathKhotbah} L ${lastP.x},${bottomY} L ${firstP.x},${bottomY} Z`;
+
+    // 6. Titik-titik Lingkaran Interaktif & Label Sumbu X
+    let circlesSvg = "";
+    let xLabelsSvg = "";
+
+    data.forEach((d, idx) => {
+        const pKh = pointsKhotbah[idx];
+        const pSS = pointsSS[idx];
+
+        // Sumbu X: Sabat ke-N & Tanggal
+        xLabelsSvg += `
+            <text x="${pKh.x}" y="${height - 20}" fill="${textColor}" font-size="9.5" font-weight="700" text-anchor="middle">Sbt ${d.sabatNo}</text>
+            <text x="${pKh.x}" y="${height - 8}" fill="${textColor}" font-size="8.5" font-weight="500" text-anchor="middle" opacity="0.8">${d.shortDate}</text>
+        `;
+
+        // Titik SS (Belakang)
+        circlesSvg += `
+            <circle cx="${pSS.x}" cy="${pSS.y}" r="3.5" fill="${isDark ? '#1E293B' : '#FFFFFF'}" stroke="${ssColor}" stroke-width="2" />
+        `;
+
+        // Titik Khotbah (Depan - Utama)
+        const isHighlight = d.isHighlight || d.isPeak || d.sabatNo === 2 || d.sabatNo === 7;
+        const circleR = isHighlight ? 6 : 4.5;
+        const strokeCol = isHighlight ? "#F59E0B" : primaryColor;
+        const fillCol = isHighlight ? "#F59E0B" : (isDark ? "#20090D" : "#FFFFFF");
+
+        circlesSvg += `
+            <g class="chart-point-group" data-idx="${idx}" style="cursor: pointer;">
+                <circle class="hover-hitbox" cx="${pKh.x}" cy="${(pKh.y + pSS.y) / 2}" r="22" fill="transparent" />
+                ${isHighlight ? `<circle cx="${pKh.x}" cy="${pKh.y}" r="10" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.8" />` : ''}
+                <circle class="point-circle-khotbah" cx="${pKh.x}" cy="${pKh.y}" r="${circleR}" fill="${fillCol}" stroke="${strokeCol}" stroke-width="2.5" />
+            </g>
+        `;
+    });
+
+    // 7. Render SVG Lengkap
+    svg.innerHTML = `
+        <defs>
+            <linearGradient id="khotbahGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="${primaryLight}" stop-opacity="0.38" />
+                <stop offset="85%" stop-color="${primaryLight}" stop-opacity="0.04" />
+                <stop offset="100%" stop-color="${primaryLight}" stop-opacity="0.0" />
+            </linearGradient>
+            <linearGradient id="ssGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="${ssLight}" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="${ssLight}" stop-opacity="0.0" />
+            </linearGradient>
+        </defs>
+
+        <!-- Highlight Bands for Sabat 2 & Sabat 7 -->
+        <g class="highlight-bands">${highlightBandsSvg}</g>
+
+        <!-- Grid Lines -->
+        <g class="gridlines">${gridLinesSvg}</g>
+
+        <!-- Average Line (Khotbah) -->
+        <g class="avg-line">${avgLineSvg}</g>
+
+        <!-- Average Line (Sekolah Sabat) -->
+        <g class="avg-line-ss">${avgSSLineSvg}</g>
+
+        <!-- Area Fill Under Khotbah Line -->
+        <path d="${areaDKhotbah}" fill="url(#khotbahGradient)" />
+
+        <!-- Line 2: Sekolah Sabat (Behind / Secondary) -->
+        <path d="${pathSS}" fill="none" stroke="${ssColor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+
+        <!-- Line 1: Ibadah Khotbah (Front / Primary) -->
+        <path d="${pathKhotbah}" fill="none" stroke="${primaryColor}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+
+        <!-- X Axis Labels -->
+        <g class="x-labels">${xLabelsSvg}</g>
+
+        <!-- Data Point Circles -->
+        <g class="points">${circlesSvg}</g>
+    `;
+
+    // 8. Event Listener Tooltip Interaktif
+    svg.querySelectorAll(".chart-point-group").forEach(group => {
+        const idx = parseInt(group.getAttribute("data-idx"));
+        const item = data[idx];
+        const pKh = pointsKhotbah[idx];
+
+        const showTooltip = () => {
+            if (!tooltip) return;
+            const toolHeader = document.getElementById("tooltipHeader");
+            const toolTheme = document.getElementById("tooltipTheme");
+            const toolKhotbah = document.getElementById("tooltipKhotbah");
+            const toolSS = document.getElementById("tooltipSS");
+            const toolSub = document.getElementById("tooltipSub");
+
+            if (toolHeader) toolHeader.textContent = `Sabat ke-${item.sabatNo} • ${item.date}`;
+            if (toolTheme) {
+                toolTheme.textContent = item.highlightTitle ? `🌟 ${item.highlightTitle}` : (item.theme || "--");
+            }
+            if (toolKhotbah) toolKhotbah.textContent = item.khotbah || item.total || 0;
+            if (toolSS) toolSS.textContent = item.ss || item.sekolahSabat || 0;
+            if (toolSub) toolSub.style.display = "none";
+
+            const container = document.getElementById("attendanceChartContainer");
+            if (container) {
+                const rect = container.getBoundingClientRect();
+                const scaleX = rect.width / width;
+                const scaleY = rect.height / height;
+
+                const posX = pKh.x * scaleX;
+                const posY = pKh.y * scaleY;
+
+                tooltip.style.display = "flex";
+                tooltip.style.left = `${Math.min(Math.max(10, posX - 90), rect.width - 190)}px`;
+                tooltip.style.top = `${Math.max(8, posY - 95)}px`;
+            }
+
+            const circle = group.querySelector(".point-circle-khotbah");
+            if (circle) circle.setAttribute("r", "7.5");
+        };
+
+        const hideTooltip = () => {
+            if (tooltip) tooltip.style.display = "none";
+            const circle = group.querySelector(".point-circle-khotbah");
+            if (circle) circle.setAttribute("r", (item.isHighlight || item.isPeak) ? "6" : "4.5");
+        };
+
+        group.addEventListener("mouseenter", showTooltip);
+        group.addEventListener("mouseleave", hideTooltip);
+        group.addEventListener("touchstart", (e) => {
+            e.stopPropagation();
+            showTooltip();
+        });
+    });
+
+    // Tutup tooltip saat klik di luar container pada perangkat sentuh
+    document.addEventListener("touchstart", (e) => {
+        if (!e.target.closest("#attendanceChartContainer") && tooltip) {
+            tooltip.style.display = "none";
+        }
+    });
+}
+
+/**
+ * Render Tabel Log Kehadiran Sabat Terkini
+ */
+function renderAttendanceTable() {
+    const tbody = document.getElementById("attendanceTableBody");
+    if (!tbody) return;
+
+    // Ambil data sabat dari dataset aktif dan urutkan dari yang terbaru
+    const currentDataset = attendanceAnalyticsDatasets[currentAnalyticsRange] || [];
+    const logs = [...currentDataset].reverse();
+
+    if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--text-muted);">Belum ada data kehadiran dari Supabase.</td></tr>`;
+        return;
+    }
+
+    let html = "";
+    logs.forEach(row => {
+        const valKhotbah = row.khotbah || row.total || 0;
+        const valSS = row.ss || row.sekolahSabat || 0;
+        const isHl = Boolean(row.isHighlight || row.sabatNo === 2 || row.sabatNo === 7);
+
+        html += `
+            <tr style="${isHl ? 'background-color: rgba(245, 158, 11, 0.05);' : ''}">
+                <td class="date-col">
+                    <strong>Sabat ${row.sabatNo}</strong><br>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">${row.date}</span>
+                </td>
+                <td>
+                    ${row.theme || "-"}
+                    ${isHl ? ' <span style="color: #D97706; font-weight: 700; font-size: 0.7rem;">🌟 Highlight</span>' : ''}
+                </td>
+                <td><span style="color: #2563EB; font-weight: 700;">${valSS} Jiwa</span></td>
+                <td><span class="total-badge">${valKhotbah} Jiwa</span></td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function renderAttendanceSummary() {
+    const avgEl = document.getElementById("statAvgAttendance");
+    const participationEl = document.getElementById("statParticipationValue");
+    const participationBadgeEl = participationEl?.parentElement;
+    const data = attendanceAnalyticsDatasets["current-tw"] || [];
+
+    if (!data.length) {
+        if (avgEl) avgEl.textContent = "";
+        if (participationEl) participationEl.textContent = "";
+        if (participationBadgeEl) participationBadgeEl.style.display = "none";
+        return;
+    }
+
+    const totalAttendance = data.reduce((sum, row) => sum + (row.khotbah || row.total || 0), 0);
+    const average = Math.round(totalAttendance / data.length);
+    if (avgEl) avgEl.textContent = average;
+
+    const totalMembers = congregationStatsData.total;
+    if (participationEl) {
+        participationEl.textContent = Number.isFinite(totalMembers) && totalMembers > 0
+            ? `${((average / totalMembers) * 100).toFixed(1)}%`
+            : "";
+        if (participationBadgeEl) {
+            participationBadgeEl.style.display = Number.isFinite(totalMembers) && totalMembers > 0
+                ? "inline-flex"
+                : "none";
+        }
+    }
+}
+
+function renderParticipationSummary() {
+    const data = attendanceAnalyticsDatasets["current-tw"] || [];
+    const totalMembers = congregationStatsData.total;
+    const ssAvgEl = document.getElementById("deptSsAvg");
+    const ssPctEl = document.getElementById("deptSsPct");
+    const khotbahAvgEl = document.getElementById("deptKhotbahAvg");
+    const khotbahPctEl = document.getElementById("deptKhotbahPct");
+
+    if (!data.length) {
+        [ssAvgEl, ssPctEl, khotbahAvgEl, khotbahPctEl].forEach(el => {
+            if (el) el.textContent = "";
+        });
+        return;
+    }
+
+    const ssAverage = Math.round(data.reduce((sum, row) => sum + (row.ss || row.sekolahSabat || 0), 0) / data.length);
+    const khotbahAverage = Math.round(data.reduce((sum, row) => sum + (row.khotbah || row.total || 0), 0) / data.length);
+    if (ssAvgEl) ssAvgEl.textContent = `${ssAverage} Jiwa`;
+    if (khotbahAvgEl) khotbahAvgEl.textContent = `${khotbahAverage} Jiwa`;
+    if (Number.isFinite(totalMembers) && totalMembers > 0) {
+        if (ssPctEl) ssPctEl.textContent = `${((ssAverage / totalMembers) * 100).toFixed(1)}%`;
+        if (khotbahPctEl) khotbahPctEl.textContent = `${((khotbahAverage / totalMembers) * 100).toFixed(1)}%`;
+    }
+}
+
+/**
+ * Fetch Data Statistik Realtime dari Supabase (Jika Tabel Sudah Dibuat)
+ */
+async function fetchStatistikDataFromSupabase() {
+    if (!supabaseClient) return;
+
+    // 1. Ambil data profil jemaat dari Supabase
+    try {
+        const { data: jemaatData, error: jemaatErr } = await supabaseClient
+            .from('Tabel Profil Jemaat')
+            .select('*')
+            .order('Tahun', { ascending: false })
+            .order('Id', { ascending: false })
+            .limit(100);
+
+        if (!jemaatErr && jemaatData && jemaatData.length > 0) {
+            const j = jemaatData[0];
+            const currentYear = Number(j.Tahun ?? j.tahun);
+            const previous = jemaatData.find(row => {
+                const rowYear = Number(row.Tahun ?? row.tahun);
+                return Number.isFinite(currentYear) && Number.isFinite(rowYear) && rowYear < currentYear;
+            });
+            congregationStatsData.total = Number(j.TotalJemaat ?? j.total_jemaat);
+            congregationStatsData.male = Number(j.Pria ?? j.pria);
+            congregationStatsData.female = Number(j.Wanita ?? j.wanita);
+            congregationStatsData.previousTotal = previous
+                ? Number(previous.TotalJemaat ?? previous.total_jemaat)
+                : null;
+            congregationStatsData.ageGroups = [
+                { label: "Anak-anak (SS)", count: Number(j.Anak ?? j.anak), pct: null },
+                { label: "Pemuda (PA)", count: Number(j.Pemuda ?? j.pemuda), pct: null },
+                { label: "Dewasa", count: Number(j.Dewasa ?? j.dewasa), pct: null },
+                { label: "Senior / Lansia", count: Number(j.Lansia ?? j.lansia), pct: null }
+            ];
+            renderCongregationStats();
+            renderParticipationSummary();
+        }
+    } catch (e) {
+        console.warn("Gagal memuat profil statistik:", e);
+    }
+
+    // 2. Ambil log kehadiran sabat dari Supabase
+    try {
+        const { data: kehadiranData, error: kehadiranErr } = await supabaseClient
+            .from('Tabel Kehadiran Sabat')
+            .select('*')
+            .order('Tanggal', { ascending: true });
+
+        if (!kehadiranErr && kehadiranData && kehadiranData.length > 0) {
+            const getQuarterInfo = dateRaw => {
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(dateRaw)) return null;
+
+                const [year, month, day] = dateRaw.split('-').map(Number);
+                const quarter = Math.floor((month - 1) / 3) + 1;
+                const quarterStart = new Date(Date.UTC(year, (quarter - 1) * 3, 1));
+                const targetDate = new Date(Date.UTC(year, month - 1, day));
+                let sabatNo = 0;
+
+                for (const cursor = new Date(quarterStart); cursor <= targetDate; cursor.setUTCDate(cursor.getUTCDate() + 1)) {
+                    if (cursor.getUTCDay() === 6) sabatNo++;
+                }
+
+                return {
+                    key: `${year}-Q${quarter}`,
+                    sabatNo
+                };
+            };
+
+            const mapped = kehadiranData.map(row => {
+                const dateRaw = row.Tanggal ? String(row.Tanggal).split('T')[0] : '';
+                const parts = dateRaw.split('-');
+                let shortDate = dateRaw;
+                let dateDisplay = dateRaw;
+
+                if (parts.length === 3) {
+                    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+                    const mIdx = parseInt(parts[1], 10) - 1;
+                    shortDate = `${parseInt(parts[2], 10)} ${months[mIdx] || ''}`;
+                    dateDisplay = `Sabtu, ${parseInt(parts[2], 10)} ${months[mIdx] || ''} ${parts[0]}`;
+                }
+
+                const khotbah = Number(row.Total || row.total || 0);
+                const ss = Number(row.SekolahSabat ?? row.sekolah_sabat);
+                const quarterInfo = getQuarterInfo(dateRaw);
+
+                return {
+                    id: row.Id || row.id,
+                    dateRaw: dateRaw,
+                    quarterKey: quarterInfo?.key || null,
+                    sabatNo: quarterInfo?.sabatNo || null,
+                    date: dateDisplay,
+                    shortDate: shortDate,
+                    khotbah: khotbah,
+                    ss: ss,
+                    theme: row.Tema ?? row.tema ?? "-",
+                    isHighlight: Boolean(row.isHighlight)
+                };
+            });
+
+            const latestRow = mapped.filter(row => row.dateRaw).at(-1);
+            const latestQuarterKey = latestRow?.quarterKey;
+            const [latestYear, latestQuarter] = latestQuarterKey
+                ? latestQuarterKey.split('-Q').map(Number)
+                : [null, null];
+            const previousQuarterKey = latestQuarterKey && latestQuarter > 1
+                ? `${latestYear}-Q${latestQuarter - 1}`
+                : latestQuarterKey
+                    ? `${latestYear - 1}-Q4`
+                    : null;
+
+            const currentRows = mapped.filter(row => row.quarterKey === latestQuarterKey);
+            const previousRows = mapped.filter(row => row.quarterKey === previousQuarterKey);
+            const addSabatNumbers = rows => rows.map(row => ({
+                ...row,
+                isHighlight: row.isHighlight || row.sabatNo === 2 || row.sabatNo === 7
+            }));
+
+            attendanceAnalyticsDatasets["current-tw"] = addSabatNumbers(currentRows);
+            attendanceAnalyticsDatasets["prev-tw"] = addSabatNumbers(previousRows);
+            currentAnalyticsRange = "current-tw";
+            renderAttendanceChart();
+            renderAttendanceTable();
+            renderAttendanceSummary();
+            renderParticipationSummary();
+        }
+    } catch (e) {
+        console.warn("Gagal memuat kehadiran statistik:", e);
+    }
+}
+
+/* ============================================================
+ * MODAL HANDLERS UNTUK STATISTIK (DESAIN MATCHING DENGAN LOGIN MODAL)
+ * ============================================================ */
+
+function openEditStatsActionModal() {
+    if (!currentAdminSession) {
+        openLoginModal();
+        return;
+    }
+    const modal = document.getElementById("modalStatistikAction");
+    if (modal) modal.classList.add("active");
+}
+
+function closeModalStatistikAction() {
+    const modal = document.getElementById("modalStatistikAction");
+    if (modal) modal.classList.remove("active");
+}
+
+function openModalInputKehadiran() {
+    const modal = document.getElementById("modalInputKehadiran");
+    if (!modal) return;
+
+    // Set default tanggal hari ini atau sabat terdekat
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const defaultDate = `${yyyy}-${mm}-${dd}`;
+
+    const dateInp = document.getElementById("inpKehadiranTanggal");
+    if (dateInp) dateInp.value = defaultDate;
+
+    modal.classList.add("active");
+}
+
+function closeModalInputKehadiran() {
+    const modal = document.getElementById("modalInputKehadiran");
+    if (modal) modal.classList.remove("active");
+}
+
+async function handleSimpanKehadiran() {
+    const tanggal = document.getElementById("inpKehadiranTanggal")?.value;
+    const tema = document.getElementById("inpKehadiranTema")?.value || "Ibadah Sabat";
+    const ss = parseInt(document.getElementById("inpKehadiranSS")?.value || "0", 10);
+    const khotbah = parseInt(document.getElementById("inpKehadiranTotal")?.value || "0", 10);
+
+    if (!tanggal) {
+        showToast("Pilih tanggal Sabat terlebih dahulu", "error");
+        return;
+    }
+
+    if (!supabaseClient || !currentAdminSession) {
+        showToast("Koneksi Supabase tidak tersedia", "error");
+        return;
+    }
+
+    try {
+        const { error } = await supabaseClient.from("Tabel Kehadiran Sabat").insert({
+            Tanggal: tanggal,
+            Tema: tema,
+            SekolahSabat: ss,
+            Total: khotbah
+        });
+        if (error) throw error;
+    } catch (err) {
+        console.warn("Simpan ke Supabase:", err);
+        showToast("Kehadiran gagal disimpan ke Supabase", "error");
+        return;
+    }
+
+    await fetchStatistikDataFromSupabase();
+
+    closeModalInputKehadiran();
+    showToast(`Kehadiran Sabat (${khotbah} jiwa) berhasil disimpan!`, "success");
+}
+
+function openModalEditProfilJemaat() {
+    const modal = document.getElementById("modalEditProfilJemaat");
+    if (!modal) return;
+
+    const cur = congregationStatsData;
+    const inpTotal = document.getElementById("inpProfilTotal");
+    const inpPria = document.getElementById("inpProfilPria");
+    const inpWanita = document.getElementById("inpProfilWanita");
+    const inpTahun = document.getElementById("inpProfilTahun");
+
+    if (inpTotal) inpTotal.value = cur.total;
+    if (inpPria) inpPria.value = cur.male;
+    if (inpWanita) inpWanita.value = cur.female;
+    if (inpTahun) inpTahun.value = "2026";
+
+    modal.classList.add("active");
+}
+
+function closeModalEditProfilJemaat() {
+    const modal = document.getElementById("modalEditProfilJemaat");
+    if (modal) modal.classList.remove("active");
+}
+
+async function handleSimpanProfilJemaat() {
+    const total = parseInt(document.getElementById("inpProfilTotal")?.value || "0", 10);
+    const male = parseInt(document.getElementById("inpProfilPria")?.value || "0", 10);
+    const female = parseInt(document.getElementById("inpProfilWanita")?.value || "0", 10);
+    const tahun = parseInt(document.getElementById("inpProfilTahun")?.value || "2026", 10);
+
+    if (total <= 0) {
+        showToast("Total jemaat harus lebih besar dari 0", "error");
+        return;
+    }
+
+    if (!supabaseClient || !currentAdminSession) {
+        showToast("Koneksi Supabase tidak tersedia", "error");
+        return;
+    }
+
+    try {
+        const { error } = await supabaseClient.from("Tabel Profil Jemaat").insert({
+            Tahun: tahun,
+            TotalJemaat: total,
+            Pria: male,
+            Wanita: female
+        });
+        if (error) throw error;
+    } catch (err) {
+        console.warn("Simpan ke Supabase:", err);
+        showToast("Profil jemaat gagal disimpan ke Supabase", "error");
+        return;
+    }
+
+    await fetchStatistikDataFromSupabase();
+    closeModalEditProfilJemaat();
+    showToast(`Profil Jemaat diperbarui: ${total} Jiwa (${male} Pria, ${female} Wanita)`, "success");
+}
+
 // Inisialisasi Aplikasi saat DOM Siap
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {
     initApp();
 }
+
+
